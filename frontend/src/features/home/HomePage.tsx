@@ -25,10 +25,10 @@ export function HomePage() {
         <article className="home-panel">
           <div className="home-panel-header">
             <div>
-              <p className="home-section-kicker">Stock critico</p>
-              <h3>Alertas de inventario</h3>
+              <p className="home-section-kicker">Panel principal</p>
+              <h3>Elementos destacados</h3>
             </div>
-            <span className="home-section-badge">Accion requerida</span>
+            <span className="home-section-badge">Pendientes</span>
           </div>
           <div className="home-alert-list">
             {inventoryAlerts.map((item) => (
@@ -50,9 +50,9 @@ export function HomePage() {
           <div className="home-panel-header">
             <div>
               <p className="home-section-kicker">Actividad reciente</p>
-              <h3>Movimientos y pedidos</h3>
+              <h3>Últimas acciones</h3>
             </div>
-            <span className="home-section-badge is-soft">Ultimas operaciones</span>
+            <span className="home-section-badge is-soft">Últimas acciones</span>
           </div>
           <div className="home-movement-list">
             {recentMovements.map((item) => (
@@ -91,8 +91,8 @@ export function HomePage() {
         <article className="home-panel">
           <div className="home-panel-header">
             <div>
-              <p className="home-section-kicker">Categorias destacadas</p>
-              <h3>Rotacion por familia</h3>
+              <p className="home-section-kicker">Resumen</p>
+              <h3>Distribución</h3>
             </div>
           </div>
           <div className="home-category-list">

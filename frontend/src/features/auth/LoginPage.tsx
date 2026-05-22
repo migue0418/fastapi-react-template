@@ -7,16 +7,16 @@ import "./LoginPage.css";
 
 const brandHighlights = [
   {
-    title: "Stock visible",
-    description: "Consulta referencias criticas y prioridades del dia en una sola vista.",
+    title: "Autenticación JWT",
+    description: "Login seguro con tokens JWT y refresco de sesión.",
   },
   {
-    title: "Pedidos en seguimiento",
-    description: "Mantiene controlados los movimientos entrantes y las entregas del taller.",
+    title: "Gestión de roles",
+    description: "Control de acceso basado en roles listo para personalizar.",
   },
   {
-    title: "Operativa centralizada",
-    description: "Accede al panel interno con una interfaz clara, rapida y pensada para trabajar.",
+    title: "API + Frontend",
+    description: "Backend FastAPI y frontend React listos para escalar.",
   },
 ] as const;
 
@@ -62,19 +62,19 @@ export function LoginPage() {
             <div className="login-logo-wrap">
               <img
                 className="login-logo"
-                src="/autorecambiosramon.svg"
-                alt="Logo de AutoRecambios Ramon"
+                src="/logo.svg"
+                alt="Logo"
               />
             </div>
             <div className="login-brand-heading">
-              <p className="login-kicker">AutoRecambios Ramon</p>
-              <span className="login-badge">Centro de recambios</span>
+              <p className="login-kicker">FastAPI Template</p>
+              <span className="login-badge">Admin Panel</span>
             </div>
           </div>
-          <h1>Gestion moderna para el ritmo real del taller.</h1>
+          <h1>Panel de administración listo para usar.</h1>
           <p className="login-copy">
-            Revisa entradas, stock, pedidos y prioridades desde una interfaz pensada para trabajar
-            con claridad durante toda la jornada.
+            Accede, gestiona usuarios y roles, y amplía el proyecto con tus propias
+            funcionalidades.
           </p>
           <div className="login-benefits" aria-label="Beneficios principales">
             {brandHighlights.map((item) => (
@@ -91,8 +91,7 @@ export function LoginPage() {
             <p>Bienvenido de nuevo</p>
             <h2>Inicia sesion</h2>
             <span>
-              Accede al panel interno para seguir la operativa diaria con una vista limpia y
-              enfocada.
+              Introduce tus credenciales para acceder al panel.
             </span>
           </div>
 
