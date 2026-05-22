@@ -9,18 +9,24 @@ COPY frontend/ ./
 RUN npm run build
 
 
-FROM python:3.14-slim AS backend-runtime
+FROM python:3.13-slim AS backend-runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+
 WORKDIR /app/backend
 
-COPY backend/requirements.in ./requirements.in
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.in
+# Install production dependencies only (excludes [dependency-groups] dev)
+COPY backend/pyproject.toml ./
+RUN uv sync --no-dev --no-cache
 
 COPY backend/ /app/backend/
+
+ENV PATH="/app/backend/.venv/bin:$PATH"
+
 COPY --from=frontend-builder /app/frontend/dist /app/frontend/dist
 
 EXPOSE 8000

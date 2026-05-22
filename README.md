@@ -4,7 +4,7 @@ Plantilla de proyecto full-stack lista para usar. Incluye autenticación JWT, ge
 
 ## Stack
 
-- **Backend**: FastAPI, SQLAlchemy async, Alembic, PostgreSQL
+- **Backend**: FastAPI, SQLAlchemy async, Alembic, PostgreSQL, uv
 - **Frontend**: React 19, TypeScript, Vite, React Router 7
 - **Auth**: JWT (access token 15 min) + refresh token en cookie HTTP-only
 - **Deploy**: Docker Compose con Caddy como reverse proxy
@@ -23,12 +23,13 @@ Credenciales por defecto: `admin` / `ChangeMe123!`
 
 ## Desarrollo local
 
+Requiere [uv](https://docs.astral.sh/uv/getting-started/installation/) instalado.
+
 ```powershell
-# Backend
+# Backend (uv crea .venv e instala todo, incluidas deps de dev)
 cd backend
-python -m venv .venv
-.venv\Scripts\python.exe -m pip install -r requirements.in
-.venv\Scripts\python.exe -m uvicorn app.main:app --reload
+uv sync
+uv run uvicorn app.main:app --reload
 
 # Frontend (en otra terminal)
 cd frontend
@@ -43,10 +44,24 @@ npm run dev
 
 ```powershell
 cd backend
-.venv\Scripts\python.exe -m pytest -q
+uv run pytest -q
 ```
 
 Requiere PostgreSQL accesible en `127.0.0.1:5432`. Configura `TEST_DATABASE_ADMIN_URL` en `.env` si es necesario.
+
+## Dependencias
+
+Las dependencias se gestionan con `uv` y `pyproject.toml`:
+
+- **Producción** (`[project.dependencies]`): instaladas en Docker con `uv sync --no-dev`
+- **Desarrollo** (`[dependency-groups] dev`): `pytest`, `httpx` — solo en local, nunca en la imagen Docker
+
+```powershell
+cd backend
+uv add <paquete>             # añadir dependencia de producción
+uv add --dev <paquete>       # añadir dependencia de desarrollo
+uv lock                      # regenerar uv.lock (commitear)
+```
 
 ## Añadir nuevas features
 
@@ -70,8 +85,8 @@ Cuando añadas un modelo SQLAlchemy nuevo, impórtalo en `backend/app/core/datab
 
 ```powershell
 cd backend
-.venv\Scripts\python.exe -m alembic revision --autogenerate -m "descripcion"
-.venv\Scripts\python.exe -m alembic upgrade head
+uv run alembic revision --autogenerate -m "descripcion"
+uv run alembic upgrade head
 ```
 
 ## Variables de entorno relevantes
