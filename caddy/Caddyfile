@@ -1,0 +1,12 @@
+# Adaptar al dominio del proyecto.
+# Ejemplo con TLS automático:
+#
+# https://miapp.ejemplo.com {
+#     tls internal
+#     reverse_proxy backend:8000
+# }
+
+# Desarrollo local sin TLS:
+:80 {
+    reverse_proxy backend:8000
+}

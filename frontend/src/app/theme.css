@@ -1,0 +1,113 @@
+:root {
+  color-scheme: light;
+  font-family: var(--font-family-body);
+  line-height: var(--line-height-body);
+  font-weight: 400;
+  color: var(--color-text-primary);
+  background: var(--color-page-background);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --font-family-body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-family-display: "Manrope", "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-family-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: clamp(1.65rem, 1.2rem + 1.2vw, 2.25rem);
+  --font-size-3xl: clamp(2.25rem, 1.9rem + 1.9vw, 3.75rem);
+
+  --line-height-tight: 1.08;
+  --line-height-heading: 1.14;
+  --line-height-body: 1.6;
+  --line-height-relaxed: 1.72;
+
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 2.5rem;
+  --space-3xl: 3rem;
+  --space-4xl: 4rem;
+
+  --content-max-width: 100%;
+  --measure-copy: 62ch;
+
+  --color-page-background: #f7f0f1;
+  --color-page-background-deep: #f1e4e7;
+  --color-surface-primary: rgba(255, 252, 252, 0.96);
+  --color-surface-secondary: rgba(255, 248, 249, 0.92);
+  --color-surface-elevated: rgba(255, 255, 255, 0.86);
+  --color-surface-dark: #48131d;
+  --color-surface-dark-elevated: #5a1b28;
+  --color-surface-soft-rose: #f9ecef;
+  --color-surface-tint: #f3d7de;
+
+  --color-border-subtle: rgba(84, 23, 34, 0.1);
+  --color-border-medium: rgba(110, 28, 43, 0.16);
+  --color-border-strong: rgba(126, 27, 45, 0.24);
+  --color-border-brand: rgba(255, 237, 241, 0.16);
+
+  --color-text-primary: #271317;
+  --color-text-heading: #43161f;
+  --color-text-secondary: #6c4a53;
+  --color-text-muted: #86656c;
+  --color-text-inverse: #fff9fa;
+  --color-text-inverse-soft: rgba(255, 238, 241, 0.8);
+
+  --color-accent: #c92a43;
+  --color-accent-strong: #a61f35;
+  --color-accent-soft: #ffe5ea;
+  --color-accent-soft-strong: #f3c4cf;
+  --color-accent-glow: rgba(201, 42, 67, 0.16);
+
+  --color-success: #246a51;
+  --color-success-soft: rgba(36, 106, 81, 0.12);
+  --color-warning: #9a5c13;
+  --color-warning-soft: rgba(154, 92, 19, 0.12);
+  --color-danger: #a5283f;
+  --color-danger-soft: rgba(165, 40, 63, 0.12);
+
+  --color-overlay-backdrop: rgba(32, 11, 16, 0.54);
+  --color-focus-ring: rgba(201, 42, 67, 0.22);
+
+  --shadow-soft: 0 20px 45px rgba(59, 17, 26, 0.1);
+  --shadow-medium: 0 26px 70px rgba(56, 14, 23, 0.14);
+  --shadow-strong: 0 35px 90px rgba(52, 12, 21, 0.18);
+  --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+
+  --radius-sm: 0.9rem;
+  --radius-md: 1.15rem;
+  --radius-lg: 1.65rem;
+  --radius-xl: 2rem;
+  --radius-pill: 999px;
+
+  --gradient-page:
+    radial-gradient(circle at top left, rgba(201, 42, 67, 0.08), transparent 28%),
+    radial-gradient(circle at top right, rgba(100, 16, 31, 0.07), transparent 24%),
+    linear-gradient(180deg, #fff9fa 0%, #f7f0f1 44%, #f2e6e9 100%);
+  --gradient-sidebar:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.08), transparent 26%),
+    linear-gradient(180deg, #3f111a 0%, #5e1a28 54%, #371017 100%);
+  --gradient-brand-mark: linear-gradient(135deg, #ffe9ee 0%, #ffffff 100%);
+  --gradient-login-brand:
+    radial-gradient(circle at 14% 14%, rgba(255, 255, 255, 0.1), transparent 25%),
+    radial-gradient(circle at 90% 80%, rgba(255, 194, 205, 0.12), transparent 28%),
+    linear-gradient(180deg, rgba(84, 21, 33, 0.98) 0%, rgba(58, 15, 24, 0.98) 100%);
+  --gradient-shell-hero:
+    radial-gradient(circle at top right, rgba(201, 42, 67, 0.16), transparent 28%),
+    linear-gradient(145deg, rgba(255, 249, 250, 0.98) 0%, rgba(248, 238, 241, 0.98) 100%);
+  --gradient-kpi:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(252, 244, 246, 0.96) 100%);
+  --gradient-button: linear-gradient(135deg, #d1344f 0%, #a61f35 100%);
+
+  --transition-fast: 160ms ease;
+  --transition-base: 220ms ease;
+}

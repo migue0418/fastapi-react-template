@@ -1,0 +1,23 @@
+.scanner-video-wrap {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: #000;
+  line-height: 0;
+}
+
+.scanner-error {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.6rem;
+  background: rgba(165, 40, 63, 0.12);
+  border: 1px solid rgba(165, 40, 63, 0.2);
+  color: #ff6b8a;
+  font-size: 0.88rem;
+}
+
+.scanner-hint {
+  margin-top: 0.65rem;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+}

@@ -1,0 +1,143 @@
+import { useState } from "react";
+import type { FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { useAuth } from "@/features/auth/AuthProvider";
+import "./LoginPage.css";
+
+const brandHighlights = [
+  {
+    title: "Stock visible",
+    description: "Consulta referencias criticas y prioridades del dia en una sola vista.",
+  },
+  {
+    title: "Pedidos en seguimiento",
+    description: "Mantiene controlados los movimientos entrantes y las entregas del taller.",
+  },
+  {
+    title: "Operativa centralizada",
+    description: "Accede al panel interno con una interfaz clara, rapida y pensada para trabajar.",
+  },
+] as const;
+
+export function LoginPage() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError(null);
+
+    if (!username.trim() || !password.trim()) {
+      setError("Usuario y contrasena son obligatorios.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await login(
+        { username: username.trim(), password },
+        { rememberMe },
+      );
+      navigate("/", { replace: true });
+    } catch {
+      setError("Credenciales invalidas o error de servidor.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <main className="login-page">
+      <section className="login-card">
+        <div className="login-brand">
+          <div className="login-brand-header">
+            <div className="login-logo-wrap">
+              <img
+                className="login-logo"
+                src="/autorecambiosramon.svg"
+                alt="Logo de AutoRecambios Ramon"
+              />
+            </div>
+            <div className="login-brand-heading">
+              <p className="login-kicker">AutoRecambios Ramon</p>
+              <span className="login-badge">Centro de recambios</span>
+            </div>
+          </div>
+          <h1>Gestion moderna para el ritmo real del taller.</h1>
+          <p className="login-copy">
+            Revisa entradas, stock, pedidos y prioridades desde una interfaz pensada para trabajar
+            con claridad durante toda la jornada.
+          </p>
+          <div className="login-benefits" aria-label="Beneficios principales">
+            {brandHighlights.map((item) => (
+              <article key={item.title} className="login-benefit-card">
+                <strong>{item.title}</strong>
+                <p>{item.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <form className="login-form" onSubmit={(event) => void handleSubmit(event)} noValidate>
+          <div className="login-form-header">
+            <p>Bienvenido de nuevo</p>
+            <h2>Inicia sesion</h2>
+            <span>
+              Accede al panel interno para seguir la operativa diaria con una vista limpia y
+              enfocada.
+            </span>
+          </div>
+
+          <label className="login-field">
+            <span>Usuario</span>
+            <input
+              type="text"
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+              autoComplete="username"
+              placeholder="admin"
+            />
+          </label>
+
+          <label className="login-field">
+            <span>Contrasena</span>
+            <input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              autoComplete="current-password"
+              placeholder="Introduce tu contrasena"
+            />
+          </label>
+
+          <label className="login-checkbox">
+            <input
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(event) => setRememberMe(event.target.checked)}
+            />
+            <span>Mantener sesion iniciada</span>
+          </label>
+
+          {error ? (
+            <p className="login-error" role="alert">
+              {error}
+            </p>
+          ) : null}
+
+          <button className="login-submit" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Entrando..." : "Entrar"}
+          </button>
+        </form>
+      </section>
+    </main>
+  );
+}
