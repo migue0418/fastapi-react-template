@@ -38,10 +38,9 @@ export function UsersPage() {
 
   const loadUsers = async () => {
     try {
-      setIsLoading(true);
-      setError(null);
       const data = await listUsersRequest();
       setUsers(data);
+      setError(null);
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : "No se pudieron cargar los usuarios");
     } finally {
@@ -50,7 +49,18 @@ export function UsersPage() {
   };
 
   useEffect(() => {
-    void loadUsers();
+    let active = true;
+    listUsersRequest()
+      .then((data) => {
+        if (active) { setUsers(data); setError(null); }
+      })
+      .catch((err: unknown) => {
+        if (active) setError(err instanceof Error ? err.message : "No se pudieron cargar los usuarios");
+      })
+      .finally(() => {
+        if (active) setIsLoading(false);
+      });
+    return () => { active = false; };
   }, []);
 
   const stats = useMemo(() => {
@@ -88,10 +98,6 @@ export function UsersPage() {
       ].some((value) => value.toLowerCase().includes(normalizedQuery));
     });
   }, [query, statusFilter, users]);
-
-  useEffect(() => {
-    setPage(1);
-  }, [query, statusFilter]);
 
   const sortedUsers = useMemo(() => {
     return [...filteredUsers].sort((left, right) => {
@@ -204,7 +210,7 @@ export function UsersPage() {
               className="ui-input"
               placeholder="Usuario, nombre, email o rol"
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => { setQuery(event.target.value); setPage(1); }}
             />
           </div>
         </label>
@@ -214,7 +220,7 @@ export function UsersPage() {
           <select
             className="ui-select"
             value={statusFilter}
-            onChange={(event) => setStatusFilter(event.target.value as StatusFilter)}
+            onChange={(event) => { setStatusFilter(event.target.value as StatusFilter); setPage(1); }}
           >
             <option value="all">Todos</option>
             <option value="active">Activos</option>
