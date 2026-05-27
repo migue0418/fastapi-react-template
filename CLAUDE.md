@@ -127,19 +127,24 @@ uv lock                 # regenerar lock file
 Este repo trae un flujo de **Spec-Driven Development** listo para usar. Requiere el CLI de OpenSpec
 (`npm i -g @fission-ai/openspec` o `npx @fission-ai/openspec`).
 
+Guía paso a paso con prompts reales: `docs/SDD steps.md`.
+
 Flujo (perfil core):
 
 ```
-/opsx:explore   # pensar/aclarar una idea (opcional)
-/opsx:propose   # crear el cambio + artefactos (proposal, specs, design, tasks)
-/opsx:apply     # implementar tareas (el agente también ejecuta las pruebas)
-/opsx:archive   # fusionar delta specs en openspec/specs/ y archivar
+/opsx:explore        # pensar/aclarar una idea (opcional)
+/opsx:propose        # crear el cambio + artefactos (proposal, specs, design, tasks)
+plan técnico         # agentes backend/frontend-developer → .claude/doc/<cambio>/ (OBLIGATORIO)
+/opsx:apply          # implementar tareas (el agente también ejecuta las pruebas)
+write-pr-report + gh # abrir el PR
+/opsx:archive        # fusionar delta specs en openspec/specs/ y archivar
 ```
 
+- **El plan técnico es obligatorio**: antes de `/opsx:apply` deben existir los planes de los agentes en `.claude/doc/<cambio>/{backend,frontend}.md`, y `apply` debe leerlos.
 - Estándares detallados (referencia versionada): `docs/base-standards.md`, `docs/backend-standards.md`, `docs/frontend-standards.md`, `docs/data-model.md`, `docs/development_guide.md`, `docs/verification-guide.md`, `docs/documentation-standards.md`.
 - Contexto del stack inyectado en todos los artefactos: `openspec/config.yaml`.
 - Antes de escribir/implementar `tasks.md` se aplica `.claude/rules/openspec-tasks-mandatory-steps.md` (el agente ejecuta las pruebas: `uv run pytest`, curl, Playwright MCP; `npm run lint/test/build`; PR con `gh`).
-- Agentes de planificación: `.claude/agents/{backend-developer,frontend-developer,product-strategy-analyst}`.
+- Agentes (`.claude/agents/`): `backend-developer`, `frontend-developer` (plan técnico obligatorio), `product-strategy-analyst` (ideación).
 - Skills propias: `enrich-us` (refinar user stories de Jira), `write-pr-report` (descripción de PR + `gh`).
 
 ---

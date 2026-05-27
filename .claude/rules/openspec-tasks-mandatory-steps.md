@@ -8,6 +8,18 @@ alwaysApply: true
 Aplica al crear/actualizar `tasks.md` (vía `/opsx:propose` o `openspec-propose`) y al implementar
 (vía `/opsx:apply` o `openspec-apply-change`). Complementa `openspec/config.yaml` (lee su `rules.tasks`).
 
+## 0. Plan técnico previo (OBLIGATORIO, antes de `/opsx:apply`)
+
+Antes de implementar un cambio DEBE existir un **plan técnico a nivel de archivos**, generado por los
+agentes de planificación y guardado en `.claude/doc/<change-name>/`:
+
+- Agente `backend-developer` → `.claude/doc/<change-name>/backend.md` (si el cambio toca backend).
+- Agente `frontend-developer` → `.claude/doc/<change-name>/frontend.md` (si el cambio toca frontend).
+
+`/opsx:apply` (y la skill `openspec-apply-change`) DEBEN **leer esos planes** además de los artefactos
+del cambio antes de tocar código. Si el plan no existe, créalo primero con el agente correspondiente; no
+empieces a implementar sin él. El plan se escala al tamaño del cambio (en cambios triviales, breve).
+
 ## 1. Estructura obligatoria de `tasks.md`
 
 - **Paso 0 (el primero):** crear y cambiar a rama `feature/<change-name>`.
@@ -55,7 +67,8 @@ al usuario que ejecute curl, tests o E2E. Una tarea solo se marca `[x]` tras eje
 - Solo entonces procede `/opsx:archive` (que fusiona los delta specs en `openspec/specs/`).
 
 ## 4. Checklist antes de finalizar `tasks.md`
-- [ ] Paso 0 (rama `feature/<change-name>`) es el primero.
+- [ ] Existe el plan técnico previo en `.claude/doc/<change-name>/` (backend y/o frontend) y `apply` lo ha leído.
+- [ ] Paso 0 de tasks.md (rama `feature/<change-name>`) es el primero.
 - [ ] Todos los pasos `(OBLIGATORIO)` presentes y numerados.
 - [ ] Pruebas manuales marcadas "EL AGENTE LO EJECUTA".
 - [ ] Pasos de restauración de BD incluidos para operaciones que mutan datos.
