@@ -97,10 +97,12 @@ Instala el CLI (`npm i -g @fission-ai/openspec` o usa `npx @fission-ai/openspec`
 ```
 /opsx:explore   # explorar/aclarar una idea (opcional)
 /opsx:propose   # crear el cambio y sus artefactos (proposal, specs, design, tasks)
+plan técnico    # agentes backend/frontend-developer → .claude/doc/<cambio>/ (obligatorio)
 /opsx:apply     # implementar las tareas
 /opsx:archive   # fusionar specs y archivar el cambio
 ```
 
+- **Guía paso a paso con prompts reales: [docs/SDD steps.md](docs/SDD%20steps.md).**
 - Contexto del stack para los artefactos: `openspec/config.yaml`.
 - Estándares y guías versionadas en `docs/` (empieza por `docs/development_guide.md` y `docs/base-standards.md`).
 - Skills y agentes de apoyo en `.claude/` (skills `openspec-*`, `enrich-us`, `write-pr-report`; agentes `backend-developer`, `frontend-developer`, `product-strategy-analyst`).
