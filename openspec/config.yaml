@@ -1,0 +1,65 @@
+# Configuración de proyecto para OpenSpec
+# Docs: https://github.com/Fission-AI/OpenSpec
+# `context` se inyecta en TODOS los artefactos; `rules` solo en el artefacto indicado.
+schema: spec-driven
+
+context: |
+  # Plantilla FastAPI + React (monorepo)
+
+  ## Backend (carpeta `backend/`)
+  - Python >= 3.12. FastAPI con SQLAlchemy async + asyncpg, Alembic, Pydantic Settings,
+    JWT (pyjwt) y pwdlib[argon2]. Gestor de dependencias: **uv** (no pip).
+  - Arquitectura por slice en `backend/app/features/<feature>/`:
+    - `router.py`: endpoints HTTP delgados (solo orquestan, sin lógica de negocio).
+    - `schemas.py`: modelos Pydantic de request/response.
+    - `service.py`: casos de uso y reglas de negocio (clase `XxxService` + factory
+      `get_xxx_service(session=Depends(get_session))`). Hace `await session.commit()`.
+    - `repository.py`: acceso a datos con `AsyncSession` (queries `select(...)`,
+      `selectinload` para relaciones). Sin lógica de negocio.
+    - `models.py`: modelos SQLAlchemy (heredan de `app.core.database.Base`), si aplica.
+  - Endpoints SIEMPRE bajo `/api/...`. Routers nuevos se registran en `backend/app/main.py`.
+  - Modelos SQLAlchemy nuevos se importan en
+    `backend/app/core/database.py::import_model_modules`.
+  - Cambios de schema de datos SIEMPRE con migración Alembic en `backend/alembic/versions/`.
+  - Autenticación/roles vía dependencias `app.features.auth.dependencies`
+    (`get_authenticated_user`, `require_roles("admin")`).
+  - Tests con pytest en `backend/tests/` (httpx para la API). PROHIBIDO SQLite en tests:
+    usar PostgreSQL.
+
+  ## Frontend (carpeta `frontend/`)
+  - React 19 + TypeScript + Vite + React Router 7. Tests con Vitest + Testing Library.
+  - Arquitectura por slice en `frontend/src/features/<feature>/`.
+  - HTTP SOLO mediante `frontend/src/shared/api/http.ts` (`api.get/post/put/delete`, que
+    prefija `/api` y gestiona refresh de token en 401). Cada feature define un `api.ts`
+    que envuelve `api.*`. NUNCA `fetch` directo desde componentes.
+  - Componentes genéricos en `frontend/src/shared/ui/` (UI propia: ModalDialog,
+    ConfirmDialog, Pagination...). No se usa una librería de componentes externa.
+  - Alias `@` para imports desde `frontend/src`. Estado local con hooks; no añadir estado
+    global sin necesidad clara.
+
+  ## Convenciones generales
+  - Mensajes de usuario y `detail` de errores en **español**; identificadores de código en inglés.
+  - Estándares detallados: `docs/base-standards.md`, `docs/backend-standards.md`,
+    `docs/frontend-standards.md`. Verificación: `docs/verification-guide.md`.
+
+rules:
+  proposal:
+    - Indica qué slices de backend y/o frontend se ven afectados.
+    - Si el cambio toca el modelo de datos, advierte de que requerirá migración Alembic.
+  specs:
+    - Usa formato Given/When/Then en los escenarios.
+    - Cubre casos de error (validación 422, 401/403, 404, 409) además del happy path.
+  design:
+    - Describe el cambio capa por capa en backend (router → service → repository → models)
+      y en frontend (api.ts → componentes/estado → rutas).
+    - Lista migraciones Alembic necesarias y modelos a registrar en `import_model_modules`.
+  tasks:
+    - "Antes de escribir tasks.md, lee `.claude/rules/openspec-tasks-mandatory-steps.md`."
+    - "Paso 0 (obligatorio, el primero): crear rama `feature/<change-name>`."
+    - "Aplica TDD donde tenga sentido; los tests de backend usan pytest (NUNCA SQLite)."
+    - "Obligatorio: ejecutar `cd backend && uv run pytest -q` y verificar el estado de la BD."
+    - "Obligatorio: pruebas manuales de endpoints con curl ejecutadas por el agente (no el usuario), restaurando el estado de la BD."
+    - "Obligatorio si hay cambios de frontend: E2E con Playwright MCP ejecutado por el agente."
+    - "Obligatorio: `cd frontend && npm run lint && npm run test && npm run build`."
+    - "Obligatorio: actualizar documentación técnica en `docs/` si cambian contratos o arquitectura."
+    - "Paso final: abrir el PR con `gh` usando la skill write-pr-report."
