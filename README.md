@@ -89,6 +89,22 @@ uv run alembic revision --autogenerate -m "descripcion"
 uv run alembic upgrade head
 ```
 
+## Spec-Driven Development (OpenSpec)
+
+La plantilla incluye un flujo SDD listo para usar con [OpenSpec](https://github.com/Fission-AI/OpenSpec).
+Instala el CLI (`npm i -g @fission-ai/openspec` o usa `npx @fission-ai/openspec`) y trabaja así:
+
+```
+/opsx:explore   # explorar/aclarar una idea (opcional)
+/opsx:propose   # crear el cambio y sus artefactos (proposal, specs, design, tasks)
+/opsx:apply     # implementar las tareas
+/opsx:archive   # fusionar specs y archivar el cambio
+```
+
+- Contexto del stack para los artefactos: `openspec/config.yaml`.
+- Estándares y guías versionadas en `docs/` (empieza por `docs/development_guide.md` y `docs/base-standards.md`).
+- Skills y agentes de apoyo en `.claude/` (skills `openspec-*`, `enrich-us`, `write-pr-report`; agentes `backend-developer`, `frontend-developer`, `product-strategy-analyst`).
+
 ## Variables de entorno relevantes
 
 | Variable | Descripción |
