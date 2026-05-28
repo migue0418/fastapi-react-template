@@ -113,13 +113,26 @@ export function UserDialog({ open, userId, onClose, onSaved }: UserDialogProps) 
     event.preventDefault();
     setError(null);
 
-    if (form.username.trim().length === 0) {
+    const trimmedUsername = form.username.trim();
+    if (trimmedUsername.length === 0) {
       setError("El usuario es obligatorio.");
+      return;
+    }
+    if (trimmedUsername.length < 3 || trimmedUsername.length > 50) {
+      setError("El usuario debe tener entre 3 y 50 caracteres.");
+      return;
+    }
+    if (!/^[a-zA-Z0-9_-]+$/.test(trimmedUsername)) {
+      setError("El usuario solo puede contener letras, números, guiones y guiones bajos.");
       return;
     }
 
     if (!isEditing && form.password.trim().length === 0) {
-      setError("La contrasena inicial es obligatoria.");
+      setError("La contraseña inicial es obligatoria.");
+      return;
+    }
+    if (form.password.trim().length > 0 && form.password.trim().length < 8) {
+      setError("La contraseña debe tener al menos 8 caracteres.");
       return;
     }
 
@@ -221,7 +234,7 @@ export function UserDialog({ open, userId, onClose, onSaved }: UserDialogProps) 
 
             <label className="ui-field">
               <span className="ui-field-label">
-                {isEditing ? "Nueva contrasena" : "Contrasena inicial"}
+                {isEditing ? "Nueva contraseña" : "Contraseña inicial"}
               </span>
               <input
                 type="password"
@@ -231,7 +244,7 @@ export function UserDialog({ open, userId, onClose, onSaved }: UserDialogProps) 
                   setForm((current) => ({ ...current, password: event.target.value }))
                 }
                 required={!isEditing}
-                placeholder={isEditing ? "Dejar vacio para mantener la actual" : ""}
+                placeholder={isEditing ? "Dejar vacío para mantener la actual" : ""}
               />
             </label>
           </div>
@@ -253,7 +266,7 @@ export function UserDialog({ open, userId, onClose, onSaved }: UserDialogProps) 
           <section className="ui-stack">
             <div className="ui-section-heading">
               <h3>Roles</h3>
-              <p>Selecciona los permisos que tendra este usuario.</p>
+              <p>Selecciona los permisos que tendrá este usuario.</p>
             </div>
 
             <div className="ui-role-grid">
@@ -274,7 +287,7 @@ export function UserDialog({ open, userId, onClose, onSaved }: UserDialogProps) 
                       />
                       <div>
                         <strong>{role.name}</strong>
-                        <span>{role.description || "Sin descripcion"}</span>
+                        <span>{role.description || "Sin descripción"}</span>
                       </div>
                     </label>
                   );

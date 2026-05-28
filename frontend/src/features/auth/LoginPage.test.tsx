@@ -28,7 +28,7 @@ describe("LoginPage", () => {
     await user.click(screen.getByRole("button", { name: "Entrar" }));
 
     expect(screen.getByRole("alert")).toHaveTextContent(
-      "Usuario y contrasena son obligatorios.",
+      "Usuario y contraseña son obligatorios.",
     );
   });
 });

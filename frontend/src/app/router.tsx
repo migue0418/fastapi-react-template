@@ -6,6 +6,8 @@ import { ProtectedRoute } from "@/features/auth/ProtectedRoute";
 import { RoleRoute } from "@/features/auth/RoleRoute";
 import { AppShell } from "@/features/app-shell/AppShell";
 import { HomePage } from "@/features/home/HomePage";
+import { ProfilePage } from "@/features/profile/ProfilePage";
+import { SessionsPage } from "@/features/sessions/SessionsPage";
 import { UsersPage } from "@/features/users/UsersPage";
 
 export function AppRouter() {
@@ -31,6 +33,8 @@ export function AppRouter() {
               }
             />
             <Route path="/users" element={<Navigate to="/usuarios" replace />} />
+            <Route path="/sesiones" element={<SessionsPage />} />
+            <Route path="/perfil" element={<ProfilePage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

@@ -11,6 +11,8 @@ export type UserListItem = {
   email: string | null;
   is_active: boolean;
   roles: string[];
+  is_locked: boolean;
+  locked_until: string | null;
 };
 
 export type UserDetail = UserListItem & {

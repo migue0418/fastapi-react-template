@@ -2,7 +2,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import computed_field
+from pydantic import computed_field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
@@ -28,6 +28,15 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
+
+    @model_validator(mode="after")
+    def validate_production_secrets(self) -> "Settings":
+        if self.is_production and len(self.secret_key) < 32:
+            raise ValueError(
+                "SECRET_KEY debe tener al menos 32 caracteres en producción. "
+                "Genera una con: python -c \"import secrets; print(secrets.token_hex(32))\""
+            )
+        return self
 
     @computed_field  # type: ignore[prop-decorator]
     @property

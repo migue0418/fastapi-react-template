@@ -167,8 +167,8 @@ export function UsersPage() {
     <section className="ui-page">
       <header className="ui-page-header">
         <div className="ui-page-copy">
-          <p className="ui-page-kicker">Administracion</p>
-          <h1>Gestion de usuarios</h1>
+          <p className="ui-page-kicker">Administración</p>
+          <h1>Gestión de usuarios</h1>
           <p className="ui-page-subtitle">
             Administra cuentas, roles y estado de acceso reutilizando la base visual del shell.
           </p>
@@ -199,7 +199,7 @@ export function UsersPage() {
 
       <section className="ui-toolbar">
         <label className="ui-field ui-toolbar-field">
-          <span className="ui-field-label">Busqueda</span>
+          <span className="ui-field-label">Búsqueda</span>
           <div className="ui-search">
             <svg className="ui-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8" />
@@ -288,11 +288,15 @@ export function UsersPage() {
                     <td>{user.email || "-"}</td>
                     <td>{user.roles.length > 0 ? user.roles.join(", ") : "-"}</td>
                     <td>
-                      <span
-                        className={`ui-status-pill${user.is_active ? " is-active" : " is-inactive"}`}
-                      >
-                        {user.is_active ? "Activo" : "Inactivo"}
-                      </span>
+                      {user.is_locked ? (
+                        <span className="ui-status-pill is-locked">Bloqueado</span>
+                      ) : (
+                        <span
+                          className={`ui-status-pill${user.is_active ? " is-active" : " is-inactive"}`}
+                        >
+                          {user.is_active ? "Activo" : "Inactivo"}
+                        </span>
+                      )}
                     </td>
                     <td className="ui-actions-column">
                       <div className="ui-inline-actions">

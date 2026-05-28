@@ -25,6 +25,7 @@ function UsersIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+
 export type NavigationItem = {
   id: string;
   label: string;

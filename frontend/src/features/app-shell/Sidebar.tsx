@@ -14,7 +14,7 @@ type SidebarProps = {
 
 const SECTION_LABELS: Record<string, string> = {
   principal: "Principal",
-  admin: "Administracion",
+  admin: "Administración",
 };
 
 export function Sidebar({ collapsed, onToggleCollapsed, isOpen, onClose }: SidebarProps) {
@@ -162,7 +162,7 @@ export function Sidebar({ collapsed, onToggleCollapsed, isOpen, onClose }: Sideb
             <>
               <span className="app-shell-user-info">
                 <strong className="app-shell-user-name">{displayName}</strong>
-                <span className="app-shell-user-meta">Sesion activa</span>
+                <span className="app-shell-user-meta">Sesión activa</span>
               </span>
               <span className="app-shell-user-chevron" aria-hidden="true">
                 <svg viewBox="0 0 24 24" focusable="false">
@@ -175,14 +175,30 @@ export function Sidebar({ collapsed, onToggleCollapsed, isOpen, onClose }: Sideb
 
         {menuOpen ? (
           <div className="app-shell-user-menu" role="menu" aria-label="Opciones de usuario">
-            <div className="app-shell-user-menu-info">Sesion activa</div>
+            <div className="app-shell-user-menu-info">Sesión activa</div>
+            <NavLink
+              to="/perfil"
+              role="menuitem"
+              className="app-shell-user-menu-item"
+              onClick={() => setMenuOpen(false)}
+            >
+              Mi perfil
+            </NavLink>
+            <NavLink
+              to="/sesiones"
+              role="menuitem"
+              className="app-shell-user-menu-item"
+              onClick={() => setMenuOpen(false)}
+            >
+              Sesiones activas
+            </NavLink>
             <button
               type="button"
               role="menuitem"
               className="app-shell-user-menu-item app-shell-user-menu-item-danger"
               onClick={() => void handleLogout()}
             >
-              Cerrar sesion
+              Cerrar sesión
             </button>
           </div>
         ) : null}
