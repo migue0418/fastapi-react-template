@@ -47,7 +47,7 @@
 .login-logo {
   width: 3.8rem;
   height: 3.8rem;
-  object-fit: contain;
+  color: var(--color-accent);
 }
 
 .login-brand-heading {
@@ -273,6 +273,7 @@
   .login-logo {
     width: 3.2rem;
     height: 3.2rem;
+    color: var(--color-accent);
   }
 
   .login-brand h1 {
