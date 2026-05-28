@@ -49,7 +49,7 @@ class UsersService:
 
     async def create_user(self, payload: CreateUserRequest) -> UserDetailResponse:
         if await self.users_repository.get_user_by_username_without_roles(payload.username):
-            raise HTTPException(status.HTTP_409_CONFLICT, "Ya existe un usuario con ese username")
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Ya existe un usuario con ese username")
         user = await self.users_repository.create_user(...)
         await self.session.commit()
         return self._serialize_user_detail(user)

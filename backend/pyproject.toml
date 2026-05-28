@@ -12,6 +12,7 @@ dependencies = [
     "pyjwt",
     "pwdlib[argon2]",
     "python-multipart",
+    "slowapi>=0.1.9",
 ]
 
 [dependency-groups]

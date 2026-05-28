@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     database_url: str = DEFAULT_DATABASE_URL
     admin_username: str = "admin"
     admin_password: str = "ChangeMe123!"
+    frontend_url: str = "http://localhost:5173"
 
     model_config = SettingsConfigDict(
         env_file=BACKEND_DIR / ".env",

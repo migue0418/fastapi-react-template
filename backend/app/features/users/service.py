@@ -110,7 +110,7 @@ class UsersService:
         if not verify_password(payload.current_password, current_user.password_hash):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="La contrasena actual no es valida",
+                detail="La contraseña actual no es válida",
             )
 
         current_user.password_hash = hash_password(payload.new_password)

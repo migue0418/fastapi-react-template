@@ -5,13 +5,18 @@ mismo** (ver `.claude/rules/openspec-tasks-mandatory-steps.md`); nunca las deleg
 
 ## 1. Backend — tests
 
+Requiere PostgreSQL disponible (**nunca SQLite**). Levanta la BD si no está en marcha:
+
+```powershell
+docker compose up -d postgres
+```
+
 ```powershell
 cd backend
 uv run pytest -q
 ```
 
-- Requiere PostgreSQL disponible (**nunca SQLite**). Levanta la BD con `docker compose up -d db`
-  (o el servicio equivalente) y configura la URL de test según `backend/.example.env`.
+- Configura la URL de test según `backend/.example.env` (`TEST_DATABASE_ADMIN_URL`).
 - Captura un baseline de la BD si el cambio muta datos y verifica el estado tras los tests; restaura si procede.
 
 ## 2. Backend — endpoints con curl

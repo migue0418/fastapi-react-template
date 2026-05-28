@@ -9,6 +9,7 @@ import asyncpg
 import pytest
 from app.core.database import close_database
 from app.core.datetime import utcnow
+from app.core.limiter import limiter
 from app.core.settings import get_settings
 from app.features.auth.security import hash_password
 from app.main import create_app
@@ -152,6 +153,7 @@ def build_client(
     monkeypatch.setenv("ADMIN_USERNAME", "admin")
     monkeypatch.setenv("ADMIN_PASSWORD", "ChangeMe123!")
     get_settings.cache_clear()
+    limiter.reset()
 
     if initializer is not None:
         asyncio.run(initializer(database_url))
@@ -553,4 +555,106 @@ def test_admin_can_reset_password_and_last_admin_is_protected(
         headers=admin_headers,
     )
     assert demote_admin_response.status_code == 400
+
+
+def test_login_invalid_credentials(client: TestClient) -> None:
+    response = client.post(
+        "/api/auth/login",
+        json={"username": "admin", "password": "wrongpassword", "remember_me": False},
+    )
+    assert response.status_code == 401
+
+
+def test_login_missing_fields(client: TestClient) -> None:
+    response = client.post("/api/auth/login", json={})
+    assert response.status_code == 422
+
+
+def test_me_with_invalid_jwt(client: TestClient) -> None:
+    response = client.get(
+        "/api/auth/me",
+        headers={"Authorization": "Bearer this.is.not.a.valid.jwt"},
+    )
+    assert response.status_code == 401
+
+
+def test_get_nonexistent_user(client: TestClient) -> None:
+    tokens = login(client)
+    response = client.get(
+        "/api/users/999999",
+        headers=auth_headers(tokens["access_token"]),
+    )
+    assert response.status_code == 404
+
+
+def test_delete_nonexistent_user(client: TestClient) -> None:
+    tokens = login(client)
+    response = client.delete(
+        "/api/users/999999",
+        headers=auth_headers(tokens["access_token"]),
+    )
+    assert response.status_code == 404
+
+
+def test_list_users_without_token(client: TestClient) -> None:
+    response = client.get("/api/users")
+    assert response.status_code == 401
+
+
+def test_create_user_with_short_password(client: TestClient) -> None:
+    tokens = login(client)
+    role_map = get_role_map(client, tokens["access_token"])
+    response = client.post(
+        "/api/users",
+        json={
+            "username": "newuser",
+            "password": "short",
+            "role_ids": [role_map["user"]],
+        },
+        headers=auth_headers(tokens["access_token"]),
+    )
+    assert response.status_code == 422
+
+
+def test_delete_role_success(client: TestClient) -> None:
+    tokens = login(client)
+    headers = auth_headers(tokens["access_token"])
+
+    create_response = client.post(
+        "/api/roles",
+        json={"name": "temporal", "description": "Rol temporal para test"},
+        headers=headers,
+    )
+    assert create_response.status_code == 201
+    role_id = create_response.json()["id"]
+
+    delete_response = client.delete(f"/api/roles/{role_id}", headers=headers)
+    assert delete_response.status_code == 204
+
+    get_response = client.get(f"/api/roles/{role_id}", headers=headers)
+    assert get_response.status_code == 404
+
+
+def test_delete_system_role_is_forbidden(client: TestClient) -> None:
+    tokens = login(client)
+    headers = auth_headers(tokens["access_token"])
+    role_map = get_role_map(client, tokens["access_token"])
+
+    for role_name in ("admin", "user"):
+        response = client.delete(f"/api/roles/{role_map[role_name]}", headers=headers)
+        assert response.status_code == 400
+
+
+def test_account_lockout_after_failed_attempts(client: TestClient) -> None:
+    for _ in range(5):
+        client.post(
+            "/api/auth/login",
+            json={"username": "admin", "password": "wrongpassword", "remember_me": False},
+        )
+
+    locked_response = client.post(
+        "/api/auth/login",
+        json={"username": "admin", "password": "ChangeMe123!", "remember_me": False},
+    )
+    assert locked_response.status_code == 429
 
