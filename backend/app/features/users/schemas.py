@@ -16,7 +16,7 @@ class UserDetailResponse(UserResponse):
 
 class CreateUserRequest(BaseModel):
     username: str = Field(min_length=1, max_length=50)
-    password: str = Field(min_length=1)
+    password: str = Field(min_length=8, max_length=128)
     full_name: str | None = Field(default=None, max_length=255)
     email: str | None = Field(default=None, max_length=255)
     is_active: bool = True
@@ -33,8 +33,8 @@ class UpdateUserRequest(BaseModel):
 
 class ChangeOwnPasswordRequest(BaseModel):
     current_password: str = Field(min_length=1)
-    new_password: str = Field(min_length=1)
+    new_password: str = Field(min_length=8, max_length=128)
 
 
 class AdminResetPasswordRequest(BaseModel):
-    new_password: str = Field(min_length=1)
+    new_password: str = Field(min_length=8, max_length=128)

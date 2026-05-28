@@ -12,11 +12,13 @@ from app.features.auth.service import (
     AuthService,
     get_auth_service,
 )
+from app.core.limiter import limiter
 
 router = APIRouter(prefix="/api/auth", tags=["Auth"])
 
 
 @router.post("/login", response_model=TokenResponse)
+@limiter.limit("10/minute")
 async def login(
     payload: LoginRequest,
     request: Request,
@@ -27,6 +29,7 @@ async def login(
 
 
 @router.post("/token", response_model=TokenResponse, include_in_schema=False)
+@limiter.limit("10/minute")
 async def token(
     request: Request,
     response: Response,
@@ -45,6 +48,7 @@ async def token(
 
 
 @router.post("/refresh", response_model=TokenResponse)
+@limiter.limit("20/minute")
 async def refresh(
     request: Request,
     response: Response,
