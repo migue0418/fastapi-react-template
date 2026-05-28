@@ -658,3 +658,70 @@ def test_account_lockout_after_failed_attempts(client: TestClient) -> None:
     )
     assert locked_response.status_code == 429
 
+
+def test_get_user_with_zero_id_returns_422(client: TestClient) -> None:
+    tokens = login(client)
+    response = client.get("/api/users/0", headers=auth_headers(tokens["access_token"]))
+    assert response.status_code == 422
+
+
+def test_get_user_with_negative_id_returns_422(client: TestClient) -> None:
+    tokens = login(client)
+    response = client.get("/api/users/-1", headers=auth_headers(tokens["access_token"]))
+    assert response.status_code == 422
+
+
+def test_security_headers_present(client: TestClient) -> None:
+    response = client.get("/health")
+    assert response.headers.get("X-Content-Type-Options") == "nosniff"
+    assert response.headers.get("X-Frame-Options") == "DENY"
+    assert response.headers.get("X-XSS-Protection") == "1; mode=block"
+
+
+def test_update_user_without_role_ids_returns_422(client: TestClient) -> None:
+    tokens = login(client)
+    headers = auth_headers(tokens["access_token"])
+    users_response = client.get("/api/users", headers=headers)
+    admin_id = users_response.json()[0]["id"]
+
+    response = client.put(
+        f"/api/users/{admin_id}",
+        json={"username": "admin", "full_name": "Administrador", "email": None, "is_active": True},
+        headers=headers,
+    )
+    assert response.status_code == 422
+
+
+def test_create_user_invalid_username_pattern(client: TestClient) -> None:
+    tokens = login(client)
+    role_map = get_role_map(client, tokens["access_token"])
+    response = client.post(
+        "/api/users",
+        json={
+            "username": "usuario invalido",
+            "password": "Password123!",
+            "role_ids": [role_map["user"]],
+        },
+        headers=auth_headers(tokens["access_token"]),
+    )
+    assert response.status_code == 422
+
+
+def test_change_password_with_short_new_password(client: TestClient) -> None:
+    tokens = login(client)
+    response = client.post(
+        "/api/users/me/change-password",
+        json={"current_password": "ChangeMe123!", "new_password": "corta"},
+        headers=auth_headers(tokens["access_token"]),
+    )
+    assert response.status_code == 422
+
+
+def test_user_response_includes_lockout_fields(client: TestClient) -> None:
+    tokens = login(client)
+    users = client.get("/api/users", headers=auth_headers(tokens["access_token"])).json()
+    assert "is_locked" in users[0]
+    assert "locked_until" in users[0]
+    assert users[0]["is_locked"] is False
+    assert users[0]["locked_until"] is None
+

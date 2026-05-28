@@ -110,4 +110,109 @@
 
   --transition-fast: 160ms ease;
   --transition-base: 220ms ease;
+
+  /* Superficies adicionales para panel/popup */
+  --color-surface-panel: rgba(255, 252, 252, 0.92);
+  --color-surface-popup: rgba(255, 252, 252, 0.98);
+
+  /* Estado ghost — hover suave sobre accent/danger */
+  --color-accent-ghost: rgba(201, 42, 67, 0.08);
+  --color-danger-ghost: rgba(165, 40, 63, 0.08);
+
+  /* Tabla */
+  --color-table-header-bg: rgba(243, 215, 222, 0.42);
+  --color-table-row-hover: rgba(255, 241, 244, 0.72);
+
+  /* Inputs y formularios */
+  --color-input-bg: rgba(255, 255, 255, 0.9);
+  --color-input-bg-focused: #fffefe;
+
+  /* Paginación */
+  --color-pagination-bg: rgba(255, 247, 248, 0.9);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    /* Fondos */
+    --color-page-background: #1a0c0f;
+    --color-page-background-deep: #150a0d;
+    --color-surface-primary: rgba(36, 14, 20, 0.96);
+    --color-surface-secondary: rgba(44, 18, 25, 0.92);
+    --color-surface-elevated: rgba(56, 22, 31, 0.86);
+    --color-surface-soft-rose: #2a1018;
+    --color-surface-tint: #3a1522;
+    --color-surface-panel: rgba(30, 12, 18, 0.92);
+    --color-surface-popup: rgba(34, 14, 20, 0.98);
+
+    /* Bordes */
+    --color-border-subtle: rgba(255, 180, 195, 0.1);
+    --color-border-medium: rgba(255, 180, 195, 0.16);
+    --color-border-strong: rgba(255, 180, 195, 0.24);
+    --color-border-brand: rgba(201, 42, 67, 0.2);
+
+    /* Texto */
+    --color-text-primary: #f5eef0;
+    --color-text-heading: #fde8ed;
+    --color-text-secondary: #c4a0aa;
+    --color-text-muted: #9a7882;
+    --color-text-inverse: #1a0c0f;
+    --color-text-inverse-soft: rgba(26, 12, 15, 0.8);
+
+    /* Acento */
+    --color-accent: #e03355;
+    --color-accent-strong: #c92a43;
+    --color-accent-soft: #3d101c;
+    --color-accent-soft-strong: #5c1a2a;
+    --color-accent-glow: rgba(224, 51, 85, 0.2);
+
+    /* Semánticos */
+    --color-success: #2d8a6a;
+    --color-success-soft: rgba(45, 138, 106, 0.15);
+    --color-warning: #c4751a;
+    --color-warning-soft: rgba(196, 117, 26, 0.15);
+    --color-danger: #d44060;
+    --color-danger-soft: rgba(212, 64, 96, 0.15);
+
+    /* Ghost */
+    --color-accent-ghost: rgba(224, 51, 85, 0.1);
+    --color-danger-ghost: rgba(212, 64, 96, 0.1);
+
+    /* Tabla */
+    --color-table-header-bg: rgba(80, 25, 40, 0.5);
+    --color-table-row-hover: rgba(60, 20, 32, 0.6);
+
+    /* Inputs */
+    --color-input-bg: rgba(30, 12, 18, 0.9);
+    --color-input-bg-focused: rgba(40, 16, 24, 1);
+
+    /* Paginación */
+    --color-pagination-bg: rgba(26, 10, 16, 0.9);
+
+    /* Overlay */
+    --color-overlay-backdrop: rgba(8, 3, 5, 0.7);
+    --color-focus-ring: rgba(224, 51, 85, 0.3);
+
+    /* Sombras */
+    --shadow-soft: 0 20px 45px rgba(0, 0, 0, 0.3);
+    --shadow-medium: 0 26px 70px rgba(0, 0, 0, 0.4);
+    --shadow-strong: 0 35px 90px rgba(0, 0, 0, 0.5);
+
+    /* Gradientes */
+    --gradient-page:
+      radial-gradient(circle at top left, rgba(201, 42, 67, 0.08), transparent 28%),
+      radial-gradient(circle at top right, rgba(100, 16, 31, 0.06), transparent 24%),
+      linear-gradient(180deg, #1a0c0f 0%, #15090c 44%, #120709 100%);
+    --gradient-sidebar:
+      radial-gradient(circle at top, rgba(255, 255, 255, 0.04), transparent 26%),
+      linear-gradient(180deg, #0f0608 0%, #1c0b11 54%, #0a0406 100%);
+    --gradient-kpi:
+      linear-gradient(145deg, rgba(44, 18, 25, 0.98) 0%, rgba(36, 14, 20, 0.96) 100%);
+    --gradient-button: linear-gradient(135deg, #e03355 0%, #c92a43 100%);
+    --gradient-brand-mark: linear-gradient(135deg, #3d101c 0%, #5c1a2a 100%);
+    --gradient-shell-hero:
+      radial-gradient(circle at top right, rgba(224, 51, 85, 0.12), transparent 28%),
+      linear-gradient(145deg, rgba(26, 12, 15, 0.98) 0%, rgba(20, 9, 12, 0.98) 100%);
+  }
 }

@@ -9,7 +9,7 @@ export function ProtectedRoute({ children }: { children: ReactElement }) {
   if (isLoading) {
     return (
       <div className="auth-loading-screen">
-        <div className="auth-loading-card">Restaurando sesion...</div>
+        <div className="auth-loading-card">Restaurando sesión...</div>
       </div>
     );
   }

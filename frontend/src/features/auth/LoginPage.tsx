@@ -35,7 +35,7 @@ export function LoginPage() {
     setError(null);
 
     if (!username.trim() || !password.trim()) {
-      setError("Usuario y contrasena son obligatorios.");
+      setError("Usuario y contraseña son obligatorios.");
       return;
     }
 
@@ -89,7 +89,7 @@ export function LoginPage() {
         <form className="login-form" onSubmit={(event) => void handleSubmit(event)} noValidate>
           <div className="login-form-header">
             <p>Bienvenido de nuevo</p>
-            <h2>Inicia sesion</h2>
+            <h2>Inicia sesión</h2>
             <span>
               Introduce tus credenciales para acceder al panel.
             </span>
@@ -107,13 +107,13 @@ export function LoginPage() {
           </label>
 
           <label className="login-field">
-            <span>Contrasena</span>
+            <span>Contraseña</span>
             <input
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               autoComplete="current-password"
-              placeholder="Introduce tu contrasena"
+              placeholder="Introduce tu contraseña"
             />
           </label>
 
@@ -123,7 +123,7 @@ export function LoginPage() {
               checked={rememberMe}
               onChange={(event) => setRememberMe(event.target.checked)}
             />
-            <span>Mantener sesion iniciada</span>
+            <span>Mantener sesión iniciada</span>
           </label>
 
           {error ? (

@@ -2,6 +2,7 @@ from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_session
+from app.core.datetime import utcnow
 from app.features.auth.repository import AuthRepository
 from app.features.auth.security import hash_password, verify_password
 from app.features.roles.repository import RolesRepository
@@ -169,6 +170,7 @@ class UsersService:
             )
 
     def _serialize_user(self, user: User) -> UserResponse:
+        now = utcnow()
         return UserResponse(
             id=user.id,
             username=user.username,
@@ -176,6 +178,8 @@ class UsersService:
             email=user.email,
             is_active=user.is_active,
             roles=sorted(role.name for role in user.roles),
+            is_locked=user.locked_until is not None and user.locked_until > now,
+            locked_until=user.locked_until,
         )
 
     def _serialize_user_detail(self, user: User) -> UserDetailResponse:

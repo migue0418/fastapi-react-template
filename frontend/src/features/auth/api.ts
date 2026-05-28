@@ -35,3 +35,13 @@ export async function getSessionsRequest(): Promise<SessionInfo[]> {
 export async function revokeSessionRequest(sessionId: number): Promise<void> {
   await api.delete<void>(`/auth/sessions/${sessionId}`);
 }
+
+export async function changeOwnPasswordRequest(
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> {
+  await api.post<void, { current_password: string; new_password: string }>(
+    "/users/me/change-password",
+    { current_password: currentPassword, new_password: newPassword },
+  );
+}
