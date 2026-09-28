@@ -69,4 +69,4 @@
 ## 10. Cierre (OBLIGATORIO)
 
 - [x] 10.1 Actualizar `docs/data-model.md` (campos de bloqueo, fechas UTC en la API), `docs/backend-standards.md` (los datetimes de respuesta usan `UtcDatetime`) y `docs/frontend-standards.md` (refresco solo fuera de `NO_REFRESH_URLS`, `ApiError`)
-- [ ] 10.2 Abrir el PR con `gh` usando la skill `write-pr-report`
+- [x] 10.2 Abrir el PR con `gh` usando la skill `write-pr-report`
