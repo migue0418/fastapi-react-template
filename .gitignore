@@ -18,6 +18,7 @@ backend/.pytest_cache/
 frontend/node_modules/
 frontend/dist/
 frontend/coverage/
+*.tsbuildinfo
 
 .idea/
 .vscode/

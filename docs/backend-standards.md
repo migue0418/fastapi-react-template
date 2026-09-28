@@ -90,7 +90,8 @@ class UsersRepository:
 - Endpoints SIEMPRE bajo `/api/...`.
 - **Registrar routers nuevos** en `backend/app/main.py`.
 - **Cambios de schema ⇒ migración Alembic** en `backend/alembic/versions/`. Las migraciones se ejecutan
-  en el arranque (`init_database` → `run_migrations`).
+  en el arranque (`init_database` → `run_migrations`). Alembic (al arrancar y por CLI) toma la URL de
+  `Settings.database_url`; `alembic.ini` no la define.
 - Settings vía `app.core.settings.get_settings()`. No leer variables de entorno desde código de dominio.
 - Sesiones: usa la dependencia `get_session`; para scripts/seed, `session_scope()`.
 
