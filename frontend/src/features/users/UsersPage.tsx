@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { deleteUserRequest, listUsersRequest } from "@/features/users/api";
+import { deleteUserRequest, listUsersRequest, unlockUserRequest } from "@/features/users/api";
 import type { UserListItem } from "@/features/users/types";
 import { UserDialog } from "@/features/users/UserDialog";
 import { ConfirmDialog } from "@/shared/ui/ConfirmDialog";
@@ -21,6 +21,17 @@ function getSortValue(user: UserListItem, sortKey: SortKey): string {
   return String(user[sortKey] ?? "");
 }
 
+function formatLockedUntil(iso: string): string {
+  return new Date(iso).toLocaleString("es-ES", { dateStyle: "medium", timeStyle: "short" });
+}
+
+function getUnlockTitle(user: UserListItem): string {
+  const action = `Desbloquear ${user.username}`;
+  return user.locked_until
+    ? `${action} (bloqueado hasta ${formatLockedUntil(user.locked_until)})`
+    : action;
+}
+
 export function UsersPage() {
   const [users, setUsers] = useState<UserListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -29,6 +40,7 @@ export function UsersPage() {
   const [editingUserId, setEditingUserId] = useState<number | null>(null);
   const [pendingDelete, setPendingDelete] = useState<UserListItem | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [unlockingId, setUnlockingId] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [query, setQuery] = useState("");
@@ -160,6 +172,20 @@ export function UsersPage() {
       setError(deleteError instanceof Error ? deleteError.message : "No se pudo eliminar el usuario");
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handleUnlock = async (user: UserListItem) => {
+    setUnlockingId(user.id);
+    setError(null);
+
+    try {
+      await unlockUserRequest(user.id);
+      await loadUsers();
+    } catch (unlockError) {
+      setError(unlockError instanceof Error ? unlockError.message : "No se pudo desbloquear el usuario");
+    } finally {
+      setUnlockingId(null);
     }
   };
 
@@ -300,6 +326,23 @@ export function UsersPage() {
                     </td>
                     <td className="ui-actions-column">
                       <div className="ui-inline-actions">
+                        {user.is_locked ? (
+                          <button
+                            type="button"
+                            className="ui-icon-button"
+                            onClick={() => void handleUnlock(user)}
+                            disabled={unlockingId === user.id}
+                            aria-label={`Desbloquear ${user.username}`}
+                            title={getUnlockTitle(user)}
+                          >
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                              <path
+                                d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"
+                                fill="currentColor"
+                              />
+                            </svg>
+                          </button>
+                        ) : null}
                         <button
                           type="button"
                           className="ui-icon-button"

@@ -1,6 +1,6 @@
-from datetime import datetime
-
 from pydantic import BaseModel, EmailStr, Field
+
+from app.core.datetime import UtcDatetime
 
 
 class UserResponse(BaseModel):
@@ -11,7 +11,7 @@ class UserResponse(BaseModel):
     is_active: bool
     roles: list[str]
     is_locked: bool = False
-    locked_until: datetime | None = None
+    locked_until: UtcDatetime | None = None
 
 
 class UserDetailResponse(UserResponse):
