@@ -1,7 +1,7 @@
+from datetime import timedelta
+
 from fastapi import Depends, HTTPException, Request, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from datetime import timedelta
 
 from app.core.database import get_session
 from app.core.datetime import utcnow
@@ -24,10 +24,24 @@ from app.features.auth.security import (
     create_access_token,
     decode_access_token,
     set_refresh_cookie,
-    verify_password,
+    verify_login_password,
 )
 from app.features.users.models import User
 from app.features.users.repository import UsersRepository
+
+MAX_FAILED_LOGIN_ATTEMPTS = 5
+LOCKOUT_MINUTES = 15
+INVALID_CREDENTIALS_DETAIL = (
+    f"Credenciales inválidas. Tras {MAX_FAILED_LOGIN_ATTEMPTS} intentos fallidos "
+    f"la cuenta se bloquea {LOCKOUT_MINUTES} minutos."
+)
+
+
+def _invalid_credentials_error() -> HTTPException:
+    return HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail=INVALID_CREDENTIALS_DETAIL,
+    )
 
 
 class AuthService:
@@ -36,9 +50,6 @@ class AuthService:
         self.auth_repository = AuthRepository(session)
         self.users_repository = UsersRepository(session)
 
-    _MAX_FAILED_ATTEMPTS = 5
-    _LOCKOUT_MINUTES = 15
-
     async def login(
         self,
         payload: LoginRequest,
@@ -46,25 +57,28 @@ class AuthService:
         request: Request,
     ) -> TokenResponse:
         user = await self.users_repository.get_user_by_username(payload.username)
+        # Se verifica antes de cualquier rama para que todos los fallos cuesten lo mismo.
+        password_is_valid = verify_login_password(
+            payload.password,
+            user.password_hash if user is not None else None,
+        )
+        if user is None:
+            raise _invalid_credentials_error()
 
         now = utcnow()
+        if user.locked_until is not None:
+            if user.locked_until > now:
+                # Sin sumar intentos: si no, un atacante podría prolongar el bloqueo indefinidamente.
+                raise _invalid_credentials_error()
+            user.failed_login_attempts = 0
+            user.locked_until = None
 
-        if user is not None and user.locked_until is not None and user.locked_until > now:
-            raise HTTPException(
-                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail="Cuenta temporalmente bloqueada. Inténtalo de nuevo más tarde",
-            )
-
-        if user is None or not verify_password(payload.password, user.password_hash):
-            if user is not None:
-                user.failed_login_attempts += 1
-                if user.failed_login_attempts >= self._MAX_FAILED_ATTEMPTS:
-                    user.locked_until = now + timedelta(minutes=self._LOCKOUT_MINUTES)
-                await self.session.commit()
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Credenciales invalidas",
-            )
+        if not password_is_valid:
+            user.failed_login_attempts += 1
+            if user.failed_login_attempts >= MAX_FAILED_LOGIN_ATTEMPTS:
+                user.locked_until = now + timedelta(minutes=LOCKOUT_MINUTES)
+            await self.session.commit()
+            raise _invalid_credentials_error()
 
         if not user.is_active:
             raise HTTPException(

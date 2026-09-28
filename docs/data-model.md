@@ -15,6 +15,8 @@ schema requiere **migración Alembic** (`backend/alembic/versions/`).
 | `full_name` | str(255)? | nullable |
 | `email` | str(255)? | nullable |
 | `is_active` | bool | default `True` |
+| `failed_login_attempts` | int | default `0`; se pone a cero al iniciar sesión, al expirar el bloqueo y al desbloquear |
+| `locked_until` | datetime? | nullable; fin del bloqueo tras 5 intentos fallidos (15 minutos) |
 | `created_at` / `updated_at` | datetime | `utcnow`, `onupdate=utcnow` |
 | `roles` | M2M → `Role` | vía `user_roles`, `lazy="selectin"` |
 
@@ -39,6 +41,10 @@ schema requiere **migración Alembic** (`backend/alembic/versions/`).
 - **Último admin protegido**: no se puede eliminar/desactivar/degradar al último admin activo
   (ver `UsersService._ensure_last_admin_is_not_removed`).
 - `username` único: crear/actualizar con uno existente devuelve 409.
+- Bloqueo por intentos: 5 fallos seguidos bloquean la cuenta 15 minutos. El login responde el mismo 401
+  genérico si el usuario no existe, si la contraseña es incorrecta o si la cuenta está bloqueada. Un admin
+  desbloquea con `POST /api/users/{id}/unlock` o al restablecer la contraseña.
+- Fechas: se guardan como UTC sin zona (`utcnow`) y la API las devuelve con offset UTC (`UtcDatetime`).
 
 ## Invariantes al evolucionar el modelo
 

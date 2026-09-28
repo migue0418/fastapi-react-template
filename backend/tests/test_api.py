@@ -4,8 +4,10 @@ import re
 import uuid
 from collections.abc import Awaitable, Callable, Generator
 from contextlib import contextmanager
+from datetime import UTC, datetime, timedelta
 
 import asyncpg
+import httpx
 import pytest
 from app.core.database import close_database
 from app.core.datetime import utcnow
@@ -222,6 +224,89 @@ def create_user(
     )
     assert response.status_code == 201
     return response.json()
+
+
+INVALID_CREDENTIALS_DETAIL = (
+    "Credenciales inválidas. Tras 5 intentos fallidos la cuenta se bloquea 15 minutos."
+)
+
+
+def attempt_login(client: TestClient, username: str, password: str) -> httpx.Response:
+    return client.post(
+        "/api/auth/login",
+        json={"username": username, "password": password, "remember_me": False},
+    )
+
+
+def lock_account(client: TestClient, username: str) -> None:
+    for _ in range(5):
+        response = attempt_login(client, username, "wrongpassword")
+        assert response.status_code == 401
+
+
+async def _update_lockout_state(
+    database_url: str,
+    username: str,
+    failed_login_attempts: int,
+    locked_until: datetime | None,
+) -> None:
+    connection = await _connect_to_database(database_url)
+    try:
+        await connection.execute(
+            """
+            UPDATE users
+            SET failed_login_attempts = $1, locked_until = $2
+            WHERE username = $3
+            """,
+            failed_login_attempts,
+            locked_until,
+            username,
+        )
+    finally:
+        await connection.close()
+
+
+async def _fetch_lockout_state(
+    database_url: str,
+    username: str,
+) -> tuple[int, datetime | None]:
+    connection = await _connect_to_database(database_url)
+    try:
+        row = await connection.fetchrow(
+            "SELECT failed_login_attempts, locked_until FROM users WHERE username = $1",
+            username,
+        )
+    finally:
+        await connection.close()
+    assert row is not None
+    return row["failed_login_attempts"], row["locked_until"]
+
+
+def set_lockout_state(
+    username: str,
+    *,
+    failed_login_attempts: int,
+    locked_until: datetime | None,
+) -> None:
+    asyncio.run(
+        _update_lockout_state(
+            get_settings().database_url,
+            username,
+            failed_login_attempts,
+            locked_until,
+        ),
+    )
+
+
+def get_lockout_state(username: str) -> tuple[int, datetime | None]:
+    return asyncio.run(_fetch_lockout_state(get_settings().database_url, username))
+
+
+def assert_utc_iso(value: str) -> datetime:
+    assert value.endswith(("Z", "+00:00"))
+    parsed = datetime.fromisoformat(value)
+    assert parsed.utcoffset() == timedelta(0)
+    return parsed
 
 
 @pytest.fixture()
@@ -454,6 +539,7 @@ def test_change_own_password_revokes_sessions(client: TestClient) -> None:
         },
     )
     assert old_login_response.status_code == 401
+    assert old_login_response.json() == {"detail": INVALID_CREDENTIALS_DETAIL}
 
     new_login_response = client.post(
         "/api/auth/login",
@@ -506,6 +592,7 @@ def test_admin_can_reset_password_and_last_admin_is_protected(
         },
     )
     assert old_login_response.status_code == 401
+    assert old_login_response.json() == {"detail": INVALID_CREDENTIALS_DETAIL}
 
     new_login_response = client.post(
         "/api/auth/login",
@@ -558,11 +645,9 @@ def test_admin_can_reset_password_and_last_admin_is_protected(
 
 
 def test_login_invalid_credentials(client: TestClient) -> None:
-    response = client.post(
-        "/api/auth/login",
-        json={"username": "admin", "password": "wrongpassword", "remember_me": False},
-    )
+    response = attempt_login(client, "admin", "wrongpassword")
     assert response.status_code == 401
+    assert response.json() == {"detail": INVALID_CREDENTIALS_DETAIL}
 
 
 def test_login_missing_fields(client: TestClient) -> None:
@@ -646,17 +731,18 @@ def test_delete_system_role_is_forbidden(client: TestClient) -> None:
 
 
 def test_account_lockout_after_failed_attempts(client: TestClient) -> None:
-    for _ in range(5):
-        client.post(
-            "/api/auth/login",
-            json={"username": "admin", "password": "wrongpassword", "remember_me": False},
-        )
+    lock_account(client, "admin")
+    failed_attempts, locked_until = get_lockout_state("admin")
+    assert failed_attempts == 5
+    assert locked_until is not None
+    remaining = locked_until - utcnow()
+    assert timedelta(minutes=14) < remaining <= timedelta(minutes=15)
 
-    locked_response = client.post(
-        "/api/auth/login",
-        json={"username": "admin", "password": "ChangeMe123!", "remember_me": False},
-    )
-    assert locked_response.status_code == 429
+    locked_response = attempt_login(client, "admin", "ChangeMe123!")
+    assert locked_response.status_code == 401
+    assert locked_response.json() == {"detail": INVALID_CREDENTIALS_DETAIL}
+    assert locked_response.cookies.get("refresh_token") is None
+    assert get_lockout_state("admin") == (5, locked_until)
 
 
 def test_get_user_with_zero_id_returns_422(client: TestClient) -> None:
@@ -719,9 +805,248 @@ def test_change_password_with_short_new_password(client: TestClient) -> None:
 
 def test_user_response_includes_lockout_fields(client: TestClient) -> None:
     tokens = login(client)
-    users = client.get("/api/users", headers=auth_headers(tokens["access_token"])).json()
-    assert "is_locked" in users[0]
-    assert "locked_until" in users[0]
+    headers = auth_headers(tokens["access_token"])
+    users = client.get("/api/users", headers=headers).json()
     assert users[0]["is_locked"] is False
     assert users[0]["locked_until"] is None
+
+    detail = client.get(f"/api/users/{users[0]['id']}", headers=headers).json()
+    assert detail["is_locked"] is False
+    assert detail["locked_until"] is None
+
+
+def test_sessions_dates_have_utc_offset(client: TestClient) -> None:
+    tokens = login(client)
+    response = client.get("/api/auth/sessions", headers=auth_headers(tokens["access_token"]))
+    assert response.status_code == 200
+    sessions = response.json()
+    assert len(sessions) == 1
+    created_at = assert_utc_iso(sessions[0]["created_at"])
+    expires_at = assert_utc_iso(sessions[0]["expires_at"])
+    now = datetime.now(UTC)
+    assert abs(now - created_at) < timedelta(minutes=1)
+    assert expires_at > now
+
+
+def test_sessions_require_bearer(client: TestClient) -> None:
+    response = client.get("/api/auth/sessions")
+    assert response.status_code == 401
+
+
+def test_locked_user_has_utc_locked_until(client: TestClient) -> None:
+    tokens = login(client)
+    headers = auth_headers(tokens["access_token"])
+    role_map = get_role_map(client, tokens["access_token"])
+    created_user = create_user(
+        client,
+        tokens["access_token"],
+        username="bloqueado",
+        password="Bloqueado123!",
+        role_ids=[role_map["user"]],
+    )
+    locked_until = utcnow().replace(microsecond=0) + timedelta(minutes=10)
+    set_lockout_state("bloqueado", failed_login_attempts=5, locked_until=locked_until)
+
+    users = client.get("/api/users", headers=headers).json()
+    listed = next(user for user in users if user["username"] == "bloqueado")
+    assert listed["is_locked"] is True
+    assert assert_utc_iso(listed["locked_until"]) == locked_until.replace(tzinfo=UTC)
+
+    detail = client.get(f"/api/users/{created_user['id']}", headers=headers).json()
+    assert detail["is_locked"] is True
+    assert assert_utc_iso(detail["locked_until"]) == locked_until.replace(tzinfo=UTC)
+
+
+def test_unknown_and_locked_users_get_identical_response(client: TestClient) -> None:
+    lock_account(client, "admin")
+
+    locked_response = attempt_login(client, "admin", "wrongpassword")
+    unknown_response = attempt_login(client, "no-existe", "wrongpassword")
+
+    assert locked_response.status_code == unknown_response.status_code == 401
+    assert locked_response.json() == unknown_response.json() == {
+        "detail": INVALID_CREDENTIALS_DETAIL,
+    }
+
+
+def test_failure_after_expired_lockout_restarts_counter(client: TestClient) -> None:
+    set_lockout_state(
+        "admin",
+        failed_login_attempts=5,
+        locked_until=utcnow() - timedelta(minutes=1),
+    )
+
+    response = attempt_login(client, "admin", "wrongpassword")
+
+    assert response.status_code == 401
+    assert response.json() == {"detail": INVALID_CREDENTIALS_DETAIL}
+    assert get_lockout_state("admin") == (1, None)
+
+
+def test_login_after_expired_lockout_clears_state(client: TestClient) -> None:
+    set_lockout_state(
+        "admin",
+        failed_login_attempts=5,
+        locked_until=utcnow() - timedelta(minutes=1),
+    )
+
+    login(client)
+
+    assert get_lockout_state("admin") == (0, None)
+
+
+def test_inactive_user_with_valid_password_gets_inactive_detail(client: TestClient) -> None:
+    tokens = login(client)
+    role_map = get_role_map(client, tokens["access_token"])
+    create_user(
+        client,
+        tokens["access_token"],
+        username="inactivo",
+        password="Inactivo123!",
+        role_ids=[role_map["user"]],
+        is_active=False,
+    )
+
+    wrong_response = attempt_login(client, "inactivo", "wrongpassword")
+    assert wrong_response.status_code == 401
+    assert wrong_response.json() == {"detail": INVALID_CREDENTIALS_DETAIL}
+
+    valid_response = attempt_login(client, "inactivo", "Inactivo123!")
+    assert valid_response.status_code == 401
+    assert valid_response.json() == {"detail": "Usuario inactivo"}
+
+
+def test_admin_can_unlock_locked_user(client: TestClient) -> None:
+    tokens = login(client)
+    headers = auth_headers(tokens["access_token"])
+    role_map = get_role_map(client, tokens["access_token"])
+    created_user = create_user(
+        client,
+        tokens["access_token"],
+        username="bloqueado",
+        password="Bloqueado123!",
+        role_ids=[role_map["user"]],
+    )
+    lock_account(client, "bloqueado")
+    assert attempt_login(client, "bloqueado", "Bloqueado123!").status_code == 401
+
+    response = client.post(f"/api/users/{created_user['id']}/unlock", headers=headers)
+
+    assert response.status_code == 204
+    assert get_lockout_state("bloqueado") == (0, None)
+    login(client, username="bloqueado", password="Bloqueado123!")
+
+
+def test_unlock_is_idempotent_and_keeps_sessions(client: TestClient) -> None:
+    tokens = login(client)
+    headers = auth_headers(tokens["access_token"])
+    role_map = get_role_map(client, tokens["access_token"])
+    created_user = create_user(
+        client,
+        tokens["access_token"],
+        username="libre",
+        password="Libre1234!",
+        role_ids=[role_map["user"]],
+    )
+    login(client, username="libre", password="Libre1234!")
+
+    for _ in range(2):
+        response = client.post(f"/api/users/{created_user['id']}/unlock", headers=headers)
+        assert response.status_code == 204
+
+    assert get_lockout_state("libre") == (0, None)
+    # La cookie del cliente es la de "libre": si unlock revocara sesiones, el refresh fallaría.
+    assert client.post("/api/auth/refresh").status_code == 200
+    login(client, username="libre", password="Libre1234!")
+
+
+def test_unlock_nonexistent_user_returns_404(client: TestClient) -> None:
+    tokens = login(client)
+    response = client.post(
+        "/api/users/999999/unlock",
+        headers=auth_headers(tokens["access_token"]),
+    )
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Usuario no encontrado"}
+
+
+def test_unlock_requires_admin(client: TestClient) -> None:
+    tokens = login(client)
+    role_map = get_role_map(client, tokens["access_token"])
+    created_user = create_user(
+        client,
+        tokens["access_token"],
+        username="normal",
+        password="Normal1234!",
+        role_ids=[role_map["user"]],
+    )
+    user_tokens = login(client, username="normal", password="Normal1234!")
+
+    response = client.post(
+        f"/api/users/{created_user['id']}/unlock",
+        headers=auth_headers(user_tokens["access_token"]),
+    )
+    assert response.status_code == 403
+
+
+def test_unlock_without_token_returns_401(client: TestClient) -> None:
+    response = client.post("/api/users/1/unlock")
+    assert response.status_code == 401
+
+
+def test_unlock_with_invalid_id_returns_422(client: TestClient) -> None:
+    tokens = login(client)
+    headers = auth_headers(tokens["access_token"])
+    for invalid_id in (0, -1):
+        response = client.post(f"/api/users/{invalid_id}/unlock", headers=headers)
+        assert response.status_code == 422
+
+
+def test_reset_password_unlocks_user(client: TestClient) -> None:
+    tokens = login(client)
+    headers = auth_headers(tokens["access_token"])
+    role_map = get_role_map(client, tokens["access_token"])
+    created_user = create_user(
+        client,
+        tokens["access_token"],
+        username="bloqueado",
+        password="Bloqueado123!",
+        role_ids=[role_map["user"]],
+    )
+    lock_account(client, "bloqueado")
+
+    response = client.post(
+        f"/api/users/{created_user['id']}/reset-password",
+        json={"new_password": "Nueva12345!"},
+        headers=headers,
+    )
+
+    assert response.status_code == 204
+    assert get_lockout_state("bloqueado") == (0, None)
+    login(client, username="bloqueado", password="Nueva12345!")
+
+
+def test_change_password_with_wrong_current_password_returns_400(
+    client: TestClient,
+) -> None:
+    tokens = login(client)
+    role_map = get_role_map(client, tokens["access_token"])
+    create_user(
+        client,
+        tokens["access_token"],
+        username="tecnico",
+        password="Tecnico123!",
+        role_ids=[role_map["user"]],
+    )
+    user_tokens = login(client, username="tecnico", password="Tecnico123!")
+
+    response = client.post(
+        "/api/users/me/change-password",
+        json={"current_password": "Incorrecta1!", "new_password": "Tecnico456!"},
+        headers=auth_headers(user_tokens["access_token"]),
+    )
+
+    assert response.status_code == 400
+    assert response.json() == {"detail": "La contraseña actual no es válida"}
+    assert client.post("/api/auth/refresh").status_code == 200
 

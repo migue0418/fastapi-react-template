@@ -83,3 +83,13 @@ async def reset_password(
 ) -> Response:
     await service.reset_password(user_id, payload)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.post("/{user_id}/unlock", status_code=status.HTTP_204_NO_CONTENT)
+async def unlock_user(
+    user_id: int = Path(..., gt=0),
+    _: object = Depends(require_roles("admin")),
+    service: UsersService = Depends(get_users_service),
+) -> Response:
+    await service.unlock_user(user_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

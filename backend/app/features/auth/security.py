@@ -1,3 +1,4 @@
+import secrets
 from datetime import UTC, datetime, timedelta
 
 import jwt
@@ -22,6 +23,18 @@ def hash_password(value: str) -> str:
 
 def verify_password(value: str, password_hash_value: str) -> bool:
     return password_hash.verify(value, password_hash_value)
+
+
+# Hash de relleno para que verificar sin usuario cueste lo mismo que con uno real.
+_DUMMY_PASSWORD_HASH = hash_password(secrets.token_urlsafe(32))
+
+
+def verify_login_password(value: str, password_hash_value: str | None) -> bool:
+    # Sin usuario se verifica igualmente para que el tiempo de respuesta no delate si el username existe.
+    if password_hash_value is None:
+        verify_password(value, _DUMMY_PASSWORD_HASH)
+        return False
+    return verify_password(value, password_hash_value)
 
 
 def create_access_token(user_id: int, username: str, roles: list[str]) -> str:

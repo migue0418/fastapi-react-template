@@ -93,6 +93,9 @@ class UsersRepository:
   en el arranque (`init_database` → `run_migrations`).
 - Settings vía `app.core.settings.get_settings()`. No leer variables de entorno desde código de dominio.
 - Sesiones: usa la dependencia `get_session`; para scripts/seed, `session_scope()`.
+- Fechas en schemas de respuesta: usa `UtcDatetime` de `app.core.datetime`, no `datetime`. La BD guarda
+  UTC sin zona y, sin offset, el navegador interpreta la fecha como hora local. Las comparaciones de
+  dominio siguen siendo contra `utcnow()` (sin zona).
 
 ## Tests
 
