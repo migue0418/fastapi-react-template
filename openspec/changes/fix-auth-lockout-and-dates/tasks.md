@@ -40,7 +40,7 @@
 ## 6. Backend: tests y estado de BD (OBLIGATORIO)
 
 - [x] 6.1 Revisar y actualizar los tests unitarios afectados en `backend/tests/test_api.py`
-- [x] 6.2 Con PostgreSQL en marcha (`docker compose up -d postgres`), capturar baseline de `fastapi_template` (conteo de `users`, `auth_refresh_tokens` y bases `autorecambios_test_%`)
+- [x] 6.2 Con PostgreSQL en marcha (`docker compose up -d postgres`), capturar baseline de `fastapi_template` (conteo de `users`, `auth_refresh_tokens` y bases temporales de test)
 - [x] 6.3 `cd backend && uv run pytest -q` en verde
 - [x] 6.4 Verificar que no quedan bases de test y que los conteos coinciden con el baseline; guardar informe en `openspec/changes/fix-auth-lockout-and-dates/reports/YYYY-MM-DD-backend-tests.md`
 

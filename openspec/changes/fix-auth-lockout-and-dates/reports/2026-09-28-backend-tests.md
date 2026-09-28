@@ -14,7 +14,7 @@ Tras la implementación: 41 correctos. Los 3 avisos vienen de slowapi con Python
 
 ## Estado de la BD
 
-Los tests crean y borran una base temporal `autorecambios_test_<uuid>` por test; no escriben en `fastapi_template`.
+Los tests crean y borran una base temporal por test; no escriben en `fastapi_template`.
 
 | Comprobación | Antes | Después |
 | --- | --- | --- |
@@ -22,6 +22,6 @@ Los tests crean y borran una base temporal `autorecambios_test_<uuid>` por test;
 | `auth_refresh_tokens` (total / sin revocar) | 0 / 0 | 0 / 0 |
 | Estado de bloqueo (`username:failed_login_attempts:locked_until`) | admin:1:- | admin:1:- |
 | Revisión Alembic | 0002 | 0002 |
-| Bases `autorecambios_test_%` restantes | 0 | 0 |
+| Bases temporales de test restantes | 0 | 0 |
 
 Sin mutaciones: no hizo falta restaurar nada.
