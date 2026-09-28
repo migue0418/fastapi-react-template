@@ -8,10 +8,27 @@ export type ApiRequestOptions<TBody = unknown> = {
   headers?: Record<string, string>;
 };
 
+type ValidationIssue = {
+  msg?: string;
+};
+
 type ApiErrorShape = {
-  detail?: string;
+  detail?: string | ValidationIssue[];
   message?: string;
 };
+
+export class ApiError extends Error {
+  readonly status: number;
+
+  constructor(status: number, message: string) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
+
+// Un 401 aquí significa credenciales o refresh inválidos, no un access token caducado.
+const NO_REFRESH_URLS = new Set(["/auth/login", "/auth/refresh"]);
 
 let accessToken: string | null = null;
 let refreshPromise: Promise<string | null> | null = null;
@@ -49,13 +66,32 @@ function isBodyInit(value: unknown): value is BodyInit {
   return value instanceof FormData || value instanceof URLSearchParams || typeof value === "string";
 }
 
-async function parseError(response: Response): Promise<string> {
-  try {
-    const data = (await response.json()) as ApiErrorShape;
-    return data.detail ?? data.message ?? `HTTP ${response.status}`;
-  } catch {
-    return `HTTP ${response.status}`;
+function readErrorMessage(data: ApiErrorShape): string | null {
+  if (typeof data.detail === "string") {
+    return data.detail;
   }
+
+  // FastAPI devuelve los 422 de validación como lista de objetos con `msg`.
+  if (Array.isArray(data.detail)) {
+    const messages = data.detail
+      .map((issue) => issue.msg)
+      .filter((msg): msg is string => typeof msg === "string" && msg.length > 0);
+    if (messages.length > 0) {
+      return messages.join(". ");
+    }
+  }
+
+  return data.message ?? null;
+}
+
+async function parseError(response: Response): Promise<ApiError> {
+  let message: string | null = null;
+  try {
+    message = readErrorMessage((await response.json()) as ApiErrorShape);
+  } catch {
+    // Cuerpo vacío o no JSON, como el 500 en texto plano de Starlette.
+  }
+  return new ApiError(response.status, message ?? `HTTP ${response.status}`);
 }
 
 export async function apiRequest<TResponse, TBody = unknown>(
@@ -86,16 +122,16 @@ export async function apiRequest<TResponse, TBody = unknown>(
     credentials: "include",
   });
 
-  if (response.status === 401 && !isRetry && options.url !== "/auth/refresh") {
+  if (response.status === 401 && !isRetry && !NO_REFRESH_URLS.has(options.url)) {
     const refreshedToken = await refreshAccessToken();
     if (!refreshedToken) {
-      throw new Error("Sesion expirada");
+      throw new ApiError(401, "Sesión expirada");
     }
     return apiRequest<TResponse, TBody>(options, true);
   }
 
   if (!response.ok) {
-    throw new Error(await parseError(response));
+    throw await parseError(response);
   }
 
   if (response.status === 204) {
