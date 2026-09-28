@@ -13,6 +13,8 @@ Cómo arrancar y trabajar en la plantilla, y cómo usar el flujo SDD (OpenSpec).
 ```powershell
 docker compose up --build
 ```
+- App en `http://localhost:8000`; PostgreSQL solo en `127.0.0.1:5432`.
+- Sin proxy incluido. Para HTTPS, ver [Despliegue detrás de un proxy](../README.md#despliegue-detrás-de-un-proxy).
 
 ### Backend en local (requiere uv)
 ```powershell
@@ -41,6 +43,7 @@ No instales dependencias sin confirmación del usuario.
 
 - Backend: copia `backend/.example.env` a `backend/.env`. La configuración se lee vía
   `app.core.settings.get_settings()`. Nunca commitees secretos.
+- Alembic por línea de comandos usa la misma URL (`DATABASE_URL` o `backend/.env`); ejecútalo desde `backend/`.
 
 ## Flujo SDD con OpenSpec (perfil core)
 

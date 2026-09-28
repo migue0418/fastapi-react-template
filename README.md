@@ -7,7 +7,7 @@ Plantilla de proyecto full-stack lista para usar. Incluye autenticación JWT, ge
 - **Backend**: FastAPI, SQLAlchemy async, Alembic, PostgreSQL, uv
 - **Frontend**: React 19, TypeScript, Vite, React Router 7
 - **Auth**: JWT (access token 15 min) + refresh token en cookie HTTP-only
-- **Deploy**: Docker Compose con Caddy como reverse proxy
+- **Deploy**: Docker Compose (backend + PostgreSQL)
 
 ## Inicio rápido (Docker)
 
@@ -20,6 +20,8 @@ docker compose up --build
 
 App disponible en `http://localhost:8000`  
 Credenciales por defecto: `admin` / `ChangeMe123!`
+
+PostgreSQL se publica solo en `127.0.0.1:5432`. Para servir la app con HTTPS, ver [Despliegue detrás de un proxy](#despliegue-detrás-de-un-proxy).
 
 ## Desarrollo local
 
@@ -89,6 +91,8 @@ uv run alembic revision --autogenerate -m "descripcion"
 uv run alembic upgrade head
 ```
 
+Alembic toma la URL de la base de datos de `Settings` (`DATABASE_URL` o `backend/.env`), igual que la app. Ejecútalo desde `backend/`.
+
 ## Spec-Driven Development (OpenSpec)
 
 La plantilla incluye un flujo SDD listo para usar con [OpenSpec](https://github.com/Fission-AI/OpenSpec).
@@ -106,6 +110,15 @@ plan técnico    # agentes backend/frontend-developer → .claude/doc/<cambio>/ 
 - Contexto del stack para los artefactos: `openspec/config.yaml`.
 - Estándares y guías versionadas en `docs/` (empieza por `docs/development_guide.md` y `docs/base-standards.md`).
 - Skills y agentes de apoyo en `.claude/` (skills `openspec-*`, `enrich-us`, `write-pr-report`; agentes `backend-developer`, `frontend-developer`, `product-strategy-analyst`).
+
+## Despliegue detrás de un proxy
+
+La plantilla no incluye proxy: Compose publica el backend en el puerto 8000 del host. Para servirla con HTTPS, pon delante un proxy que termine TLS (nginx, Caddy, Traefik...) y que reenvíe al puerto 8000.
+
+- TLS y cookies. Con `ENVIRONMENT=production`, la cookie de refresh lleva el atributo `Secure` y la app envía `Strict-Transport-Security`. Los navegadores no guardan cookies `Secure` recibidas por HTTP salvo en `localhost` ([MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie#secure)), así que en producción la sesión solo se mantiene por HTTPS.
+- IP real del cliente. uvicorn solo acepta `X-Forwarded-For` y `X-Forwarded-Proto` de las IPs listadas en `FORWARDED_ALLOW_IPS`, que por defecto es `127.0.0.1` ([uvicorn](https://uvicorn.dev/settings/#http)). Define `FORWARDED_ALLOW_IPS` en el servicio `backend` con la IP o la red desde la que se conecta el proxy. Si no, el rate limit de login y refresh ve la IP del proxy y todos los clientes comparten cupo.
+- Un solo camino de entrada. Con el proxy delante, publica el backend como `127.0.0.1:8000:8000` o quita `ports` y comparte red con el proxy. Si el 8000 queda accesible desde fuera y `FORWARDED_ALLOW_IPS` es amplio (o `*`), cualquiera puede falsificar `X-Forwarded-For` y saltarse el rate limit.
+- Rate limit en memoria. Los contadores viven en la memoria de cada proceso y se pierden al reiniciar. Con varios workers de uvicorn o varias réplicas, cada proceso cuenta por separado y el límite real se multiplica.
 
 ## Variables de entorno relevantes
 
