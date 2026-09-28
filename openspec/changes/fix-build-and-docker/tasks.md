@@ -24,7 +24,7 @@
 ## 4. Backend: tests y estado de BD (OBLIGATORIO)
 
 - [x] 4.1 Revisar y actualizar los tests unitarios afectados
-- [x] 4.2 Capturar baseline de `fastapi_template` (usuarios, refresh tokens, revisión Alembic, bases `autorecambios_test_%`)
+- [x] 4.2 Capturar baseline de `fastapi_template` (usuarios, refresh tokens, revisión Alembic, bases temporales de test)
 - [x] 4.3 `cd backend && uv run pytest -q` en verde
 - [x] 4.4 Verificar el estado de la BD contra el baseline y guardar informe en `openspec/changes/fix-build-and-docker/reports/YYYY-MM-DD-backend-tests.md`
 

@@ -140,7 +140,7 @@ async def _seed_legacy_schema(database_url: str) -> None:
 @contextmanager
 def temporary_database(monkeypatch) -> Generator[str, None, None]:
     admin_url = _get_test_database_admin_url()
-    database_name = f"autorecambios_test_{uuid.uuid4().hex}"
+    database_name = f"fastapi_template_test_{uuid.uuid4().hex}"
     try:
         database_url = asyncio.run(_create_test_database(admin_url, database_name))
     except (OSError, asyncpg.PostgresError) as exc:

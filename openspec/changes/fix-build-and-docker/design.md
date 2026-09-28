@@ -9,7 +9,7 @@ Estado actual verificado en `main` (be969e6):
   - `tsconfig.app.json` ya usa `noEmit` sin `composite` y `tsc -b` lo construye como referencia sin problemas con la TypeScript instalada (^5.9).
 - **Imagen Docker:** no hay `.dockerignore`, y `COPY backend/` y `COPY frontend/` meten en la imagen `backend/.env`, `backend/.venv` y `frontend/node_modules` del host.
 - **Alembic:**
-  - `backend/alembic.ini` define `sqlalchemy.url` apuntando a `autorecambios_ramon`.
+  - `backend/alembic.ini` define `sqlalchemy.url` apuntando a la base de datos de otro proyecto.
   - `alembic/env.py` lee esa opción, y solo `app/core/migrations.py` la sustituye (con `set_main_option`) al arrancar la app. Ejecutado por línea de comandos, Alembic usa la del `.ini`.
   - `set_main_option` pasa por la interpolación de ConfigParser, así que un `%` en la URL (contraseñas codificadas) tiene que escaparse como `%%` (https://alembic.sqlalchemy.org/en/latest/api/config.html#alembic.config.Config.set_main_option).
 - **Docker Compose:**
@@ -28,7 +28,7 @@ Estado actual verificado en `main` (be969e6):
 - Documentar cómo poner un proxy con TLS delante.
 
 **Non-Goals:**
-- Renombrar restos de otros proyectos (`fastapi_template`, `autorecambios_test_`...): cambio 3.
+- Limpiar el resto de restos de otros proyectos (código sin usar, textos): cambio 3.
 - Un health check que compruebe la base de datos.
 - Varios workers de uvicorn o un almacenamiento compartido para el rate limit.
 - Cambiar la contraseña por defecto de Postgres en Compose.
