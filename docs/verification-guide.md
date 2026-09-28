@@ -34,7 +34,19 @@ curl -i -X POST http://localhost:8000/api/<recurso> -H "Content-Type: applicatio
 - Tras CREATE/UPDATE/DELETE, **restaura el estado de la BD**.
 - Prueba casos de error además del happy path.
 
-## 3. Frontend — lint, test, build
+## 3. Imagen y Compose (si el cambio toca Docker)
+
+```bash
+docker compose up -d --build
+curl -i http://localhost:8000/health
+docker compose exec backend id -u        # distinto de 0
+docker compose port postgres 5432        # 127.0.0.1:5432
+```
+
+- La imagen no debe contener `/app/backend/.env`.
+- Para parar: `docker compose down`, sin `-v` (borraría el volumen de PostgreSQL).
+
+## 4. Frontend — lint, test, build
 
 ```powershell
 cd frontend
@@ -43,21 +55,21 @@ npm run test
 npm run build
 ```
 
-## 4. Frontend — E2E con Playwright MCP (si hay cambios de UI)
+## 5. Frontend — E2E con Playwright MCP (si hay cambios de UI)
 
 - Arranca frontend y backend.
 - Recorre el flujo completo con las herramientas Playwright MCP (`browser_navigate`, `browser_click`,
   `browser_type`, `browser_snapshot`...), incluyendo casos de error.
 - Verifica persistencia y estado de la UI; restaura datos de prueba al terminar.
 
-## 5. OpenSpec — consistencia de artefactos
+## 6. OpenSpec — consistencia de artefactos
 
 ```powershell
 openspec validate --all
 openspec status --change <change-name>
 ```
 
-## 6. Antes de archivar
+## 7. Antes de archivar
 
 - `docs/` actualizada si cambian contratos/arquitectura/modelo de datos.
 - PR creado con la skill `write-pr-report` (`gh`).
