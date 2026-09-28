@@ -7,10 +7,14 @@ from contextlib import contextmanager
 
 import asyncpg
 import pytest
+from alembic.config import Config
+from alembic.config import main as alembic_main
+from alembic.script import ScriptDirectory
 from app.core.database import close_database
 from app.core.datetime import utcnow
 from app.core.limiter import limiter
-from app.core.settings import get_settings
+from app.core.migrations import build_alembic_config
+from app.core.settings import BACKEND_DIR, get_settings
 from app.features.auth.security import hash_password
 from app.main import create_app
 from fastapi.testclient import TestClient
@@ -134,10 +138,7 @@ async def _seed_legacy_schema(database_url: str) -> None:
 
 
 @contextmanager
-def build_client(
-    monkeypatch,
-    initializer: Callable[[str], Awaitable[None]] | None = None,
-) -> Generator[TestClient, None, None]:
+def temporary_database(monkeypatch) -> Generator[str, None, None]:
     admin_url = _get_test_database_admin_url()
     database_name = f"autorecambios_test_{uuid.uuid4().hex}"
     try:
@@ -153,19 +154,36 @@ def build_client(
     monkeypatch.setenv("ADMIN_USERNAME", "admin")
     monkeypatch.setenv("ADMIN_PASSWORD", "ChangeMe123!")
     get_settings.cache_clear()
-    limiter.reset()
-
-    if initializer is not None:
-        asyncio.run(initializer(database_url))
-
     try:
-        app = create_app()
-        with TestClient(app) as client:
-            yield client
+        yield database_url
     finally:
-        asyncio.run(close_database())
         get_settings.cache_clear()
         asyncio.run(_drop_test_database(admin_url, database_name))
+
+
+@contextmanager
+def build_client(
+    monkeypatch,
+    initializer: Callable[[str], Awaitable[None]] | None = None,
+) -> Generator[TestClient, None, None]:
+    with temporary_database(monkeypatch) as database_url:
+        limiter.reset()
+        if initializer is not None:
+            asyncio.run(initializer(database_url))
+        try:
+            app = create_app()
+            with TestClient(app) as client:
+                yield client
+        finally:
+            asyncio.run(close_database())
+
+
+async def _fetch_alembic_version(database_url: str) -> str | None:
+    connection = await _connect_to_database(database_url)
+    try:
+        return await connection.fetchval("SELECT version_num FROM alembic_version")
+    finally:
+        await connection.close()
 
 
 def auth_headers(access_token: str) -> dict[str, str]:
@@ -725,3 +743,35 @@ def test_user_response_includes_lockout_fields(client: TestClient) -> None:
     assert users[0]["is_locked"] is False
     assert users[0]["locked_until"] is None
 
+
+
+def test_alembic_ini_has_no_database_url() -> None:
+    config = Config(str(BACKEND_DIR / "alembic.ini"))
+    assert config.get_main_option("sqlalchemy.url") is None
+
+
+def test_alembic_config_accepts_percent_encoded_database_url(monkeypatch) -> None:
+    monkeypatch.setenv(
+        "DATABASE_URL",
+        "postgresql+asyncpg://user:p%40ss@127.0.0.1:5432/db",
+    )
+    monkeypatch.setenv("SECRET_KEY", "test-secret-key-with-at-least-32-bytes")
+    get_settings.cache_clear()
+    try:
+        config = build_alembic_config()
+    finally:
+        get_settings.cache_clear()
+    assert config.get_main_option("sqlalchemy.url") is None
+
+
+def test_alembic_cli_uses_settings_database_url(monkeypatch) -> None:
+    # Con URL en el .ini, la CLI migraría otra base antes de que el test pudiera fallar.
+    assert Config(str(BACKEND_DIR / "alembic.ini")).get_main_option("sqlalchemy.url") is None
+
+    with temporary_database(monkeypatch) as database_url:
+        monkeypatch.chdir(BACKEND_DIR)
+        alembic_main(argv=["--raiseerr", "upgrade", "head"])
+        version = asyncio.run(_fetch_alembic_version(database_url))
+
+    head = ScriptDirectory.from_config(build_alembic_config()).get_current_head()
+    assert version == head

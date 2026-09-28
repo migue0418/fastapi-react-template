@@ -1,0 +1,34 @@
+.git
+.claude
+.playwright-mcp
+.superpowers
+.vscode
+.idea
+tmp
+docs
+openspec
+
+**/.env
+**/.env.*
+!**/.example.env
+
+**/.venv
+**/__pycache__
+**/*.py[cod]
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+backend/data
+
+**/node_modules
+frontend/dist
+frontend/coverage
+
+# Una caché de tsc -b copiada del host puede hacer que el build se salte la comprobación de tipos.
+**/*.tsbuildinfo
+# Si vuelven a generarse, Vite los cargaría antes que vite.config.ts.
+frontend/vite.config.js
+frontend/vite.config.d.ts
+
+**/.DS_Store
+**/Thumbs.db

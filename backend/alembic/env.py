@@ -1,24 +1,22 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import Sequence
 
 from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
-from sqlalchemy.ext.asyncio import async_engine_from_config
+from sqlalchemy.ext.asyncio import create_async_engine
 
 from app.core.database import Base, import_model_modules
+from app.core.settings import get_settings
 
-config = context.config
 import_model_modules()
 target_metadata = Base.metadata
 
 
 def run_migrations_offline() -> None:
-    url = config.get_main_option("sqlalchemy.url")
     context.configure(
-        url=url,
+        url=get_settings().database_url,
         target_metadata=target_metadata,
         literal_binds=True,
         compare_type=True,
@@ -40,10 +38,9 @@ def do_run_migrations(connection: Connection) -> None:
 
 
 async def run_async_migrations() -> None:
-    configuration = config.get_section(config.config_ini_section, {})
-    connectable = async_engine_from_config(
-        configuration,
-        prefix="sqlalchemy.",
+    # La URL no pasa por la configuración de Alembic: ConfigParser rompe con los % de una contraseña codificada.
+    connectable = create_async_engine(
+        get_settings().database_url,
         poolclass=pool.NullPool,
     )
 
