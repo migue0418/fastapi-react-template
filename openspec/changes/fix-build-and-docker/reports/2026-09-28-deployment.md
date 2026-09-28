@@ -78,7 +78,7 @@ $ docker compose logs backend | grep -i -E "error|interpolation" (sin salida esp
 (fin)
 ```
 
-Quedan volúmenes de Caddy de otros proyectos Compose en la máquina (`autorecambiosramon_caddy_*`, `fastapitemplate_caddy_*`). No son de este stack y no se tocaron.
+Quedan volúmenes de Caddy de otros proyectos Compose en la máquina. No son de este stack y no se tocaron.
 
 ## 5.5 Restauración
 
