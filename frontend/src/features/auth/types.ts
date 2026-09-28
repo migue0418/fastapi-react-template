@@ -3,6 +3,10 @@ export type LoginCredentials = {
   password: string;
 };
 
+export type LoginLocationState = {
+  notice?: string;
+};
+
 export type LoginOptions = {
   rememberMe?: boolean;
 };

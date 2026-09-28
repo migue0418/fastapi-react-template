@@ -1,6 +1,6 @@
-from datetime import datetime
-
 from pydantic import BaseModel
+
+from app.core.datetime import UtcDatetime
 
 
 class LoginRequest(BaseModel):
@@ -25,8 +25,8 @@ class AuthenticatedUserResponse(BaseModel):
 
 class SessionInfo(BaseModel):
     id: int
-    created_at: datetime
-    expires_at: datetime
+    created_at: UtcDatetime
+    expires_at: UtcDatetime
     user_agent: str | None = None
     is_current: bool
 
