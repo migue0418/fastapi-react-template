@@ -42,3 +42,7 @@ export async function resetUserPasswordRequest(
     new_password: newPassword,
   });
 }
+
+export async function unlockUserRequest(userId: number): Promise<void> {
+  await api.post<void, undefined>(`/users/${userId}/unlock`);
+}

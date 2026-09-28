@@ -22,7 +22,12 @@ frontend/src/
 ## Capa HTTP — obligatorio pasar por el cliente compartido
 
 Todo acceso al backend pasa por `frontend/src/shared/api/http.ts`, que expone `api.get/post/put/delete`,
-**prefija `/api`** y gestiona el refresh de token en respuestas 401. **Nunca uses `fetch` directo en componentes.**
+**prefija `/api`** y, ante un 401, refresca el token y reintenta una vez (salvo en `/auth/login` y
+`/auth/refresh`). **Nunca uses `fetch` directo en componentes.**
+
+Los errores de la API se lanzan como `ApiError` (`status` y `message`, con el `detail` de FastAPI ya
+convertido a texto, también en los 422). Los fallos de red salen como el error original de `fetch`; usa
+`err instanceof ApiError` solo si la pantalla necesita distinguirlos.
 
 Cada feature define un `api.ts` que envuelve `api.*` y exporta funciones tipadas:
 
