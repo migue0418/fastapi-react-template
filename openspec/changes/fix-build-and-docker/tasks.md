@@ -48,4 +48,4 @@
 ## 8. Cierre (OBLIGATORIO)
 
 - [x] 8.1 Actualizar `README.md`, `docs/development_guide.md` y demás `docs/` afectadas (sin Caddy, sección de despliegue detrás de un proxy)
-- [ ] 8.2 Abrir el PR con `gh` usando la skill `write-pr-report`
+- [x] 8.2 Abrir el PR con `gh` usando la skill `write-pr-report`
