@@ -109,8 +109,9 @@ class UsersService:
         payload: ChangeOwnPasswordRequest,
     ) -> None:
         if not verify_password(payload.current_password, current_user.password_hash):
+            # 400 y no 401: el cliente trataría un 401 como access token caducado e intentaría refrescar.
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
+                status_code=status.HTTP_400_BAD_REQUEST,
                 detail="La contraseña actual no es válida",
             )
 
@@ -125,8 +126,19 @@ class UsersService:
     ) -> None:
         user = await self._get_user_or_404(user_id)
         user.password_hash = hash_password(payload.new_password)
+        self._clear_lockout(user)
         await self.auth_repository.revoke_all_refresh_tokens_for_user(user.id)
         await self.session.commit()
+
+    async def unlock_user(self, user_id: int) -> None:
+        user = await self._get_user_or_404(user_id)
+        self._clear_lockout(user)
+        await self.session.commit()
+
+    @staticmethod
+    def _clear_lockout(user: User) -> None:
+        user.failed_login_attempts = 0
+        user.locked_until = None
 
     async def _get_user_or_404(self, user_id: int) -> User:
         user = await self.users_repository.get_user_by_id(user_id)

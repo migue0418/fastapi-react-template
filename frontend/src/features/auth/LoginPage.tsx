@@ -1,9 +1,41 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { useAuth } from "@/features/auth/AuthProvider";
+import { ApiError } from "@/shared/api/http";
 import "./LoginPage.css";
+
+const CONNECTION_ERROR_MESSAGE = "No se pudo conectar con el servidor. Inténtalo de nuevo.";
+const TOO_MANY_REQUESTS_MESSAGE = "Demasiados intentos. Espera un minuto y vuelve a intentarlo.";
+const SERVER_ERROR_MESSAGE = "Error del servidor. Inténtalo más tarde.";
+
+function getLoginErrorMessage(error: unknown): string {
+  if (!(error instanceof ApiError)) {
+    return CONNECTION_ERROR_MESSAGE;
+  }
+  // El 429 del rate limit no trae `detail` y se vería como "HTTP 429".
+  if (error.status === 429) {
+    return TOO_MANY_REQUESTS_MESSAGE;
+  }
+  if (error.status >= 500) {
+    return SERVER_ERROR_MESSAGE;
+  }
+  return error.message;
+}
+
+// location.state llega sin tipo y puede traer cualquier cosa del historial del navegador.
+function readNotice(state: unknown): string | null {
+  if (
+    typeof state === "object" &&
+    state !== null &&
+    "notice" in state &&
+    typeof state.notice === "string"
+  ) {
+    return state.notice;
+  }
+  return null;
+}
 
 const brandHighlights = [
   {
@@ -23,6 +55,8 @@ const brandHighlights = [
 export function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const notice = readNotice(location.state);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -47,8 +81,8 @@ export function LoginPage() {
         { rememberMe },
       );
       navigate("/", { replace: true });
-    } catch {
-      setError("Credenciales invalidas o error de servidor.");
+    } catch (loginError) {
+      setError(getLoginErrorMessage(loginError));
     } finally {
       setIsSubmitting(false);
     }
@@ -103,6 +137,12 @@ export function LoginPage() {
               Introduce tus credenciales para acceder al panel.
             </span>
           </div>
+
+          {notice ? (
+            <p className="login-notice" role="status">
+              {notice}
+            </p>
+          ) : null}
 
           <label className="login-field">
             <span>Usuario</span>

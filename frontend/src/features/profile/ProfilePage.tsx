@@ -1,8 +1,12 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "@/features/auth/AuthProvider";
 import { changeOwnPasswordRequest } from "@/features/auth/api";
+import type { LoginLocationState } from "@/features/auth/types";
+
+const PASSWORD_CHANGED_NOTICE = "Contraseña cambiada. Inicia sesión de nuevo.";
 
 type FormState = {
   currentPassword: string;
@@ -17,16 +21,15 @@ const EMPTY_FORM: FormState = {
 };
 
 export function ProfilePage() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
-    setSuccess(false);
 
     if (form.newPassword.length < 8) {
       setError("La nueva contraseña debe tener al menos 8 caracteres.");
@@ -40,8 +43,11 @@ export function ProfilePage() {
     setIsSubmitting(true);
     try {
       await changeOwnPasswordRequest(form.currentPassword, form.newPassword);
-      setForm(EMPTY_FORM);
-      setSuccess(true);
+      const loginState: LoginLocationState = { notice: PASSWORD_CHANGED_NOTICE };
+      // Navegar antes de limpiar la sesión: si ProtectedRoute ve user a null antes, su <Navigate replace> pisa este state.
+      navigate("/login", { replace: true, state: loginState });
+      // El servidor ya revocó las sesiones; logout() limpia el estado local aunque su petición falle.
+      await logout().catch(() => undefined);
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo cambiar la contraseña.");
     } finally {
@@ -130,9 +136,6 @@ export function ProfilePage() {
             </label>
 
             {error ? <div className="ui-alert ui-alert-danger">{error}</div> : null}
-            {success ? (
-              <div className="ui-alert ui-alert-success">Contraseña actualizada correctamente.</div>
-            ) : null}
 
             <div className="ui-modal-actions">
               <button
