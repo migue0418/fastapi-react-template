@@ -51,4 +51,4 @@
 ## 9. Cierre (OBLIGATORIO)
 
 - [x] 9.1 Actualizar `docs/data-model.md` (modelo de refresh tokens en `auth/models.py`, `Role.users` sin carga ansiosa), `docs/backend-standards.md` (ejemplos con métodos borrados) y `docs/frontend-standards.md` (`shared/hooks/`)
-- [ ] 9.2 Abrir el PR con `gh` usando la skill `write-pr-report`
+- [x] 9.2 Abrir el PR con `gh` usando la skill `write-pr-report`
