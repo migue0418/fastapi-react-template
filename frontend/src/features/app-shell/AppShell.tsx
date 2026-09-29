@@ -25,7 +25,7 @@ export function AppShell() {
           type="button"
           className="app-shell-mobile-toggle"
           onClick={() => setIsSidebarOpen(true)}
-          aria-label="Abrir menu"
+          aria-label="Abrir menú"
         >
           <span aria-hidden="true" />
           <span aria-hidden="true" />

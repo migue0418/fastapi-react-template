@@ -16,7 +16,7 @@ template (p. ej. los slices `auth`, `users`).
 frontend/src/
 ├── app/            # bootstrap, router, providers, estilos
 ├── features/<f>/   # slices de UI (auth, users, home, app-shell...)
-└── shared/         # api/http.ts, ui/, hooks/, testing/
+└── shared/         # api/http.ts, ui/, testing/
 ```
 
 ## Capa HTTP — obligatorio pasar por el cliente compartido

@@ -110,14 +110,14 @@
   color: var(--color-accent-strong);
 }
 
-.home-alert-list,
+.home-highlight-list,
 .home-action-list,
 .home-category-list {
   display: grid;
   gap: 0.85rem;
 }
 
-.home-alert-card,
+.home-highlight-card,
 .home-action-card,
 .home-category-card {
   padding: 1rem;
@@ -126,33 +126,33 @@
   border: 1px solid rgba(118, 29, 45, 0.08);
 }
 
-.home-alert-card {
+.home-highlight-card {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 1rem;
 }
 
-.home-alert-card strong,
+.home-highlight-card strong,
 .home-action-card strong,
 .home-category-card strong,
-.home-movement-row strong {
+.home-activity-row strong {
   display: block;
   margin-bottom: 0.35rem;
   font-family: var(--font-family-display);
   color: var(--color-text-heading);
 }
 
-.home-alert-card p,
+.home-highlight-card p,
 .home-action-card p,
 .home-category-card p,
-.home-movement-row p {
+.home-activity-row p {
   color: var(--color-text-secondary);
   line-height: 1.62;
 }
 
-.home-alert-meta,
-.home-movement-meta {
+.home-highlight-meta,
+.home-activity-meta {
   display: grid;
   gap: 0.35rem;
   justify-items: end;
@@ -160,22 +160,22 @@
   flex-shrink: 0;
 }
 
-.home-alert-meta span,
-.home-movement-meta span {
+.home-highlight-meta span,
+.home-activity-meta span {
   color: var(--color-text-muted);
   font-size: 0.8rem;
 }
 
-.home-alert-meta strong {
+.home-highlight-meta strong {
   color: var(--color-danger);
 }
 
-.home-movement-list {
+.home-activity-list {
   display: grid;
   gap: 0.85rem;
 }
 
-.home-movement-row {
+.home-activity-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -184,16 +184,16 @@
   border-bottom: 1px solid rgba(118, 29, 45, 0.08);
 }
 
-.home-movement-row:last-child {
+.home-activity-row:last-child {
   border-bottom: 0;
   padding-bottom: 0;
 }
 
-.home-movement-row:first-child {
+.home-activity-row:first-child {
   padding-top: 0;
 }
 
-.home-movement-meta strong {
+.home-activity-meta strong {
   color: var(--color-accent-strong);
 }
 
@@ -227,13 +227,13 @@
   }
 
   .home-panel-header,
-  .home-alert-card,
-  .home-movement-row {
+  .home-highlight-card,
+  .home-activity-row {
     flex-direction: column;
   }
 
-  .home-alert-meta,
-  .home-movement-meta {
+  .home-highlight-meta,
+  .home-activity-meta {
     justify-items: start;
     text-align: left;
   }

@@ -34,7 +34,7 @@ class UsersService:
         return self._serialize_user_detail(user)
 
     async def create_user(self, payload: CreateUserRequest) -> UserDetailResponse:
-        existing_user = await self.users_repository.get_user_by_username_without_roles(
+        existing_user = await self.users_repository.get_user_by_username(
             payload.username,
         )
         if existing_user is not None:
@@ -62,7 +62,7 @@ class UsersService:
         payload: UpdateUserRequest,
     ) -> UserDetailResponse:
         user = await self._get_user_or_404(user_id)
-        duplicate_user = await self.users_repository.get_user_by_username_without_roles(
+        duplicate_user = await self.users_repository.get_user_by_username(
             payload.username,
         )
         if duplicate_user is not None and duplicate_user.id != user.id:
@@ -178,7 +178,7 @@ class UsersService:
         if active_admins <= 1:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="No se puede eliminar o degradar al ultimo admin activo",
+                detail="No se puede eliminar o degradar al último admin activo",
             )
 
     def _serialize_user(self, user: User) -> UserResponse:

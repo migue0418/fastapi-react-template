@@ -109,7 +109,7 @@ class AuthService:
         if not raw_token:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Refresh token missing",
+                detail="Falta el token de refresco",
             )
 
         token = await self.auth_repository.get_refresh_token_by_hash(
@@ -119,7 +119,7 @@ class AuthService:
             clear_refresh_cookie(response)
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid refresh token",
+                detail="Token de refresco no válido",
             )
 
         now = utcnow()
@@ -132,7 +132,7 @@ class AuthService:
             clear_refresh_cookie(response)
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Refresh token reuse detected",
+                detail="Se ha detectado la reutilización del token de refresco",
             )
 
         if token.expires_at <= now:
@@ -141,7 +141,7 @@ class AuthService:
             clear_refresh_cookie(response)
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Refresh token expired",
+                detail="El token de refresco ha caducado",
             )
 
         user = await self.users_repository.get_user_by_id(token.user_id)
@@ -195,7 +195,7 @@ class AuthService:
         except ValueError as exc:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid access token",
+                detail="Token de acceso no válido",
             ) from exc
 
         user = await self.users_repository.get_user_by_id(user_id)
@@ -252,12 +252,12 @@ class AuthService:
         if session is None or session.user_id != user.id:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Sesion no encontrada",
+                detail="Sesión no encontrada",
             )
         if session.revoked_at is not None:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Sesion ya revocada",
+                detail="Sesión ya revocada",
             )
 
         current_hash = None
