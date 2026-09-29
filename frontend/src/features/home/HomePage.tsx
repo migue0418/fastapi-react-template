@@ -1,9 +1,9 @@
 import {
-  categoryHighlights,
-  inventoryAlerts,
+  distribution,
+  highlights,
   kpis,
   quickActions,
-  recentMovements,
+  recentActivity,
 } from "@/features/home/dashboard";
 
 import "./HomePage.css";
@@ -30,16 +30,16 @@ export function HomePage() {
             </div>
             <span className="home-section-badge">Pendientes</span>
           </div>
-          <div className="home-alert-list">
-            {inventoryAlerts.map((item) => (
-              <article key={item.reference} className="home-alert-card">
+          <div className="home-highlight-list">
+            {highlights.map((item) => (
+              <article key={item.title} className="home-highlight-card">
                 <div>
-                  <strong>{item.reference}</strong>
+                  <strong>{item.title}</strong>
                   <p>{item.description}</p>
                 </div>
-                <div className="home-alert-meta">
-                  <span>{item.location}</span>
-                  <strong>{item.stock}</strong>
+                <div className="home-highlight-meta">
+                  <span>{item.meta}</span>
+                  <strong>{item.value}</strong>
                 </div>
               </article>
             ))}
@@ -54,14 +54,14 @@ export function HomePage() {
             </div>
             <span className="home-section-badge is-soft">Últimas acciones</span>
           </div>
-          <div className="home-movement-list">
-            {recentMovements.map((item) => (
-              <div key={`${item.reference}-${item.time}`} className="home-movement-row">
+          <div className="home-activity-list">
+            {recentActivity.map((item) => (
+              <div key={`${item.title}-${item.time}`} className="home-activity-row">
                 <div>
-                  <strong>{item.reference}</strong>
+                  <strong>{item.title}</strong>
                   <p>{item.summary}</p>
                 </div>
-                <div className="home-movement-meta">
+                <div className="home-activity-meta">
                   <span>{item.time}</span>
                   <strong>{item.status}</strong>
                 </div>
@@ -74,7 +74,7 @@ export function HomePage() {
           <div className="home-panel-header">
             <div>
               <p className="home-section-kicker">Atajos</p>
-              <h3>Acciones rapidas</h3>
+              <h3>Acciones rápidas</h3>
             </div>
           </div>
           <div className="home-action-list">
@@ -96,7 +96,7 @@ export function HomePage() {
             </div>
           </div>
           <div className="home-category-list">
-            {categoryHighlights.map((item) => (
+            {distribution.map((item) => (
               <article key={item.name} className="home-category-card">
                 <strong>{item.name}</strong>
                 <p>{item.description}</p>

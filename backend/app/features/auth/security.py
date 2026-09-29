@@ -57,7 +57,7 @@ def decode_access_token(
     if token is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Missing access token",
+            detail="Falta el token de acceso",
         )
 
     try:
@@ -70,12 +70,12 @@ def decode_access_token(
     except jwt.ExpiredSignatureError as exc:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Access token expired",
+            detail="El token de acceso ha caducado",
         ) from exc
     except (jwt.InvalidTokenError, ValueError) as exc:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid access token",
+            detail="Token de acceso no válido",
         ) from exc
 
 

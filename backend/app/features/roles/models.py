@@ -26,10 +26,11 @@ class Role(Base):
         onupdate=utcnow,
     )
 
+    # Nadie lee esta colección: raise convierte una lectura accidental en un error claro.
     users: Mapped[list["User"]] = relationship(
         secondary="user_roles",
         back_populates="roles",
-        lazy="selectin",
+        lazy="raise",
     )
 
 
