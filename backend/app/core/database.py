@@ -43,7 +43,7 @@ def get_engine() -> AsyncEngine:
 
 
 def import_model_modules() -> None:
-    import app.features.auth.repository  # noqa: F401
+    import app.features.auth.models  # noqa: F401
     import app.features.roles.models  # noqa: F401
     import app.features.users.models  # noqa: F401
 

@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { listUsersRequest, unlockUserRequest } from "@/features/users/api";
+import { deleteUserRequest, listUsersRequest, unlockUserRequest } from "@/features/users/api";
 import type { UserListItem } from "@/features/users/types";
 import { UsersPage } from "@/features/users/UsersPage";
 import { ApiError } from "@/shared/api/http";
@@ -66,5 +66,29 @@ describe("UsersPage", () => {
     await user.click(await screen.findByRole("button", { name: "Desbloquear ana" }));
 
     expect(await screen.findByText("Usuario no encontrado")).toBeInTheDocument();
+  });
+
+  it("avisa de que el borrado no se puede deshacer", async () => {
+    vi.mocked(listUsersRequest).mockResolvedValue([LOCKED_USER, ACTIVE_USER]);
+    const user = userEvent.setup();
+    render(<UsersPage />);
+
+    await user.click(await screen.findByRole("button", { name: "Eliminar luis" }));
+
+    expect(screen.getByRole("dialog", { name: "Eliminar usuario" })).toHaveTextContent(
+      "Vas a eliminar al usuario luis. Esta acción no se puede deshacer.",
+    );
+    expect(deleteUserRequest).not.toHaveBeenCalled();
+  });
+
+  it("etiqueta la paginación con tildes", async () => {
+    vi.mocked(listUsersRequest).mockResolvedValue([ACTIVE_USER]);
+    render(<UsersPage />);
+
+    await screen.findByRole("button", { name: "Eliminar luis" });
+
+    expect(screen.getByRole("navigation", { name: "Paginación" })).toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: "Elementos por página" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "10 por página" })).toBeInTheDocument();
   });
 });

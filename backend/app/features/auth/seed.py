@@ -15,7 +15,7 @@ async def seed_admin_user(session: AsyncSession) -> None:
     if admin_role is None:
         admin_role = await roles_repository.create_role(
             name="admin",
-            description="Administracion del sistema",
+            description="Administración del sistema",
         )
 
     user_role = await roles_repository.get_role_by_name("user")
