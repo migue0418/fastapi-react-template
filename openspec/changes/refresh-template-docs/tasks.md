@@ -62,4 +62,4 @@
 - [x] 8.1 `openspec validate refresh-template-docs` sin errores
 - [x] 8.2 Local, no versionado: en el `CLAUDE.md` del autor, cambiar `docs/SDD steps.md` por `docs/sdd-guide.md`
 - [x] 8.3 Marcar en `tmp/revision-pendientes.md` los puntos 14b, 20 y el de `TEST_DATABASE_ADMIN_URL`
-- [ ] 8.4 Abrir el PR con `gh` usando la skill `write-pr-report`
+- [x] 8.4 Abrir el PR con `gh` usando la skill `write-pr-report`
