@@ -32,7 +32,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
   const pageItems = getPageItems(currentPage, totalPages);
 
   return (
-    <nav className="ui-pagination" aria-label="Paginacion">
+    <nav className="ui-pagination" aria-label="Paginación">
       <button
         type="button"
         className="ui-page-button"
@@ -106,11 +106,11 @@ export function PaginationFooter({
             onPageSizeChange(Number(event.target.value));
             onPageChange(1);
           }}
-          aria-label="Elementos por pagina"
+          aria-label="Elementos por página"
         >
           {pageSizeOptions.map((size) => (
             <option key={size} value={size}>
-              {size} por pagina
+              {size} por página
             </option>
           ))}
         </select>

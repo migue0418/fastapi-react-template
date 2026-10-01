@@ -96,7 +96,7 @@ export function Sidebar({ collapsed, onToggleCollapsed, isOpen, onClose }: Sideb
       ]
         .filter(Boolean)
         .join(" ")}
-      aria-label="Navegacion principal"
+      aria-label="Barra lateral"
     >
       <button
         type="button"
@@ -105,7 +105,7 @@ export function Sidebar({ collapsed, onToggleCollapsed, isOpen, onClose }: Sideb
           onClose();
           onToggleCollapsed();
         }}
-        aria-label={collapsed ? "Expandir menu" : "Plegar menu"}
+        aria-label={collapsed ? "Expandir menú" : "Plegar menú"}
       >
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <polyline points="15 18 9 12 15 6" />
@@ -127,7 +127,7 @@ export function Sidebar({ collapsed, onToggleCollapsed, isOpen, onClose }: Sideb
         </NavLink>
       </div>
 
-      <nav className="app-shell-nav" aria-label="Navegacion principal">
+      <nav className="app-shell-nav" aria-label="Navegación principal">
         {visibleNavigation.map((item, index) => {
           const showSection =
             !collapsed &&

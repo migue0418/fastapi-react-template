@@ -410,11 +410,11 @@ export function UsersPage() {
         message={
           pendingDelete ? (
             <>
-              Vas a eliminar al usuario <strong>{pendingDelete.username}</strong>. Esta accion no se
+              Vas a eliminar al usuario <strong>{pendingDelete.username}</strong>. Esta acción no se
               puede deshacer.
             </>
           ) : (
-            "Vas a eliminar este usuario. Esta accion no se puede deshacer."
+            "Vas a eliminar este usuario. Esta acción no se puede deshacer."
           )
         }
       />

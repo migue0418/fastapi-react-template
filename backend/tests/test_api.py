@@ -2,13 +2,16 @@
 import os
 import re
 import uuid
-from collections.abc import Awaitable, Callable, Generator
+from collections.abc import Generator
 from contextlib import contextmanager
 from datetime import UTC, datetime, timedelta
+from types import SimpleNamespace
 
 import asyncpg
 import httpx
+import jwt
 import pytest
+from alembic import command
 from alembic.config import Config
 from alembic.config import main as alembic_main
 from alembic.script import ScriptDirectory
@@ -17,8 +20,8 @@ from app.core.datetime import utcnow
 from app.core.limiter import limiter
 from app.core.migrations import build_alembic_config
 from app.core.settings import BACKEND_DIR, get_settings
-from app.features.auth.security import hash_password
 from app.main import create_app
+from app.web import spa
 from fastapi.testclient import TestClient
 from sqlalchemy.engine import URL, make_url
 
@@ -85,60 +88,6 @@ async def _connect_to_database(database_url: str) -> asyncpg.Connection:
     return await asyncpg.connect(**_make_asyncpg_connect_kwargs(make_url(database_url)))
 
 
-async def _seed_legacy_schema(database_url: str) -> None:
-    connection = await _connect_to_database(database_url)
-    try:
-        await connection.execute(
-            """
-            CREATE TABLE users (
-                id SERIAL PRIMARY KEY,
-                username VARCHAR(50) NOT NULL UNIQUE,
-                password_hash VARCHAR(255) NOT NULL,
-                is_active BOOLEAN NOT NULL,
-                created_at TIMESTAMP NOT NULL,
-                updated_at TIMESTAMP NOT NULL
-            )
-            """,
-        )
-        await connection.execute(
-            "CREATE UNIQUE INDEX ix_users_username ON users (username)",
-        )
-        await connection.execute(
-            """
-            CREATE TABLE auth_refresh_tokens (
-                id SERIAL PRIMARY KEY,
-                user_id INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-                token_hash VARCHAR(64) NOT NULL UNIQUE,
-                created_at TIMESTAMP NOT NULL,
-                expires_at TIMESTAMP NOT NULL,
-                revoked_at TIMESTAMP NULL,
-                user_agent VARCHAR(255) NULL,
-                remember_me BOOLEAN NOT NULL
-            )
-            """,
-        )
-        await connection.execute(
-            """
-            CREATE UNIQUE INDEX ix_auth_refresh_tokens_token_hash
-            ON auth_refresh_tokens (token_hash)
-            """,
-        )
-        now = utcnow()
-        await connection.execute(
-            """
-            INSERT INTO users (username, password_hash, is_active, created_at, updated_at)
-            VALUES ($1, $2, $3, $4, $5)
-            """,
-            "admin",
-            hash_password("ChangeMe123!"),
-            True,
-            now,
-            now,
-        )
-    finally:
-        await connection.close()
-
-
 @contextmanager
 def temporary_database(monkeypatch) -> Generator[str, None, None]:
     admin_url = _get_test_database_admin_url()
@@ -164,14 +113,9 @@ def temporary_database(monkeypatch) -> Generator[str, None, None]:
 
 
 @contextmanager
-def build_client(
-    monkeypatch,
-    initializer: Callable[[str], Awaitable[None]] | None = None,
-) -> Generator[TestClient, None, None]:
-    with temporary_database(monkeypatch) as database_url:
+def build_client(monkeypatch) -> Generator[TestClient, None, None]:
+    with temporary_database(monkeypatch):
         limiter.reset()
-        if initializer is not None:
-            asyncio.run(initializer(database_url))
         try:
             app = create_app()
             with TestClient(app) as client:
@@ -320,6 +264,43 @@ def get_lockout_state(username: str) -> tuple[int, datetime | None]:
     return asyncio.run(_fetch_lockout_state(get_settings().database_url, username))
 
 
+async def _expire_refresh_tokens(database_url: str) -> None:
+    connection = await _connect_to_database(database_url)
+    try:
+        await connection.execute(
+            "UPDATE auth_refresh_tokens SET expires_at = $1",
+            utcnow() - timedelta(minutes=1),
+        )
+    finally:
+        await connection.close()
+
+
+async def _insert_admin_role(database_url: str, description: str) -> None:
+    connection = await _connect_to_database(database_url)
+    try:
+        now = utcnow()
+        await connection.execute(
+            """
+            INSERT INTO roles (name, description, created_at, updated_at)
+            VALUES ('admin', $1, $2, $2)
+            """,
+            description,
+            now,
+        )
+    finally:
+        await connection.close()
+
+
+async def _fetch_admin_role_description(database_url: str) -> str:
+    connection = await _connect_to_database(database_url)
+    try:
+        return await connection.fetchval(
+            "SELECT description FROM roles WHERE name = 'admin'",
+        )
+    finally:
+        await connection.close()
+
+
 def assert_utc_iso(value: str) -> datetime:
     assert value.endswith(("Z", "+00:00"))
     parsed = datetime.fromisoformat(value)
@@ -359,6 +340,7 @@ def test_login_and_me(client: TestClient) -> None:
 def test_me_requires_bearer(client: TestClient) -> None:
     response = client.get("/api/auth/me")
     assert response.status_code == 401
+    assert response.json() == {"detail": "Falta el token de acceso"}
 
 
 def test_refresh_rotation_and_reuse_detection(client: TestClient) -> None:
@@ -379,6 +361,9 @@ def test_refresh_rotation_and_reuse_detection(client: TestClient) -> None:
     )
     reuse_response = client.post("/api/auth/refresh")
     assert reuse_response.status_code == 401
+    assert reuse_response.json() == {
+        "detail": "Se ha detectado la reutilización del token de refresco",
+    }
 
 
 def test_sessions_and_revoke(client: TestClient) -> None:
@@ -401,24 +386,13 @@ def test_sessions_and_revoke(client: TestClient) -> None:
     assert sessions_after.status_code == 200
     assert sessions_after.json() == []
 
+    revoked_again_response = client.delete(
+        f"/api/auth/sessions/{sessions[0]['id']}",
+        headers=headers,
+    )
+    assert revoked_again_response.status_code == 400
+    assert revoked_again_response.json() == {"detail": "Sesión ya revocada"}
 
-def test_legacy_schema_is_migrated_and_seeded(monkeypatch) -> None:
-    with build_client(monkeypatch, initializer=_seed_legacy_schema) as legacy_client:
-        tokens = login(legacy_client)
-        me_response = legacy_client.get(
-            "/api/auth/me",
-            headers=auth_headers(tokens["access_token"]),
-        )
-        assert me_response.status_code == 200
-        assert me_response.json()["roles"] == ["admin"]
-
-        roles_response = legacy_client.get(
-            "/api/roles",
-            headers=auth_headers(tokens["access_token"]),
-        )
-        assert roles_response.status_code == 200
-        role_names = {role["name"] for role in roles_response.json()}
-        assert role_names == {"admin", "user"}
 
 
 def test_admin_can_manage_roles_and_users(client: TestClient) -> None:
@@ -634,6 +608,9 @@ def test_admin_can_reset_password_and_last_admin_is_protected(
         headers=admin_headers,
     )
     assert delete_admin_response.status_code == 400
+    assert delete_admin_response.json() == {
+        "detail": "No se puede eliminar o degradar al último admin activo",
+    }
 
     deactivate_admin_response = client.put(
         f"/api/users/{admin_id}",
@@ -647,6 +624,9 @@ def test_admin_can_reset_password_and_last_admin_is_protected(
         headers=admin_headers,
     )
     assert deactivate_admin_response.status_code == 400
+    assert deactivate_admin_response.json() == {
+        "detail": "No se puede eliminar o degradar al último admin activo",
+    }
 
     demote_admin_response = client.put(
         f"/api/users/{admin_id}",
@@ -660,6 +640,9 @@ def test_admin_can_reset_password_and_last_admin_is_protected(
         headers=admin_headers,
     )
     assert demote_admin_response.status_code == 400
+    assert demote_admin_response.json() == {
+        "detail": "No se puede eliminar o degradar al último admin activo",
+    }
 
 
 def test_login_invalid_credentials(client: TestClient) -> None:
@@ -679,6 +662,7 @@ def test_me_with_invalid_jwt(client: TestClient) -> None:
         headers={"Authorization": "Bearer this.is.not.a.valid.jwt"},
     )
     assert response.status_code == 401
+    assert response.json() == {"detail": "Token de acceso no válido"}
 
 
 def test_get_nonexistent_user(client: TestClient) -> None:
@@ -1099,3 +1083,124 @@ def test_alembic_cli_uses_settings_database_url(monkeypatch) -> None:
 
     head = ScriptDirectory.from_config(build_alembic_config()).get_current_head()
     assert version == head
+
+
+def test_me_with_wrong_signature_returns_invalid_token(client: TestClient) -> None:
+    token = jwt.encode(
+        {"sub": "1", "username": "admin", "roles": ["admin"], "exp": 4102444800},
+        "otra-clave-distinta-de-al-menos-32-bytes",
+        algorithm="HS256",
+    )
+    response = client.get("/api/auth/me", headers=auth_headers(token))
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Token de acceso no válido"}
+
+
+def test_me_with_expired_token(client: TestClient) -> None:
+    expired_at = datetime.now(UTC) - timedelta(minutes=1)
+    token = jwt.encode(
+        {
+            "sub": "1",
+            "username": "admin",
+            "roles": ["admin"],
+            "exp": int(expired_at.timestamp()),
+        },
+        get_settings().secret_key,
+        algorithm="HS256",
+    )
+    response = client.get("/api/auth/me", headers=auth_headers(token))
+    assert response.status_code == 401
+    assert response.json() == {"detail": "El token de acceso ha caducado"}
+
+
+def test_refresh_without_cookie(client: TestClient) -> None:
+    response = client.post("/api/auth/refresh")
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Falta el token de refresco"}
+
+
+def test_refresh_with_unknown_token(client: TestClient) -> None:
+    client.cookies.set("refresh_token", "desconocido", path="/api/auth")
+    response = client.post("/api/auth/refresh")
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Token de refresco no válido"}
+
+
+def test_refresh_with_expired_token(client: TestClient) -> None:
+    login(client)
+    asyncio.run(_expire_refresh_tokens(get_settings().database_url))
+
+    response = client.post("/api/auth/refresh")
+    assert response.status_code == 401
+    assert response.json() == {"detail": "El token de refresco ha caducado"}
+
+
+def test_revoke_unknown_session_returns_404(client: TestClient) -> None:
+    tokens = login(client)
+    response = client.delete(
+        "/api/auth/sessions/999999",
+        headers=auth_headers(tokens["access_token"]),
+    )
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Sesión no encontrada"}
+
+
+def test_seed_creates_roles_with_accented_descriptions(client: TestClient) -> None:
+    tokens = login(client)
+    response = client.get("/api/roles", headers=auth_headers(tokens["access_token"]))
+    assert response.status_code == 200
+    descriptions = {role["name"]: role["description"] for role in response.json()}
+    assert descriptions == {
+        "admin": "Administración del sistema",
+        "user": "Usuario operativo",
+    }
+
+
+def test_unknown_api_path_returns_spanish_not_found(client: TestClient) -> None:
+    response = client.get("/api/no-existe")
+    assert response.status_code == 404
+    assert response.json() == {"detail": "No encontrado"}
+
+
+def test_spa_without_build_returns_spanish_detail(
+    client: TestClient,
+    monkeypatch,
+    tmp_path,
+) -> None:
+    # frontend/dist puede existir en local; se apunta a un directorio vacío para no depender de ello.
+    monkeypatch.setattr(
+        spa,
+        "get_settings",
+        lambda: SimpleNamespace(frontend_dist_dir=tmp_path / "dist"),
+    )
+    response = client.get("/")
+    assert response.status_code == 404
+    assert response.json() == {
+        "detail": (
+            "No se encuentra el build del frontend. Ejecuta `npm run build` en frontend."
+        ),
+    }
+
+
+@pytest.mark.parametrize(
+    ("initial_description", "expected_description"),
+    [
+        ("Administracion del sistema", "Administración del sistema"),
+        ("Gestión completa de la plataforma", "Gestión completa de la plataforma"),
+    ],
+)
+def test_migration_0003_fixes_only_seeded_admin_description(
+    monkeypatch,
+    initial_description: str,
+    expected_description: str,
+) -> None:
+    with temporary_database(monkeypatch) as database_url:
+        config = build_alembic_config()
+        command.upgrade(config, "0002")
+        asyncio.run(_insert_admin_role(database_url, initial_description))
+
+        command.upgrade(config, "0003")
+        assert asyncio.run(_fetch_admin_role_description(database_url)) == expected_description
+
+        command.downgrade(config, "0002")
+        assert asyncio.run(_fetch_admin_role_description(database_url)) == initial_description

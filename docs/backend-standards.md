@@ -48,7 +48,7 @@ class UsersService:
         self.users_repository = UsersRepository(session)
 
     async def create_user(self, payload: CreateUserRequest) -> UserDetailResponse:
-        if await self.users_repository.get_user_by_username_without_roles(payload.username):
+        if await self.users_repository.get_user_by_username(payload.username):
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Ya existe un usuario con ese username")
         user = await self.users_repository.create_user(...)
         await self.session.commit()
@@ -71,13 +71,11 @@ class UsersRepository:
         self.session = session
 
     async def get_user_by_id(self, user_id: int) -> User | None:
-        result = await self.session.execute(
-            select(User).options(selectinload(User.roles)).where(User.id == user_id),
-        )
+        result = await self.session.execute(select(User).where(User.id == user_id))
         return result.scalar_one_or_none()
 ```
 
-- Solo `AsyncSession` y APIs async. Queries con `select(...)`, `selectinload` para relaciones.
+- Solo `AsyncSession` y APIs async. Queries con `select(...)`. Las relaciones que se leen siempre se cargan desde el modelo (`lazy="selectin"`); las que no se leen nunca, `lazy="raise"`. `selectinload` en la query solo para relaciones que el modelo no carga.
 - Sin lógica de negocio ni `HTTPException`.
 
 ### `models.py`

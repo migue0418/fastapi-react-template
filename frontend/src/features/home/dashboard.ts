@@ -7,15 +7,15 @@ export type DashboardMetric = {
   tone: DashboardMetricTone;
 };
 
-export type InventoryAlert = {
-  reference: string;
+export type HighlightItem = {
+  title: string;
   description: string;
-  location: string;
-  stock: string;
+  meta: string;
+  value: string;
 };
 
-export type RecentMovement = {
-  reference: string;
+export type ActivityItem = {
+  title: string;
   summary: string;
   time: string;
   status: string;
@@ -27,7 +27,7 @@ export type QuickAction = {
   hint: string;
 };
 
-export type CategoryHighlight = {
+export type DistributionItem = {
   name: string;
   description: string;
   trend: string;
@@ -40,9 +40,9 @@ export const kpis: DashboardMetric[] = [
   { label: "Métrica 4", value: "—", detail: "Descripción de la métrica", tone: "alert" },
 ];
 
-export const inventoryAlerts: InventoryAlert[] = [];
+export const highlights: HighlightItem[] = [];
 
-export const recentMovements: RecentMovement[] = [];
+export const recentActivity: ActivityItem[] = [];
 
 export const quickActions: QuickAction[] = [
   {
@@ -52,4 +52,4 @@ export const quickActions: QuickAction[] = [
   },
 ];
 
-export const categoryHighlights: CategoryHighlight[] = [];
+export const distribution: DistributionItem[] = [];
