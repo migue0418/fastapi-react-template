@@ -1,13 +1,13 @@
 # Estándares de backend
 
-FastAPI con SQLAlchemy **async**, arquitectura por slices. Esta guía describe los patrones reales del
+FastAPI con SQLAlchemy async, arquitectura por slices. Esta guía describe los patrones reales del
 template; imítalos al añadir o modificar features.
 
 ## Stack
 
 - Python ≥ 3.12, FastAPI, SQLAlchemy async + asyncpg, Alembic, Pydantic Settings, JWT (`pyjwt`),
-  `pwdlib[argon2]`, `python-multipart`. Gestor de dependencias: **uv** (no pip).
-- Tests: **pytest** + `httpx` (en `backend/tests/`). **Nunca SQLite** en tests: usa PostgreSQL.
+  `pwdlib[argon2]`, `python-multipart`. Gestor de dependencias: uv (no pip).
+- Tests: pytest + `httpx` (en `backend/tests/`). Nunca SQLite en tests: usa PostgreSQL.
 
 ## Arquitectura por slice (`backend/app/features/<feature>/`)
 
@@ -22,7 +22,7 @@ models.py       # modelos SQLAlchemy (si el slice persiste datos)
 Núcleo en `backend/app/core/`: `settings.py`, `database.py`, `lifespan.py`, `migrations.py`.
 La SPA se sirve desde `backend/app/web/`.
 
-### `router.py` — delgado
+### `router.py`: delgado
 
 ```python
 router = APIRouter(prefix="/api/users", tags=["Users"])
@@ -39,7 +39,7 @@ async def list_users(
 - Autorización con `require_roles("admin")` o `get_authenticated_user` (de `app.features.auth.dependencies`).
 - Sin lógica de negocio ni queries.
 
-### `service.py` — reglas de negocio
+### `service.py`: reglas de negocio
 
 ```python
 class UsersService:
@@ -63,7 +63,7 @@ def get_users_service(session: AsyncSession = Depends(get_session)) -> UsersServ
 - Errores de negocio → `HTTPException` con `detail` en español y el status adecuado.
 - Factory `get_xxx_service(session=Depends(get_session))` para inyectar en el router.
 
-### `repository.py` — acceso a datos
+### `repository.py`: acceso a datos
 
 ```python
 class UsersRepository:
@@ -81,13 +81,13 @@ class UsersRepository:
 ### `models.py`
 
 - Heredan de `app.core.database.Base` (`DeclarativeBase`).
-- **Todo modelo nuevo debe importarse** en `app.core.database.import_model_modules()` (si no, Alembic/metadata no lo ven).
+- Todo modelo nuevo debe importarse en `app.core.database.import_model_modules()` (si no, Alembic/metadata no lo ven).
 
 ## Reglas transversales
 
 - Endpoints SIEMPRE bajo `/api/...`.
-- **Registrar routers nuevos** en `backend/app/main.py`.
-- **Cambios de schema ⇒ migración Alembic** en `backend/alembic/versions/`. Las migraciones se ejecutan
+- Registrar routers nuevos en `backend/app/main.py`.
+- Cambios de schema ⇒ migración Alembic en `backend/alembic/versions/`. Las migraciones se ejecutan
   en el arranque (`init_database` → `run_migrations`). Alembic (al arrancar y por CLI) toma la URL de
   `Settings.database_url`; `alembic.ini` no la define.
 - Settings vía `app.core.settings.get_settings()`. No leer variables de entorno desde código de dominio.
@@ -99,7 +99,7 @@ class UsersRepository:
 ## Tests
 
 - pytest en `backend/tests/`, API con `httpx`. Cubre happy path y errores (401/403, 404, 409, 422).
-- **Nunca SQLite**: los tests corren contra PostgreSQL (ver `docs/verification-guide.md`).
+- Nunca SQLite: los tests corren contra PostgreSQL (ver `docs/verification-guide.md`).
 - No mockear la base de datos para tests de integración de endpoints.
 
 ## Seguridad

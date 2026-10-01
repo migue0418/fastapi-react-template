@@ -6,9 +6,9 @@ template (p. ej. los slices `auth`, `users`).
 ## Stack
 
 - React 19, TypeScript (estricto), Vite, React Router 7.
-- Tests: **Vitest + Testing Library** (`*.test.tsx`), setup en `frontend/src/shared/testing/setup.ts`.
+- Tests: Vitest + Testing Library (`*.test.tsx`), setup en `frontend/src/shared/testing/setup.ts`.
 - Lint: ESLint (`npm run lint`). Build: `npm run build` (`tsc -b && vite build`).
-- UI propia del proyecto en `frontend/src/shared/ui/` — **no** hay librería de componentes externa.
+- UI propia del proyecto en `frontend/src/shared/ui/`. No hay librería de componentes externa.
 
 ## Estructura
 
@@ -19,11 +19,11 @@ frontend/src/
 └── shared/         # api/http.ts, ui/, testing/
 ```
 
-## Capa HTTP — obligatorio pasar por el cliente compartido
+## Capa HTTP: obligatorio pasar por el cliente compartido
 
 Todo acceso al backend pasa por `frontend/src/shared/api/http.ts`, que expone `api.get/post/put/delete`,
-**prefija `/api`** y, ante un 401, refresca el token y reintenta una vez (salvo en `/auth/login` y
-`/auth/refresh`). **Nunca uses `fetch` directo en componentes.**
+prefija `/api` y, ante un 401, refresca el token y reintenta una vez (salvo en `/auth/login` y
+`/auth/refresh`). Nunca uses `fetch` directo en componentes.
 
 Los errores de la API se lanzan como `ApiError` (`status` y `message`, con el `detail` de FastAPI ya
 convertido a texto, también en los 422). Los fallos de red salen como el error original de `fetch`; usa
@@ -49,7 +49,7 @@ export function createUserRequest(payload: CreateUserRequest): Promise<UserDetai
 ## Componentes y estado
 
 - Componentes funcionales con hooks (`useState`, `useEffect`). Maneja loading y error explícitamente.
-- **Estado local** por defecto; no introduzcas estado global nuevo sin necesidad clara.
+- Estado local por defecto; no introduzcas estado global nuevo sin necesidad clara.
 - Tipa props, estado y respuestas de API con TypeScript. Reutiliza `types.ts` de la feature.
 - Componentes genéricos/reutilizables → muévelos a `frontend/src/shared/ui/` (ModalDialog,
   ConfirmDialog, Pagination, etc.).
@@ -61,6 +61,6 @@ export function createUserRequest(payload: CreateUserRequest): Promise<UserDetai
 
 ## Convenciones
 
-- Imports con alias **`@`** desde `frontend/src` (p. ej. `@/shared/api/http`, `@/features/users/types`).
+- Imports con alias `@` desde `frontend/src` (p. ej. `@/shared/api/http`, `@/features/users/types`).
 - Mensajes de usuario en español.
 - Tests: render + interacción + estados de carga/error (ver `LoginPage.test.tsx` como referencia).
