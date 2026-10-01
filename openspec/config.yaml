@@ -8,14 +8,15 @@ context: |
 
   ## Backend (carpeta `backend/`)
   - Python >= 3.12. FastAPI con SQLAlchemy async + asyncpg, Alembic, Pydantic Settings,
-    JWT (pyjwt) y pwdlib[argon2]. Gestor de dependencias: **uv** (no pip).
+    JWT (pyjwt) y pwdlib[argon2]. Gestor de dependencias: uv (no pip).
   - Arquitectura por slice en `backend/app/features/<feature>/`:
     - `router.py`: endpoints HTTP delgados (solo orquestan, sin lógica de negocio).
     - `schemas.py`: modelos Pydantic de request/response.
     - `service.py`: casos de uso y reglas de negocio (clase `XxxService` + factory
       `get_xxx_service(session=Depends(get_session))`). Hace `await session.commit()`.
-    - `repository.py`: acceso a datos con `AsyncSession` (queries `select(...)`,
-      `selectinload` para relaciones). Sin lógica de negocio.
+    - `repository.py`: acceso a datos con `AsyncSession` (queries `select(...)`). La carga
+      de relaciones la define el modelo (`lazy="selectin"` o `lazy="raise"`); `selectinload`
+      solo para relaciones que el modelo no carga. Sin lógica de negocio.
     - `models.py`: modelos SQLAlchemy (heredan de `app.core.database.Base`), si aplica.
   - Endpoints SIEMPRE bajo `/api/...`. Routers nuevos se registran en `backend/app/main.py`.
   - Modelos SQLAlchemy nuevos se importan en
@@ -38,7 +39,7 @@ context: |
     global sin necesidad clara.
 
   ## Convenciones generales
-  - Mensajes de usuario y `detail` de errores en **español**; identificadores de código en inglés.
+  - Mensajes de usuario y `detail` de errores en español; identificadores de código en inglés.
   - Estándares detallados: `docs/base-standards.md`, `docs/backend-standards.md`,
     `docs/frontend-standards.md`. Verificación: `docs/verification-guide.md`.
 
@@ -53,9 +54,8 @@ rules:
     - Describe el cambio capa por capa en backend (router → service → repository → models)
       y en frontend (api.ts → componentes/estado → rutas).
     - Lista migraciones Alembic necesarias y modelos a registrar en `import_model_modules`.
-    - "OBLIGATORIO: antes de /opsx:apply, genera el plan técnico a nivel de archivos con los agentes backend-developer/frontend-developer en `.claude/doc/<change>/`. No es opcional."
   tasks:
-    - "Antes de escribir tasks.md, lee `.claude/rules/openspec-tasks-mandatory-steps.md`."
+    - "Antes de escribir tasks.md, lee `docs/verification-guide.md`: sus pasos son las tareas de verificación del cambio."
     - "Paso 0 (obligatorio, el primero): crear rama `feature/<change-name>`."
     - "Aplica TDD donde tenga sentido; los tests de backend usan pytest (NUNCA SQLite)."
     - "Obligatorio: ejecutar `cd backend && uv run pytest -q` y verificar el estado de la BD."
@@ -63,4 +63,4 @@ rules:
     - "Obligatorio si hay cambios de frontend: E2E con Playwright MCP ejecutado por el agente."
     - "Obligatorio: `cd frontend && npm run lint && npm run test && npm run build`."
     - "Obligatorio: actualizar documentación técnica en `docs/` si cambian contratos o arquitectura."
-    - "Paso final: abrir el PR con `gh` usando la skill write-pr-report."
+    - "Paso final: abrir el PR con `gh pr create`."

@@ -4,8 +4,8 @@ Cómo arrancar y trabajar en la plantilla, y cómo usar el flujo SDD (OpenSpec).
 
 ## Requisitos
 
-- Docker (para Postgres y/o todo el stack), **uv** (backend), Node + npm (frontend).
-- **OpenSpec CLI** para el flujo SDD: `npm i -g @fission-ai/openspec` (o usar `npx @fission-ai/openspec`).
+- Docker (para Postgres y/o todo el stack), uv (backend), Node + npm (frontend).
+- OpenSpec CLI para el flujo SDD: `npm install -g @fission-ai/openspec@latest` (Node.js 20.19.0 o superior; ver [guía SDD](./sdd-guide.md#0-requisitos-previos-una-vez)).
 
 ## Arrancar
 
@@ -47,25 +47,20 @@ No instales dependencias sin confirmación del usuario.
 
 ## Flujo SDD con OpenSpec (perfil core)
 
-Guía detallada con prompts reales: **[docs/SDD steps.md](./SDD%20steps.md)**.
+Guía detallada con prompts reales: [docs/sdd-guide.md](./sdd-guide.md).
 
 ```
 /opsx:explore        → pensar/aclarar una idea (opcional)
 /opsx:propose        → crear el cambio y sus artefactos (proposal, specs, design, tasks)
-plan técnico         → agentes backend-developer/frontend-developer (OBLIGATORIO, → .claude/doc/<cambio>/)
 /opsx:apply          → implementar las tareas (el agente ejecuta también las pruebas)
-write-pr-report + gh → abrir el PR
+gh pr create         → abrir el PR
 /opsx:archive        → fusionar los delta specs en openspec/specs/ y archivar el cambio
 ```
 
-- Antes de `/opsx:apply` DEBE existir el plan técnico de los agentes en `.claude/doc/<cambio>/`; no es opcional.
-- Antes de escribir/implementar `tasks.md`, se aplica `.claude/rules/openspec-tasks-mandatory-steps.md`.
+- Los comandos `/opsx:*` se generan con `openspec init --tools claude` y no se versionan (ver [guía SDD](./sdd-guide.md#0-requisitos-previos-una-vez)).
+- Los pasos de verificación que debe incluir `tasks.md` están en [docs/verification-guide.md](./verification-guide.md); las reglas de `openspec/config.yaml` remiten a ella.
 - Contexto del stack inyectado en todos los artefactos: `openspec/config.yaml`.
 - Comandos CLI útiles: `openspec list`, `openspec show <c>`, `openspec validate --all`, `openspec status --change <c>`.
-
-### Agentes y skills de apoyo
-- Agentes de planificación (`.claude/agents/`): `backend-developer`, `frontend-developer` (plan técnico obligatorio), `product-strategy-analyst` (ideación/refinamiento).
-- Skills (`.claude/skills/`): `enrich-us` (refinar user stories de Jira), `write-pr-report` (descripción de PR + `gh`).
 
 ## Verificación
 

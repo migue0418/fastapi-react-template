@@ -30,7 +30,7 @@ CLAUDE.md
 .superpowers/
 docs/superpowers/
 
-# Artefactos temporales (p. ej. la skill enrich-us escribe en tmp/)
+# Artefactos temporales locales
 tmp/
 
 .playwright-mcp/

@@ -2,11 +2,11 @@
 
 Entidades base que trae la plantilla. Amplíalo al añadir nuevos slices con modelos.
 Recuerda: todo modelo nuevo se importa en `app.core.database.import_model_modules()` y todo cambio de
-schema requiere **migración Alembic** (`backend/alembic/versions/`).
+schema requiere migración Alembic (`backend/alembic/versions/`).
 
 ## Entidades
 
-### `User` (`users`) — `app/features/users/models.py`
+### `User` (`users`): `app/features/users/models.py`
 | Campo | Tipo | Notas |
 |---|---|---|
 | `id` | int | PK, autoincrement |
@@ -20,7 +20,7 @@ schema requiere **migración Alembic** (`backend/alembic/versions/`).
 | `created_at` / `updated_at` | datetime | `utcnow`, `onupdate=utcnow` |
 | `roles` | M2M → `Role` | vía `user_roles`, `lazy="selectin"`: se cargan siempre con el usuario |
 
-### `Role` (`roles`) — `app/features/roles/models.py`
+### `Role` (`roles`): `app/features/roles/models.py`
 | Campo | Tipo | Notas |
 |---|---|---|
 | `id` | int | PK, autoincrement |
@@ -29,7 +29,7 @@ schema requiere **migración Alembic** (`backend/alembic/versions/`).
 | `created_at` / `updated_at` | datetime | |
 | `users` | M2M → `User` | vía `user_roles`, `lazy="raise"`: no se carga nunca y leerla lanza `InvalidRequestError`; para saber qué usuarios tienen un rol, consulta desde `User` (p. ej. `UsersRepository.count_active_users_with_role`) |
 
-### `UserRole` (`user_roles`) — tabla de unión
+### `UserRole` (`user_roles`): tabla de unión
 - PK compuesta (`user_id`, `role_id`); FKs con `ondelete="CASCADE"`; `UniqueConstraint(user_id, role_id)`.
 
 ### `AuthRefreshToken` (`auth_refresh_tokens`): `app/features/auth/models.py`
@@ -49,7 +49,7 @@ schema requiere **migración Alembic** (`backend/alembic/versions/`).
 
 ## Reglas de negocio relevantes
 
-- **Último admin protegido**: no se puede eliminar/desactivar/degradar al último admin activo
+- Último admin protegido: no se puede eliminar/desactivar/degradar al último admin activo
   (ver `UsersService._ensure_last_admin_is_not_removed`).
 - `username` único: crear/actualizar con uno existente devuelve 409.
 - Bloqueo por intentos: 5 fallos seguidos bloquean la cuenta 15 minutos. El login responde el mismo 401
