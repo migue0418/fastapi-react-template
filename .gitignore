@@ -23,13 +23,9 @@ frontend/coverage/
 .idea/
 .vscode/
 
-# Claude Code: versiona la capa SDD (skills/commands/agents/rules) y deja fuera lo local/personal
-.claude/*
-!.claude/agents/
-!.claude/commands/
-!.claude/rules/
-!.claude/skills/
-.claude/settings.local.json
+# Claude Code: configuración local, no se versiona
+.claude/
+CLAUDE.md
 
 .superpowers/
 docs/superpowers/
