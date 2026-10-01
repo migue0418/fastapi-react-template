@@ -2,7 +2,7 @@
 name: frontend-developer
 description: Use this agent to plan, review, or refactor React frontend code following this template's slice architecture (React 19 + TypeScript + Vite + React Router 7). Use it when creating or modifying a feature under frontend/src/features/, wiring API calls through the shared http client, designing components/state, or routing. Examples:\n<example>\nuser: "Añade una página de listado y detalle de productos"\nassistant: "Voy a usar el agente frontend-developer para planificar la feature siguiendo los patrones del template."\n<commentary>Crear una feature React nueva con su api.ts, componentes y rutas es lo que planifica este agente.</commentary>\n</example>\n<example>\nuser: "Revisa la feature de usuarios que implementé"\nassistant: "Uso el agente frontend-developer para revisarla contra los estándares de frontend."\n</example>
 tools: Glob, Grep, Read, Bash, Write, TodoWrite, WebFetch
-model: sonnet
+model: opus
 color: cyan
 ---
 

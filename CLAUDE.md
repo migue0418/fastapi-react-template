@@ -23,7 +23,8 @@ Monorepo con backend FastAPI, frontend React + TypeScript + Vite y PostgreSQL. E
 │   ├── alembic/
 │   ├── tests/
 │   ├── .example.env
-│   └── requirements.in
+│   ├── pyproject.toml
+│   └── uv.lock
 ├── frontend/
 │   ├── src/
 │   │   ├── app/                   # bootstrap, router, estilos
@@ -122,6 +123,17 @@ uv lock                 # regenerar lock file
 
 ---
 
+## SDD: OBLIGATORIO al planificar (Plan Mode incluido)
+
+**REGLA CRÍTICA — sin excepciones:** Cuando el usuario exprese intención de planificar, proponer, crear, implementar o diseñar una funcionalidad nueva — ya sea en conversación normal, en Plan Mode o en cualquier otro contexto — el **primer paso siempre es el flujo SDD**:
+
+1. Si la idea necesita refinamiento o hay dudas → invoca `/opsx:explore`
+2. Si la idea está clara → invoca directamente `/opsx:propose`
+
+**NO** analices el código, **NO** planifiques directamente, **NO** propongas implementaciones sin haber pasado antes por `/opsx:explore` o `/opsx:propose`. El flujo SDD genera los artefactos (proposal, specs, design, tasks) que son el prerequisito de todo lo demás.
+
+---
+
 ## SDD / OpenSpec
 
 Este repo trae un flujo de **Spec-Driven Development** listo para usar. Requiere el CLI de OpenSpec
@@ -146,6 +158,33 @@ write-pr-report + gh # abrir el PR
 - Antes de escribir/implementar `tasks.md` se aplica `.claude/rules/openspec-tasks-mandatory-steps.md` (el agente ejecuta las pruebas: `uv run pytest`, curl, Playwright MCP; `npm run lint/test/build`; PR con `gh`).
 - Agentes (`.claude/agents/`): `backend-developer`, `frontend-developer` (plan técnico obligatorio), `product-strategy-analyst` (ideación).
 - Skills propias: `enrich-us` (refinar user stories de Jira), `write-pr-report` (descripción de PR + `gh`).
+
+---
+
+## Comentarios, docstrings y documentación
+
+General:
+
+- Nada de relleno: sin introducciones, sin resúmenes de lo obvio, sin repetir lo que se ha pedido.
+- No inventes nada. Cada afirmación técnica se comprueba en el código de la rama de referencia; si algo no está verificado, dilo. Las afirmaciones sobre librerías o protocolos llevan enlace a la fuente oficial.
+- Sigue el estilo, los nombres y los patrones que ya tiene el repo. No añadas dependencias ni patrones nuevos sin avisar.
+- Sin emojis.
+- Sin rayas para incisos: usa paréntesis, o quita el inciso si no aporta.
+- Tildes y ortografía correctas siempre.
+
+Comentarios y docstrings:
+
+- Comenta el porqué, nunca el qué. Borra cualquier comentario que repita lo que dice el código.
+- Una línea por idea. Nada de párrafos explicativos.
+- Documenta solo lo que no es obvio: el motivo de una decisión y las trampas que pisaría quien lea el código. Si no hay nada de eso, una línea o ninguna.
+- Un docstring largo en una función corta es un error.
+- Si un nombre necesita un comentario, cambia el nombre.
+
+ADR:
+
+- Formato MADR: contexto, opciones, decisión y consecuencias. Solo para decisiones costosas de revertir.
+- Lenguaje llano, como lo escribiría una persona, no una IA. Di solo lo necesario.
+- Sin acentos graves, sin comillas simples y sin negritas ni asteriscos decorativos. Los nombres de código, rutas e identificadores van en texto plano, sin formato de código.
 
 ---
 

@@ -2,7 +2,7 @@
 name: backend-developer
 description: Use this agent to plan, review, or refactor FastAPI backend code following this template's async slice architecture (router → service → repository → models). Use it when creating or modifying a feature slice under backend/app/features/, designing endpoints, SQLAlchemy async models/queries, Alembic migrations, or auth/roles dependencies. Examples:\n<example>\nuser: "Necesito un slice de 'products' con CRUD y solo accesible por admin"\nassistant: "Voy a usar el agente backend-developer para planificar el slice siguiendo la arquitectura del template."\n<commentary>Crear un slice nuevo a través de varias capas es justo lo que planifica este agente.</commentary>\n</example>\n<example>\nuser: "Revisa el service de pedidos que acabo de escribir"\nassistant: "Uso el agente backend-developer para revisarlo contra los estándares de backend del template."\n</example>
 tools: Glob, Grep, Read, Bash, Write, TodoWrite, WebFetch
-model: sonnet
+model: opus
 color: red
 ---
 
