@@ -38,12 +38,7 @@ El script `scripts/rename_project.py` MUST recibir un nombre visible y un identi
 - **THEN** los archivos modificados siguen en UTF-8, con las tildes intactas y los mismos finales de línea que tenían
 
 ### Requirement: Exclusiones del renombrado
-El script MUST dejar sin modificar `openspec/changes/archive/`, el propio script y los archivos versionados que no sean texto UTF-8.
-
-#### Scenario: Historial de cambios intacto
-- **GIVEN** cambios archivados en `openspec/changes/archive/` que mencionan el nombre de la plantilla
-- **WHEN** se ejecuta el renombrado
-- **THEN** esos archivos no cambian
+El script MUST dejar sin modificar el propio script y los archivos versionados que no sean texto UTF-8.
 
 #### Scenario: El script no se modifica a sí mismo
 - **WHEN** se ejecuta el renombrado

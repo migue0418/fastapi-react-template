@@ -82,3 +82,31 @@ def test_f001_nfr_02_history_traceable():
             == 0
         ]
         assert older, area
+
+
+def test_f001_ac_01_3_project_rename_only_planned_changes():
+    """F001:AC-01.3"""
+    expected = base_text("openspec/specs/project-rename/spec.md")
+    for old, new in (
+        (
+            "MUST dejar sin modificar `openspec/changes/archive/`, el propio script",
+            "MUST dejar sin modificar el propio script",
+        ),
+        (
+            "#### Scenario: Historial de cambios intacto\n"
+            "- **GIVEN** cambios archivados en `openspec/changes/archive/` que "
+            "mencionan el nombre de la plantilla\n"
+            "- **WHEN** se ejecuta el renombrado\n"
+            "- **THEN** esos archivos no cambian\n\n",
+            "",
+        ),
+    ):
+        assert expected.count(old) == 1, old
+        expected = expected.replace(old, new)
+    assert disk_text(BEHAVIOUR / "project-rename.md") == expected
+
+
+def test_f001_ac_03_3_script_does_not_name_openspec():
+    """F001:AC-03.3"""
+    script = disk_text(ROOT / "scripts" / "rename_project.py")
+    assert "openspec" not in script.lower()
