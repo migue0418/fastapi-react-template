@@ -329,8 +329,7 @@ Se comprueban por revisión; no hay comprobación automática.
 - `backend/tests/`: tests.
 - `frontend/src/{app,features,shared}/`: bootstrap, slices y código compartido.
 - `scripts/rename_project.py`: renombrado.
-- `docs/`: estándares y guías.
-- `openspec/`: material heredado (ver RM-08).
+- `docs/`: estándares, guías y `docs/behaviour/` (contrato de comportamiento).
 
 ### 10.2 Architecture-to-Code Mapping
 
