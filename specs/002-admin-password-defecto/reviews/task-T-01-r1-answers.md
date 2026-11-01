@@ -1,0 +1,1 @@
+R1-01: rejected: AC-01.3 pide comprobar que la regla se aplica sin conectar a la base; el plan limita el test al caso de base inalcanzable y la validación vive solo en `Settings`, así que el caso del administrador ya creado queda cubierto por construcción. Verify lo comprobará arrancando uvicorn.

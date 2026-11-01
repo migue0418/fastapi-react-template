@@ -1,6 +1,6 @@
 ---
 artifact: architecture
-version: 2
+version: 3
 status: active
 owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 ---
@@ -200,7 +200,7 @@ Reintentos de migración al arrancar, `pool_pre_ping` en la conexión y `restart
 
 ### 6.5 Configuration and Secrets
 
-Todo se lee con `Settings` desde el entorno o `backend/.env`, que no se versiona ni entra en la imagen. `backend/.example.env` documenta las variables. En producción solo se valida la longitud de `SECRET_KEY`.
+Todo se lee con `Settings` desde el entorno o `backend/.env`, que no se versiona ni entra en la imagen. `backend/.example.env` documenta las variables. En producción `Settings` rechaza el arranque si `SECRET_KEY` tiene menos de 32 caracteres o si `ADMIN_PASSWORD` es el valor por defecto (`DEFAULT_ADMIN_PASSWORD`); los errores de validación no imprimen los valores (`hide_input_in_errors`).
 
 ### 6.6 Other Cross-Cutting Concerns
 
@@ -220,7 +220,7 @@ Dos contenedores en Compose: `backend`, con la imagen multi-etapa, usuario sin p
 
 ### 7.3 Environments and Configuration Differences
 
-`ENVIRONMENT` toma `development`, `test` o `production`. Producción cambia CORS, activa HSTS y `secure` en la cookie, y valida la longitud de `SECRET_KEY`. En desarrollo, Vite sirve el frontend en el puerto 5173.
+`ENVIRONMENT` toma `development`, `test` o `production`. Producción cambia CORS, activa HSTS y `secure` en la cookie, y rechaza una `SECRET_KEY` corta y la `ADMIN_PASSWORD` por defecto. En desarrollo, Vite sirve el frontend en el puerto 5173.
 
 ---
 
@@ -264,9 +264,9 @@ Basada en el código y la documentación revisados el 2026-11-01, no en un siste
 
 ### 9.2 Gaps and Architectural Debt
 
-- **Gap:** Producción acepta `ADMIN_PASSWORD` por defecto.
-- **Impact:** Un derivado podría desplegarse con un administrador de contraseña pública.
-- **Status:** Known
+- **Gap:** Producción aceptaba `ADMIN_PASSWORD` por defecto.
+- **Impact:** Un derivado podía desplegarse con un administrador de contraseña pública.
+- **Status:** Closed: `Settings` lo rechaza al arrancar en producción (F002)
 - **Reference:** RM-01
 
 - **Gap:** El rate limiter usa la IP remota sin configuración de proxy visible.

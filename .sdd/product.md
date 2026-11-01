@@ -1,6 +1,6 @@
 ---
 artifact: product
-version: 2
+version: 3
 status: active
 owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 ---
@@ -107,7 +107,7 @@ No hay otros interesados identificados.
 - **Purpose:** Que un derivado no llegue a producción expuesto por valores por defecto de la plantilla.
 - **Primary users:** Mantenedor
 - **Scope:** Rechazo de secretos por defecto, rate limiting correcto tras un proxy, credenciales de Compose, y superficie HTTP en producción.
-- **Status:** Planned
+- **Status:** Partial: producción ya rechaza `SECRET_KEY` y `ADMIN_PASSWORD` por defecto (F002); el resto está planificado
 
 ### CAP-07: Integración continua
 
@@ -231,7 +231,7 @@ La plantilla funciona y ya se ha usado para al menos un derivado. El 2026-11-01 
 
 ### 9.2 Known Gaps and Limitations
 
-- Producción rechaza la `SECRET_KEY` por defecto, pero no la contraseña de administrador ni las credenciales de Compose.
+- Producción rechaza la `SECRET_KEY` por defecto y la contraseña de administrador por defecto, pero no las credenciales de Compose.
 - No hay comprobaciones automáticas en los pull requests.
 - No hay logging para diagnosticar en operación.
 

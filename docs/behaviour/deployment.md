@@ -49,6 +49,22 @@ Docker Compose MUST publicar el backend en el puerto 8000 del host y MUST public
 - **WHEN** se inspeccionan los puertos del servicio `postgres`
 - **THEN** el 5432 solo está enlazado a `127.0.0.1`
 
+### Requirement: Producción rechaza la contraseña de administrador por defecto
+Con `ENVIRONMENT=production`, la aplicación MUST negarse a arrancar si `ADMIN_PASSWORD` es el valor por
+defecto (`ChangeMe123!`, comparación exacta). El error MUST nombrar `ADMIN_PASSWORD` y MUST NOT imprimir
+ningún valor de contraseña. En `development` y `test` el valor por defecto sigue permitido.
+
+#### Scenario: Valor por defecto en producción
+- **GIVEN** `ENVIRONMENT=production` y `ADMIN_PASSWORD` sin definir o igual a `ChangeMe123!`
+- **WHEN** se arranca la aplicación
+- **THEN** el arranque falla antes de acceder a la base de datos
+- **AND** el mensaje indica que `ADMIN_PASSWORD` no puede ser el valor por defecto y dónde definirla
+
+#### Scenario: Contraseña propia en producción
+- **GIVEN** `ENVIRONMENT=production` y `ADMIN_PASSWORD` distinta de `ChangeMe123!`
+- **WHEN** se arranca la aplicación
+- **THEN** el arranque continúa con normalidad
+
 ### Requirement: URL de base de datos única para migraciones
 Las migraciones de Alembic MUST conectarse a la URL de `Settings.database_url`, tanto al arrancar la
 aplicación como al ejecutar `alembic` por línea de comandos. `alembic.ini` MUST NOT contener una URL de
