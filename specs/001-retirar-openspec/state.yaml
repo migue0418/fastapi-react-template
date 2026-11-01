@@ -5,14 +5,14 @@ feature: F001
 title: "Retirar OpenSpec"
 roadmap-item: RM-08
 phase: build
-step: "Design cerrado; design.md@3 aprobado y plan.md@1 comprobado"
+step: "Línea base sin fallos; T-01 en implementación"
 status: in-progress
-next: "Empezar Build por T-01, desde design.md@3 y plan.md@1."
+next: "Revisar T-01 cuando se entregue y fusionarla si se aprueba; después T-02."
 
 waiting-for-human: []
 blocked-by: []
 
-tasks: { T-01: pending, T-02: pending, T-03: pending, T-04: pending }
+tasks: { T-01: in-progress, T-02: pending, T-03: pending, T-04: pending }
 
 known-failures: []
 
@@ -29,3 +29,4 @@ history:
   - "2026-11-01 design/review: ronda 2 aprueba (2 menores); design.md@3 los corrige"
   - "2026-11-01 design/approval: design.md@3 puesto a aprobación (H-03)"
   - "2026-11-01 design/close: design.md@3 aprobado (H-03); plan.md@1 comprobado; la feature pasa a Build"
+  - "2026-11-01 build/baseline: sin fallos previos; T-01 pasa a in-progress"

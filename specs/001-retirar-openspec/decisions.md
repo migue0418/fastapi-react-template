@@ -82,6 +82,7 @@ feature: F001
 | 2026-11-01 | Comprobar AC-07.1 y AC-03.3 con una búsqueda, sin test de repositorio | El test tendría que nombrar el término buscado y fallaría en los proyectos derivados | design.md@1 |
 | 2026-11-01 | Corrige la entrada anterior: los criterios de repositorio se comprueban con tests en `specs/001-retirar-openspec/checks/`, fuera de la suite de backend | Verify exige un test que nombre cada criterio (R1-01); esa carpeta ya está exceptuada en AC-07.1 y no se ejecuta en los derivados | design.md@2, C-06 |
 | 2026-11-01 | Actualizar el `CLAUDE.md` local en T-04, última tarea de Build, antes de Verify | Una tarea de Build no ve el archivo desde su copia de trabajo y Verify debe demostrar AC-08.1 (R1-02). Q-02 decía "al terminar, fuera del PR"; sigue fuera del PR y es lo último de Build | design.md@2, C-05, Q-02 |
+| 2026-11-01 | Línea base de Build sin fallos previos: backend 87/87 sobre `postgres:15` desechable en el puerto 55432, frontend 24/24 y ESLint limpio | Cada tarea se juzga sin fallos conocidos | state.yaml |
 | 2026-11-01 | No ejecutar `up`, `/health`, usuario y puerto de la guía de verificación | La imagen no cambia y el puerto 5432 está ocupado por otro proyecto; `docker compose build backend` sí se ejecuta (R1-05) | design.md@2, NFR-01 |
 
 ---
