@@ -90,6 +90,9 @@ feature: F001
 | 2026-11-01 | T-04: se retiró del `CLAUDE.md` local la línea 158 (nota de `openspec/` como material heredado), de 177 a 176 líneas y de 1 a 0 coincidencias, en binario para conservar CRLF; el test usa `git check-ignore CLAUDE.md` con `cwd` en el directorio del mantenedor, porque el worktree queda fuera de ese árbol | El archivo no está en git, así que deshacer el merge no lo restaura; hay que volver a poner la línea a mano | plan.md T-04, design.md C-05 |
 | 2026-11-01 | No ejecutar `up`, `/health`, usuario y puerto de la guía de verificación | La imagen no cambia y el puerto 5432 está ocupado por otro proyecto; `docker compose build backend` sí se ejecuta (R1-05) | design.md@2, NFR-01 |
 
+| 2026-11-01 | Document: RM-08 pasa a Closed como entregado por F001, sin añadir seguimientos a la bandeja de entrada | No quedó trabajo diferido que justifique una feature: no se encontró contenido desfasado en las specs movidas, el menor de la limpieza del script no es un incremento, y los tres menores de la revisión de la feature se rechazaron con motivo | feature-r1-answers.md |
+| 2026-11-01 | Document: no hay diferencias entre el código y la especificación | Verify y la revisión de la feature no señalaron ninguna, y los documentos tocados describen lo que hay en la rama | evidence/README.md |
+
 ---
 
 ## 4. Documentation Impact
@@ -105,6 +108,9 @@ feature: F001
 | 2026-11-01 | T-03: `openspec/` retirado; `.dockerignore`, `README.md` (paso 5 retirado y la indicación sobre `docs/behaviour/` en el paso 4), `docs/development_guide.md` y `.sdd/architecture.md` 10.1 | Document debe conservar las menciones de `.sdd/roadmap.md` bajo RM-08 para que AC-07.1 siga pasando | plan.md T-03 |
 | 2026-11-01 | T-02: `docs/behaviour/project-rename.md` (exclusión retirada) y línea 20 de `README.md` | Quedan para T-03 el resto del paso 5 del README, `.dockerignore`, `docs/development_guide.md` y `.sdd/architecture.md` 10.1 | plan.md T-02 |
 | 2026-11-01 | T-01: `.sdd/documentation.yaml`, `product.md`, `architecture.md`, `docs/documentation-standards.md`, `docs/base-standards.md` y `README.md` redirigidos a `docs/behaviour/` | Siguen con `openspec` el resto del README (T-02 y T-03), `architecture.md` 10.1 y `docs/development_guide.md` (T-03) | plan.md T-01 |
+
+| 2026-11-01 | Document: `.sdd/roadmap.md` v3 (RM-08 cerrado como entregado; enfoque actualizado), `.sdd/product.md` v2 y `.sdd/architecture.md` v2 | Las rutas del contrato las actualizaron las tareas; Document sube las versiones y cierra el item | design.md@3, F001 |
+| 2026-11-01 | Document: entradas del catálogo disparadas por la feature: `README.md`, `docs/base-standards.md`, `docs/development_guide.md`, `docs/documentation-standards.md` y `docs/behaviour/`, todas actualizadas. No disparadas: `docs/backend-standards.md`, `docs/frontend-standards.md`, `docs/data-model.md` y `docs/verification-guide.md` | La feature no cambia arquitectura, convenciones, datos ni la forma de verificar | `.sdd/documentation.yaml` |
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 artifact: architecture
-version: 1
+version: 2
 status: active
 owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 ---
