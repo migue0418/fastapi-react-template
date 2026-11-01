@@ -4,10 +4,10 @@
 feature: F001
 title: "Retirar OpenSpec"
 roadmap-item: RM-08
-phase: verify
-step: "Verify run 1: evidencia escrita (pass); revisión de la feature, ronda 1"
+phase: document
+step: "Verify cerrado: run 1 en pass y revisión de la feature aprobada (3 menores rechazados con motivo)"
 status: in-progress
-next: "Atender la revisión de la feature; si no hay bloqueantes, pasar a Document."
+next: "Empezar Document: alinear la documentación con lo construido y cerrar RM-08 en el roadmap."
 
 waiting-for-human: []
 blocked-by: []
@@ -42,3 +42,4 @@ history:
   - "2026-11-01 build/T-04: la revisión de la ronda 1 aprueba (1 menor, rechazado con motivo); pasa a approved"
   - "2026-11-01 build/close: T-04 fusionada; backend 87/87, 15 comprobaciones de aceptación, frontend 24/24, lint y build en verde; la feature pasa a Verify"
   - "2026-11-01 verify/run-1: evidencia escrita sobre df75bbd, resultado pass; pasa a la revisión de la feature"
+  - "2026-11-01 verify/close: la revisión de la feature aprueba (3 menores rechazados con motivo); la feature pasa a Document"
