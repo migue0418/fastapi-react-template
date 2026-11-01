@@ -86,6 +86,7 @@ feature: F002
 | 2026-11-01 | Design: se comprueba `ADMIN_PASSWORD` en el validador existente de `Settings`, con una constante `DEFAULT_ADMIN_PASSWORD` y `hide_input_in_errors=True`; sin ADR, sin cambios en `stack.yaml`, sin one-way doors. | Sigue el patrón de `SECRET_KEY` (CON-02), y la sonda mostró que sin ocultar la entrada el error imprime la contraseña (AC-02.2, NFR-01). Reversible y local a un archivo. | design.md@2, C-01, 9.1 |
 | 2026-11-01 | Design: un solo error si fallan a la vez `SECRET_KEY` y `ADMIN_PASSWORD`; nombra `SECRET_KEY`. | Aplica ASM-03, aceptado en H-02. | design.md@2, IF-01 |
 | 2026-11-01 | Design: AC-05.2 lo entrega Document, sin tarea; `docs/behaviour/` no cambia en T-01. | Los archivos de `.sdd/` solo cambian en Document. Sometido a aprobación en H-03. | design.md@2, 11 y 12; reviews/design-r1-answers.md (R1-02, R1-03) |
+| 2026-11-01 | Build T-01: mensaje «ADMIN_PASSWORD no puede ser el valor por defecto en producción. Define otra contraseña en la variable ADMIN_PASSWORD.»; la comprobación va tras la de `SECRET_KEY` (ASM-03); `hide_input_in_errors=True` bastó en `Settings` real (RISK-03 no se materializó); los tests aíslan el entorno con una fixture autouse y `_env_file=None` (ASM-04). | Estilo del mensaje de `SECRET_KEY`, sin imprimir valores; aplica el plan. | plan.md@1 T-01, task/002-T-01@5e2b5ef |
 
 ---
 
@@ -96,6 +97,7 @@ feature: F002
 | 2026-11-01 | README.md | La tabla de variables y la guía de inicio deben decir que en producción `ADMIN_PASSWORD` no puede ser el valor por defecto. | RM-01 |
 | 2026-11-01 | docs/behaviour/ | Si hay una spec de despliegue o configuración, recoger el nuevo rechazo; hoy `docs/behaviour/auth.md` solo cita `ADMIN_PASSWORD` para el administrador inicial. | RM-01 |
 | 2026-11-01 | .sdd/architecture.md, .sdd/product.md, .sdd/roadmap.md, .sdd/constitution.md | Cerrar el gap de 9.2, la limitación de 9.2 de product, cerrar RM-01, y actualizar NC-007 (hoy dice que solo se rechaza `SECRET_KEY`). | RM-01 |
+| 2026-11-01 | README.md | Hecho en T-01: tabla de variables y paso 3 de la guía de inicio dicen que en producción `ADMIN_PASSWORD` no puede ser `ChangeMe123!`. Queda para Document: archivos de `.sdd/` (AC-05.2). | task/002-T-01@5e2b5ef |
 
 ---
 

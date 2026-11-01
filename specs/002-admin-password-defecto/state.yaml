@@ -5,7 +5,7 @@ feature: F002
 title: "Producción rechaza la contraseña de administrador por defecto"
 roadmap-item: RM-01
 phase: build
-step: "Build: línea base (87 tests en verde, sin fallos previos); T-01 en implementación"
+step: "Build: línea base (87 tests en verde, sin fallos previos); T-01 implementada (5e2b5ef) y en revisión"
 status: in-progress
 next: "Retomar /sdd-kit:sdd-build: T-01 en la rama task/002-T-01; si está en implementación, repetirla sobre la misma rama."
 
@@ -13,7 +13,7 @@ waiting-for-human: []
 blocked-by: []
 
 tasks:
-  T-01: in-progress
+  T-01: in-review
 
 known-failures: []
 
@@ -33,3 +33,4 @@ history:
   - "2026-11-01 design/plan: plan.md@1 escrito y comprobado (consistencia limpia); la feature pasa a Build con T-01 pendiente"
   - "2026-11-01 build/baseline: 87 tests en verde en la rama de la feature, sin fallos previos"
   - "2026-11-01 build/T-01: en implementación (rama task/002-T-01)"
+  - "2026-11-01 build/T-01: implementada en task/002-T-01@5e2b5ef (100 tests en verde); en revisión"
