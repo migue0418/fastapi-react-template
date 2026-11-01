@@ -1,12 +1,11 @@
 # Guía de verificación
 
-Cómo validar un cambio de punta a punta. Durante `/opsx:apply`, el agente ejecuta estas pruebas él
-mismo y nunca las delega al usuario. Una tarea de `tasks.md` solo se marca como hecha después de
-ejecutarla y comprobar el resultado.
+Cómo validar un cambio de punta a punta. El agente ejecuta estas pruebas él mismo y nunca las delega al
+usuario. Una tarea solo se da por hecha después de ejecutarla y comprobar el resultado.
 
 ## 0. Rama del cambio
 
-El primer paso de `tasks.md` es crear la rama `feature/<cambio>` desde `main` y cambiar a ella.
+Cada cambio se hace en su propia rama, creada desde `main`.
 
 ## 1. Backend: tests
 
@@ -44,7 +43,7 @@ curl -i -X POST http://localhost:8000/api/<recurso> -H "Content-Type: applicatio
 - Verifica códigos (200/201/204/400/401/403/404/409/422) y cuerpos.
 - Tras CREATE/UPDATE/DELETE, restaura el estado de la BD.
 - Prueba casos de error (validación, no autorizado, recurso inexistente) además del happy path.
-- Anota los comandos y las respuestas en el informe del cambio (sección 7).
+- Anota los comandos y las respuestas en el informe del cambio (sección 6).
 
 ## 3. Imagen y Compose (si el cambio toca Docker)
 
@@ -74,20 +73,12 @@ npm run build
   `browser_type`, `browser_snapshot`...), incluyendo casos de error.
 - Verifica persistencia y estado de la UI; restaura datos de prueba al terminar.
 
-## 6. OpenSpec: consistencia de artefactos
+## 6. Informe del cambio
 
-```powershell
-openspec validate --all
-openspec status --change <change-name>
-```
+Guarda el resultado en `specs/NNN-<slug>/evidence/`: comandos, resultados, comparación de la BD antes y
+después, restauraciones hechas y pruebas con curl.
 
-## 7. Informe del cambio
-
-Guarda el resultado en `openspec/changes/<cambio>/reports/YYYY-MM-DD-backend-tests.md`: comandos,
-resultados, comparación de la BD antes y después, restauraciones hechas y pruebas con curl.
-
-## 8. Antes de archivar
+## 7. Antes de abrir el PR
 
 - `docs/` actualizada si cambian contratos/arquitectura/modelo de datos.
-- PR creado con `gh pr create`.
-- Solo entonces `/opsx:archive`.
+- En una feature SDD, el PR lo abre `/sdd-kit:sdd-release`; fuera de ella, usa `gh pr create`.

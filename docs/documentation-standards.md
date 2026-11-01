@@ -1,14 +1,13 @@
 # Estándares de documentación
 
 Cómo mantener la documentación técnica de la plantilla. Estos `docs/` son la referencia versionada que
-viaja con el template y que alimenta el contexto de OpenSpec.
+viaja con el template y que alimenta el flujo SDD.
 
 ## Estructura
 
 - `docs/base-standards.md`: principios y puntero al resto.
 - `docs/backend-standards.md`, `docs/frontend-standards.md`: estándares por área.
 - `docs/development_guide.md`: arrancar/trabajar + flujo SDD.
-- `docs/sdd-guide.md`: el ciclo de OpenSpec paso a paso, con prompts.
 - `docs/data-model.md`: entidades base.
 - `docs/verification-guide.md`: cómo validar un cambio.
 - `docs/documentation-standards.md`: este documento.
@@ -23,7 +22,7 @@ Actualiza la doc afectada dentro del mismo cambio cuando:
 - Cambie la arquitectura o una convención → actualiza `*-standards.md`.
 - Cambien comandos o el flujo de trabajo → actualiza `development_guide.md` / `verification-guide.md`.
 
-Es uno de los pasos `(OBLIGATORIO)` del cierre de un cambio OpenSpec.
+En una feature SDD, esto forma parte de la fase Document (`/sdd-kit:sdd-document`).
 
 ## Estilo
 
@@ -32,9 +31,9 @@ Es uno de los pasos `(OBLIGATORIO)` del cierre de un cambio OpenSpec.
 - Si estos `docs/` y el código no coinciden, manda el código real.
 - Evita documentar lo obvio; documenta el *porqué* y las invariantes no evidentes.
 
-## Relación con OpenSpec
+## Relación con SDD
 
-- Las specs (`openspec/specs/`) describen el comportamiento del sistema (fuente de verdad del *qué*).
+- `.sdd/` guarda el contexto de todo el proyecto, y `specs/NNN-<slug>/` la especificación de cada feature
+  (fuente de verdad del *qué*).
 - Estos `docs/` describen cómo construimos (stack, patrones, convenciones).
-- Tras `/opsx:archive`, los delta specs se fusionan en `openspec/specs/`; si el cambio alteró
-  convenciones o arquitectura, refleja también el *cómo* aquí.
+- Si una feature altera convenciones o arquitectura, refleja también el *cómo* aquí durante la fase Document.

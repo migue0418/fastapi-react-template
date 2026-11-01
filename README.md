@@ -20,10 +20,10 @@ Plantilla de proyecto full-stack lista para usar. Incluye autenticación JWT, ge
    El primer argumento es el nombre visible. El segundo es el identificador (minúsculas, dígitos y guiones bajos, hasta 25 caracteres): es el nombre de la base de datos y, con guiones, el de los paquetes. El script cambia el nombre de la plantilla en los archivos versionados, salvo en `openspec/changes/archive/`, lista los archivos modificados y avisa de las variantes que no reconoce. Revisa el resultado con `git diff` y confírmalo.
 2. Si tienes configuración local de Claude Code (`CLAUDE.md` y `.claude/`), cópiala al proyecto: no se versiona.
 3. Crea `backend/.env` desde `backend/.example.env`, con un `SECRET_KEY` y un `ADMIN_PASSWORD` nuevos. Para generar la clave: `python -c "import secrets; print(secrets.token_hex(32))"`.
-4. Decide qué conservas de OpenSpec:
-   - `openspec/specs/` describe el comportamiento que hereda el proyecto (auth, users, roles, health y despliegue). Consérvalo mientras siga siendo cierto.
+4. Instala sdd-kit si aún no lo tienes y lanza `/sdd-kit:sdd-onboarding` (ver [Spec-Driven Development](#spec-driven-development-sdd-kit)).
+5. Decide qué conservas de `openspec/`, el material heredado de la plantilla:
+   - `openspec/specs/` describe el comportamiento que hereda el proyecto (auth, users, roles, health y despliegue). Úsalo como entrada del onboarding.
    - `openspec/changes/archive/` es el historial de cambios de la plantilla. Puedes borrarlo.
-5. Si no copiaste `.claude/`, genera los comandos de OpenSpec con `openspec init --tools claude` (ver [Spec-Driven Development](#spec-driven-development-openspec)).
 
 ## Inicio rápido (Docker)
 
@@ -116,28 +116,30 @@ uv run alembic upgrade head
 
 Alembic toma la URL de la base de datos de `Settings` (`DATABASE_URL` o `backend/.env`), igual que la app. Ejecútalo desde `backend/`.
 
-## Spec-Driven Development (OpenSpec)
+## Spec-Driven Development (sdd-kit)
 
-La plantilla trae un flujo SDD con [OpenSpec](https://github.com/Fission-AI/OpenSpec). Instala el CLI (requiere Node.js 20.19.0 o superior) y, desde la raíz del repo, genera los comandos de Claude Code:
+La plantilla usa el plugin de Claude Code [sdd-kit](https://github.com/daniel-torresc/sdd-kit). No viene en el repo: instálalo una vez en tu máquina y reinicia Claude Code.
 
 ```powershell
-npm install -g @fission-ai/openspec@latest
-openspec init --tools claude
+claude plugin marketplace add daniel-torresc/sdd-marketplace
+claude plugin install sdd-kit@sdd-marketplace
 ```
 
-`openspec init` genera los comandos `/opsx:*` y las skills `openspec-*`, que no se versionan, y respeta el `openspec/config.yaml` del repo. Después de actualizar el CLI, `openspec update` los regenera ([referencia del CLI](https://github.com/Fission-AI/OpenSpec/blob/main/docs/cli.md)).
+Si la descarga falla con `Host key verification failed`, define `CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1` y repite la instalación.
 
-El ciclo de un cambio:
+El ciclo:
 
 ```
-/opsx:explore   # explorar/aclarar una idea (opcional)
-/opsx:propose   # crear el cambio y sus artefactos (proposal, specs, design, tasks)
-/opsx:apply     # implementar las tareas y verificarlas
-/opsx:archive   # fusionar specs y archivar el cambio
+/sdd-kit:sdd-onboarding  # una vez por proyecto: archivos fundacionales en .sdd/ y primer roadmap
+/sdd-kit:sdd-roadmap     # refinar, dividir y ordenar los próximos incrementos
+/sdd-kit:sdd-define      # qué y por qué: brief y requirements
+/sdd-kit:sdd-design      # cómo: design, tareas y plan
+/sdd-kit:sdd-build       # implementar y revisar tarea a tarea
+/sdd-kit:sdd-verify      # comprobar la feature completa
+/sdd-kit:sdd-document    # alinear la documentación con lo construido
+/sdd-kit:sdd-release     # abrir el PR en borrador; el merge lo hace una persona
 ```
 
-- Guía paso a paso con prompts reales: [docs/sdd-guide.md](docs/sdd-guide.md).
-- Contexto del stack para los artefactos: `openspec/config.yaml`.
 - Estándares y guías versionadas en `docs/` (empieza por `docs/development_guide.md` y `docs/base-standards.md`).
 
 ## Despliegue detrás de un proxy

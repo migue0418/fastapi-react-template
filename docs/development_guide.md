@@ -1,11 +1,11 @@
 # Guía de desarrollo
 
-Cómo arrancar y trabajar en la plantilla, y cómo usar el flujo SDD (OpenSpec).
+Cómo arrancar y trabajar en la plantilla, y cómo usar el flujo SDD (sdd-kit).
 
 ## Requisitos
 
 - Docker (para Postgres y/o todo el stack), uv (backend), Node + npm (frontend).
-- OpenSpec CLI para el flujo SDD: `npm install -g @fission-ai/openspec@latest` (Node.js 20.19.0 o superior; ver [guía SDD](./sdd-guide.md#0-requisitos-previos-una-vez)).
+- Plugin sdd-kit de Claude Code para el flujo SDD (ver [Flujo SDD con sdd-kit](#flujo-sdd-con-sdd-kit)).
 
 ## Arrancar
 
@@ -45,22 +45,31 @@ No instales dependencias sin confirmación del usuario.
   `app.core.settings.get_settings()`. Nunca commitees secretos.
 - Alembic por línea de comandos usa la misma URL (`DATABASE_URL` o `backend/.env`); ejecútalo desde `backend/`.
 
-## Flujo SDD con OpenSpec (perfil core)
+## Flujo SDD con sdd-kit
 
-Guía detallada con prompts reales: [docs/sdd-guide.md](./sdd-guide.md).
+Instala el plugin una vez en tu máquina y reinicia Claude Code:
 
-```
-/opsx:explore        → pensar/aclarar una idea (opcional)
-/opsx:propose        → crear el cambio y sus artefactos (proposal, specs, design, tasks)
-/opsx:apply          → implementar las tareas (el agente ejecuta también las pruebas)
-gh pr create         → abrir el PR
-/opsx:archive        → fusionar los delta specs en openspec/specs/ y archivar el cambio
+```powershell
+claude plugin marketplace add daniel-torresc/sdd-marketplace
+claude plugin install sdd-kit@sdd-marketplace
 ```
 
-- Los comandos `/opsx:*` se generan con `openspec init --tools claude` y no se versionan (ver [guía SDD](./sdd-guide.md#0-requisitos-previos-una-vez)).
-- Los pasos de verificación que debe incluir `tasks.md` están en [docs/verification-guide.md](./verification-guide.md); las reglas de `openspec/config.yaml` remiten a ella.
-- Contexto del stack inyectado en todos los artefactos: `openspec/config.yaml`.
-- Comandos CLI útiles: `openspec list`, `openspec show <c>`, `openspec validate --all`, `openspec status --change <c>`.
+Si la descarga falla con `Host key verification failed`, define `CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1` y repite la instalación.
+
+```
+/sdd-kit:sdd-onboarding → una vez por proyecto: archivos fundacionales en .sdd/ y primer roadmap
+/sdd-kit:sdd-roadmap    → refinar, dividir y ordenar los próximos incrementos
+/sdd-kit:sdd-define     → qué y por qué: brief y requirements (aprobación humana)
+/sdd-kit:sdd-design     → cómo: design, tareas y plan (aprobación humana)
+/sdd-kit:sdd-build      → implementar y revisar tarea a tarea
+/sdd-kit:sdd-verify     → comprobar la feature completa y dejar evidencia
+/sdd-kit:sdd-document   → alinear la documentación con lo construido
+/sdd-kit:sdd-release    → abrir el PR en borrador; el merge lo hace una persona
+```
+
+- Cada feature vive en `specs/NNN-<slug>/`; el contexto de todo el proyecto, en `.sdd/`.
+- Los pasos de verificación que el agente ejecuta están en [docs/verification-guide.md](./verification-guide.md).
+- `openspec/` es material heredado: sirve de entrada para el onboarding y se elimina cuando exista `.sdd/`.
 
 ## Verificación
 

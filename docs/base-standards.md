@@ -23,33 +23,30 @@ Es la referencia versionada que viaja con la plantilla.
 - [Estándares de backend](./backend-standards.md): FastAPI async por slices, datos, auth, tests, seguridad.
 - [Estándares de frontend](./frontend-standards.md): React 19 + Vite por slices, cliente HTTP, UI, estado.
 - [Guía de desarrollo](./development_guide.md): cómo arrancar y trabajar en local / Docker.
-- [Guía SDD](./sdd-guide.md): el ciclo de OpenSpec paso a paso, con prompts.
 - [Modelo de datos](./data-model.md): entidades base (usuarios, roles, auth).
 - [Guía de verificación](./verification-guide.md): comandos para validar un cambio de punta a punta.
 - [Estándares de documentación](./documentation-standards.md): cómo mantener estos docs.
 
-## 4. Comandos y skills de OpenSpec
+## 4. Skills de SDD
 
-- `openspec init --tools claude` genera los comandos `/opsx:*` y las skills de SDD (`openspec-propose`,
-  `openspec-explore`, `openspec-apply-change`, `openspec-archive-change`). No se versionan; ver la
-  [guía SDD](./sdd-guide.md#0-requisitos-previos-una-vez).
-- Cuando una petición encaje con una de esas skills, carga y sigue su `SKILL.md` antes de continuar (y
-  los archivos referenciados que necesite).
+- El plugin `sdd-kit` aporta las skills de SDD (`/sdd-kit:sdd-*`). Se instala aparte; ver la
+  [guía de desarrollo](./development_guide.md#flujo-sdd-con-sdd-kit).
+- Cuando una petición encaje con una de esas skills, cárgala y síguela antes de continuar.
 
 ## 5. Modelo de planificación (opcional pero recomendado)
 
-Los flujos de planificación (`/opsx:explore`, `/opsx:propose`) rinden mejor con un
+Los flujos de planificación (`/sdd-kit:sdd-define`, `/sdd-kit:sdd-design`) rinden mejor con un
 modelo de razonamiento alto. Si tu setup lo soporta, usa Opus para planificar y un modelo más rápido
 para ejecutar tareas mecánicas.
 
-## 6. Actualizar artefactos OpenSpec antes que parchear código
+## 6. Actualizar artefactos SDD antes que parchear código
 
-Si aparece un nuevo ajuste/fix después de `/opsx:apply` y antes de `/opsx:archive`, trátalo
-primero como actualización de especificación, no como "arreglo rápido". La documentación (specs) es la
-fuente de verdad. Orden:
+Si aparece un nuevo ajuste/fix durante una feature, trátalo primero como actualización de especificación,
+no como "arreglo rápido". La especificación aprobada es la fuente de verdad. Orden:
 
-1. Actualiza los artefactos del cambio afectados (`proposal.md`, delta specs, `tasks.md`). No añadas
-   "bugfixes" sueltos: intégralo en la sección de diseño correspondiente.
-2. Si hace falta regenerar, usa el paso OpenSpec adecuado antes de codificar.
+1. Actualiza los artefactos afectados de `specs/NNN-<slug>/` (`brief.md`, `requirements.md`, `design.md`,
+   `plan.md`). No añadas "bugfixes" sueltos: los problemas bloqueantes de Verify vuelven a Build como
+   tareas de corrección.
+2. Si cambia la intención, el alcance o el enfoque aprobado, vuelve a pedir la aprobación humana.
 3. Implementa el código solo cuando los artefactos reflejen la nueva petición.
-4. Re-verifica contra los artefactos actualizados antes de archivar.
+4. Re-verifica contra los artefactos actualizados antes de abrir el PR.
