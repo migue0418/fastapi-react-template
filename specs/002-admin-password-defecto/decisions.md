@@ -51,6 +51,20 @@ feature: F002
 
 ---
 
+### H-04: Fusionar el pull request de F002
+
+- **Opened:** 2026-11-01
+- **Concerns:** PR https://github.com/migue0418/fastapi-react-template/pull/11 (borrador); evidence run 1 (pass)
+- **Blocks:** Cerrar la feature
+- **Context:** Rama al día con `main` (0 commits por detrás); backend 100 passed, frontend lint, 24 tests y build en verde. Sin chores de release en el catálogo. La descripción lista lo que se acepta al fusionar.
+- **Options:** Fusionar, pedir cambios o cerrar sin fusionar
+- **Recommendation (not binding):** Fusionar tras marcarlo como listo.
+- **Status:** Open
+- **Answer:** 
+- **Decided on:** 
+
+---
+
 ## 2. Discover Questions
 
 ### Round 1
