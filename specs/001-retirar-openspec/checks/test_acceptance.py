@@ -184,3 +184,19 @@ def test_f001_ac_07_1_closed_list_of_mentions():
                 continue
         stray.append(line)
     assert stray == []
+
+
+def test_f001_ac_08_1_local_claude_md_updated():
+    """F001:AC-08.1"""
+    common = Path(
+        git("rev-parse", "--path-format=absolute", "--git-common-dir").strip()
+    )
+    claude_md = common.parent / "CLAUDE.md"
+    assert claude_md.is_file(), f"falta {claude_md}"
+    assert "openspec" not in claude_md.read_text(encoding="utf-8").lower()
+    ignored = subprocess.run(
+        ["git", "check-ignore", "-q", "CLAUDE.md"], cwd=claude_md.parent
+    )
+    assert ignored.returncode == 0
+    assert "CLAUDE.md" not in git("ls-files").splitlines()
+    assert "CLAUDE.md" not in git("diff", "--name-only", f"{BASE}...HEAD").splitlines()
