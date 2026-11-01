@@ -83,6 +83,7 @@ feature: F001
 | 2026-11-01 | Corrige la entrada anterior: los criterios de repositorio se comprueban con tests en `specs/001-retirar-openspec/checks/`, fuera de la suite de backend | Verify exige un test que nombre cada criterio (R1-01); esa carpeta ya está exceptuada en AC-07.1 y no se ejecuta en los derivados | design.md@2, C-06 |
 | 2026-11-01 | Actualizar el `CLAUDE.md` local en T-04, última tarea de Build, antes de Verify | Una tarea de Build no ve el archivo desde su copia de trabajo y Verify debe demostrar AC-08.1 (R1-02). Q-02 decía "al terminar, fuera del PR"; sigue fuera del PR y es lo último de Build | design.md@2, C-05, Q-02 |
 | 2026-11-01 | Línea base de Build sin fallos previos: backend 87/87 sobre `postgres:15` desechable en el puerto 55432, frontend 24/24 y ESLint limpio | Cada tarea se juzga sin fallos conocidos | state.yaml |
+| 2026-11-01 | T-01: las comprobaciones de aceptación leen el original con `git show de1d8a0:<ruta>` y normalizan los finales de línea; AC-01.2 deja fuera project-rename, cuya comparación es AC-01.3 de T-02 | Los archivos en disco están en CRLF y el índice en LF; project-rename solo cambia en T-02 | plan.md T-01, T-02 |
 | 2026-11-01 | No ejecutar `up`, `/health`, usuario y puerto de la guía de verificación | La imagen no cambia y el puerto 5432 está ocupado por otro proyecto; `docker compose build backend` sí se ejecuta (R1-05) | design.md@2, NFR-01 |
 
 ---
@@ -97,6 +98,7 @@ feature: F001
 | 2026-11-01 | `.sdd/documentation.yaml`, `.sdd/product.md`, `.sdd/architecture.md` | Ruta del contrato de comportamiento | brief.md@1 |
 | 2026-11-01 | `CLAUDE.md` (local, sin versionar) | Nota sobre `openspec/` | Q-02 |
 | 2026-11-01 | `docs/base-standards.md` | Puntero a `docs/behaviour/` en su lista de documentos | design.md@2, R1-04 |
+| 2026-11-01 | T-01: `.sdd/documentation.yaml`, `product.md`, `architecture.md`, `docs/documentation-standards.md`, `docs/base-standards.md` y `README.md` redirigidos a `docs/behaviour/` | Siguen con `openspec` el resto del README (T-02 y T-03), `architecture.md` 10.1 y `docs/development_guide.md` (T-03) | plan.md T-01 |
 
 ---
 
