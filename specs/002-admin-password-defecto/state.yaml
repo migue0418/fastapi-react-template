@@ -5,11 +5,11 @@ feature: F002
 title: "Producción rechaza la contraseña de administrador por defecto"
 roadmap-item: RM-01
 phase: release
-step: "Release: rama al día con main, comprobaciones en verde, PR #11 en borrador abierto (H-04)"
-status: waiting-for-human
-next: "Esperar al mantenedor. Con comentarios o checks nuevos, volver a ejecutar /sdd-kit:sdd-release; tras el merge, ejecutarlo de nuevo para cerrar la feature."
+step: "Release: PR #11 fusionado en main por el mantenedor; rama de la feature limpiada"
+status: done
+next: "Ninguno. Siguiente ítem listo del roadmap: ejecutar /sdd-kit:sdd-define."
 
-waiting-for-human: [H-04]
+waiting-for-human: []
 blocked-by: []
 
 tasks:
@@ -39,3 +39,4 @@ history:
   - "2026-11-01 verify/run 1: evidencia pass en feae99c (100 backend, 24 frontend, arranque real rechazado); feature-r1 approve, R1-02 corregido, R1-01 y R1-03 rechazados con motivo; la feature pasa a Document"
   - "2026-11-01 document/close: architecture@3, product@3, constitution@1.1.1, roadmap@4, docs/behaviour/deployment.md y .example.env actualizados; RM-01 cerrado, RM-10 al inbox; la feature pasa a Release"
   - "2026-11-01 release/pr: rama al día con main (0 por detrás); 100 backend, 24 frontend, lint y build en verde; sin chores de release; PR #11 en borrador abierto (H-04)"
+  - "2026-11-02 release/close: PR #11 fusionado en main (e44d8e9, 2026-11-01); H-04 respondida; rama remota ya borrada, local borrada; RM-01 entregado y RM-10 en el inbox de main; la feature queda done"
