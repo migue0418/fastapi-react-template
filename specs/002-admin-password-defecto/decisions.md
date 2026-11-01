@@ -45,9 +45,9 @@ feature: F002
 - **Context:** Ver `design.md`. Una tarea (T-01). A revisar: (1) `hide_input_in_errors=True` en `Settings`, porque sin él pydantic imprime `ChangeMe123!` en el error (comprobado con una sonda; afecta también al error de `SECRET_KEY`, que pierde solo el fragmento `input_value`); (2) AC-05.2 (archivos de `.sdd/`) no tiene tarea: lo entrega Document (R1-03, rechazado con motivo en reviews/design-r1-answers.md); (3) ASM-03: si fallan a la vez `SECRET_KEY` y `ADMIN_PASSWORD`, el mensaje nombra solo `SECRET_KEY`.
 - **Options:** Aprobar, aprobar con cambios o replantear
 - **Recommendation (not binding):** Aprobar: es el cambio mínimo que cumple los requirements y no hay decisiones difíciles de revertir.
-- **Status:** Open
-- **Answer:** —
-- **Decided on:** —
+- **Status:** Answered
+- **Answer:** "Aprobar (Recomendado)" (aprueba design.md@2, incluidas la desviación de AC-05.2 y ASM-03)
+- **Decided on:** 2026-11-01
 
 ---
 
