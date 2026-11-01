@@ -2,7 +2,7 @@
 artifact: design
 feature: F001
 status: draft
-version: 2
+version: 3
 upstream: [brief.md@2, requirements.md@1]
 ---
 
@@ -107,7 +107,7 @@ CLAUDE.md local ──► alineado, fuera de git                              (T
 - **Depends on:** `.gitignore`, que ya ignora el archivo, y C-06, que lo localiza y lo comprueba
 - **On failure:** Si el archivo no existe en el directorio de trabajo del mantenedor o no se puede editar, T-04 queda retenida: no se crea el archivo y su comprobación falla, de modo que la feature no puede pasar Verify. Si se deshace el merge de T-04, la línea se restaura a mano, porque git no la gestiona.
 
-El cambio se hace en T-04, la última tarea de Build, y no después de Verify. Verify tiene que demostrar AC-08.1 con una comprobación que pase, y en ese momento la carpeta ya está retirada en la rama. El directorio principal del mantenedor no se identifica por la copia de trabajo de la tarea, sino por `git rev-parse --git-common-dir`, que apunta a él también desde una copia de trabajo secundaria.
+El cambio se hace en T-04, la última tarea de Build, y no después de Verify. Verify tiene que demostrar AC-08.1 con una comprobación que pase, y en ese momento la carpeta ya está retirada en la rama. El directorio principal del mantenedor no se identifica por la copia de trabajo de la tarea, sino por `git rev-parse --git-common-dir`, que apunta a él también desde una copia de trabajo secundaria. Por eso T-04 debe ejecutarse en un worktree enlazado de este repositorio (`git worktree add`), no en un clon aparte; en un clon la comprobación fallaría y la tarea quedaría retenida.
 
 ### C-06: Comprobaciones de aceptación de la feature
 
@@ -228,7 +228,7 @@ ASM-01 y ASM-02 siguen como en `brief.md`.
 | T-03 | `openspec/` retirado e instrucciones alineadas | AC-02.1, AC-02.2, AC-04.1, AC-04.2, AC-05.3, AC-06.1, AC-07.1 | `backend-testing`, `packaging-and-deployment` | T-02 |
 | T-04 | `CLAUDE.md` local actualizado y comprobado | AC-08.1 | `backend-testing` | T-03 |
 
-T-01 deja hecha la parte de `docs/documentation-standards.md` de AC-05.3, y T-03 completa la de `docs/development_guide.md` y añade su test. NFR-01 y NFR-02 no son criterios de una tarea: T-01 prepara NFR-02 y añade su test, cada tarea ejecuta la suite de backend, T-03 ejecuta el build de Docker, y ambos se demuestran en Verify.
+T-01 añade también el puntero a `docs/behaviour/` en `docs/base-standards.md`, que ningún criterio exige pero el catálogo de documentación sí, y lo comprueba la revisión de la tarea. T-01 deja hecha la parte de `docs/documentation-standards.md` de AC-05.3, y T-03 completa la de `docs/development_guide.md` y añade su test. NFR-01 y NFR-02 no son criterios de una tarea: T-01 prepara NFR-02 y añade su test, cada tarea ejecuta la suite de backend, T-03 ejecuta el build de Docker, y ambos se demuestran en Verify.
 
 ---
 
