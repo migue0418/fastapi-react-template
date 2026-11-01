@@ -5,11 +5,11 @@ feature: F002
 title: "Producción rechaza la contraseña de administrador por defecto"
 roadmap-item: RM-01
 phase: define
-step: "brief.md@1 puesto a aprobación (H-01)"
+step: "requirements.md@1 puesto a aprobación (H-02); brief.md@1 aprobado (H-01)"
 status: waiting-for-human
-next: "Si el mantenedor aprueba H-01, escribir requirements.md@1 desde brief.md@1 y ponerlo a aprobación (H-02)."
+next: "Si el mantenedor aprueba H-02, marcar requirements.md@1 como approved, pasar la feature a Design y recomendar /clear. Si pide cambios, revisar requirements.md y subir su versión."
 
-waiting-for-human: [H-01]
+waiting-for-human: [H-02]
 blocked-by: []
 
 tasks: {}
@@ -22,3 +22,5 @@ history:
   - "2026-11-01 define/open: feature abierta en feature/002-admin-password-defecto para RM-01; camino pequeño confirmado (Q-01)"
   - "2026-11-01 define/discover: ronda 1 respondida (Q-01 a Q-03), todas con la respuesta recomendada"
   - "2026-11-01 define/brief: brief.md@1 puesto a aprobación (H-01)"
+  - "2026-11-01 define/brief: brief.md@1 aprobado por el mantenedor (H-01)"
+  - "2026-11-01 define/requirements: requirements.md@1 escrito desde brief.md@1 y puesto a aprobación (H-02)"

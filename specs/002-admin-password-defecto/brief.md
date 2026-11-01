@@ -1,7 +1,7 @@
 ---
 artifact: brief
 feature: F002
-status: draft
+status: approved
 version: 1
 upstream: []
 ---

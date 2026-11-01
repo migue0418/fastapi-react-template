@@ -21,6 +21,18 @@ feature: F002
 - **Context:** Ver `brief.md`. Alcance según Q-01 a Q-03. Supuestos a revisar: ASM-01 (comparación exacta, sensible a mayúsculas) y ASM-02 (el mensaje no imprime contraseñas). Riesgo aceptado: RISK-01.
 - **Options:** Aprobar, aprobar con cambios o replantear
 - **Recommendation (not binding):** Aprobar: el alcance es el de RM-01 con las tres respuestas de la ronda 1.
+- **Status:** Answered
+- **Answer:** "Apruebo el brief de la spec 002" (aprueba brief.md@1)
+- **Decided on:** 2026-11-01
+
+### H-02: Aprobar los requirements
+
+- **Raised in:** Define / aprobación de los requirements
+- **Concerns:** requirements.md@1 (construido desde brief.md@1)
+- **Blocks:** Cerrar Define y pasar a Design
+- **Context:** Ver `requirements.md`. Supuestos a revisar: ASM-03 (si fallan a la vez `SECRET_KEY` y `ADMIN_PASSWORD`, basta con que el mensaje nombre una de las dos) y el criterio AC-01.3 (la regla se aplica aunque el administrador ya exista y aunque la base no responda). Cinco requisitos y dos cualidades.
+- **Options:** Aprobar, aprobar con cambios o replantear
+- **Recommendation (not binding):** Aprobar: cubren todo el alcance del brief sin añadir nada.
 - **Status:** Open
 - **Answer:**
 - **Decided on:**
