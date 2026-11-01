@@ -63,8 +63,8 @@ documents:
     format: "Estructura actual, en español"
     status: active
 
-  - path: openspec/specs/
-    purpose: "Contrato detallado del comportamiento actual, por área. RM-08 lo mueve a docs/behaviour/ y actualiza esta entrada."
+  - path: docs/behaviour/
+    purpose: "Contrato detallado del comportamiento actual, por área."
     required-by: team
     update-when: ["cambia el comportamiento observable de auth, users, roles, health, despliegue o renombrado"]
     format: "Una spec por área, con requisitos y escenarios Given/When/Then"
