@@ -5,11 +5,11 @@ feature: F002
 title: "Producción rechaza la contraseña de administrador por defecto"
 roadmap-item: RM-01
 phase: design
-step: "Define terminado: brief.md@1 y requirements.md@1 aprobados"
-status: ready
-next: "Ejecutar /sdd-kit:sdd-design: diseño con una sola tarea (camino pequeño, Q-01), a partir de brief.md@1 y requirements.md@1."
+step: "Diseño design.md@2 revisado (design-r1: approve) y puesto a aprobación (H-03)"
+status: waiting-for-human
+next: "Recoger la respuesta a H-03. Si aprueba: marcar design.md como approved, escribir plan.md (T-01), comprobar su consistencia y cerrar Design hacia Build."
 
-waiting-for-human: []
+waiting-for-human: [H-03]
 blocked-by: []
 
 tasks: {}
@@ -25,3 +25,6 @@ history:
   - "2026-11-01 define/brief: brief.md@1 aprobado por el mantenedor (H-01)"
   - "2026-11-01 define/requirements: requirements.md@1 escrito desde brief.md@1 y puesto a aprobación (H-02)"
   - "2026-11-01 define/close: requirements.md@1 aprobado (H-02); la feature pasa a Design"
+  - "2026-11-01 design/design: design.md@1 escrito; sonda de pydantic (hide_input_in_errors)"
+  - "2026-11-01 design/review: design-r1 approve (0 bloqueantes, 3 menores); design.md@2 responde R1-01 y R1-02, R1-03 rechazado con motivo"
+  - "2026-11-01 design/approval: design.md@2 puesto a aprobación (H-03)"

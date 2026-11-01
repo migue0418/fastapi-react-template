@@ -37,6 +37,18 @@ feature: F002
 - **Answer:** "Aprobar (Recomendado)" (aprueba requirements.md@1, incluido ASM-03)
 - **Decided on:** 2026-11-01
 
+### H-03: Aprobar el diseño
+
+- **Raised in:** Design / aprobación del diseño
+- **Concerns:** design.md@2 (construido desde brief.md@1 y requirements.md@1); revisión design-r1 (approve, 0 bloqueantes, 3 menores)
+- **Blocks:** Escribir el plan y pasar a Build
+- **Context:** Ver `design.md`. Una tarea (T-01). A revisar: (1) `hide_input_in_errors=True` en `Settings`, porque sin él pydantic imprime `ChangeMe123!` en el error (comprobado con una sonda; afecta también al error de `SECRET_KEY`, que pierde solo el fragmento `input_value`); (2) AC-05.2 (archivos de `.sdd/`) no tiene tarea: lo entrega Document (R1-03, rechazado con motivo en reviews/design-r1-answers.md); (3) ASM-03: si fallan a la vez `SECRET_KEY` y `ADMIN_PASSWORD`, el mensaje nombra solo `SECRET_KEY`.
+- **Options:** Aprobar, aprobar con cambios o replantear
+- **Recommendation (not binding):** Aprobar: es el cambio mínimo que cumple los requirements y no hay decisiones difíciles de revertir.
+- **Status:** Open
+- **Answer:** —
+- **Decided on:** —
+
 ---
 
 ## 2. Discover Questions
@@ -71,6 +83,9 @@ feature: F002
 | Date | Decision | Why | Refs |
 |---|---|---|---|
 | 2026-11-01 | La feature se abre con el número 002 y la rama `feature/002-admin-password-defecto`. | Siguiente número libre (F001 ya existe) y convención de EP-001. | state.yaml |
+| 2026-11-01 | Design: se comprueba `ADMIN_PASSWORD` en el validador existente de `Settings`, con una constante `DEFAULT_ADMIN_PASSWORD` y `hide_input_in_errors=True`; sin ADR, sin cambios en `stack.yaml`, sin one-way doors. | Sigue el patrón de `SECRET_KEY` (CON-02), y la sonda mostró que sin ocultar la entrada el error imprime la contraseña (AC-02.2, NFR-01). Reversible y local a un archivo. | design.md@2, C-01, 9.1 |
+| 2026-11-01 | Design: un solo error si fallan a la vez `SECRET_KEY` y `ADMIN_PASSWORD`; nombra `SECRET_KEY`. | Aplica ASM-03, aceptado en H-02. | design.md@2, IF-01 |
+| 2026-11-01 | Design: AC-05.2 lo entrega Document, sin tarea; `docs/behaviour/` no cambia en T-01. | Los archivos de `.sdd/` solo cambian en Document. Sometido a aprobación en H-03. | design.md@2, 11 y 12; reviews/design-r1-answers.md (R1-02, R1-03) |
 
 ---
 

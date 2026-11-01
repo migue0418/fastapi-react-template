@@ -2,7 +2,7 @@
 artifact: design
 feature: F002
 status: draft
-version: 1
+version: 2
 upstream: [brief.md@1, requirements.md@1]
 ---
 
@@ -83,6 +83,8 @@ Settings() ──► validate_production_secrets
 
 AC-05.2 (los archivos de `.sdd/`) no es un componente de la feature: lo entrega la fase Document (ver 11 y 12).
 
+`docs/behaviour/` (impacto documental de `decisions.md`, sección 4): `deployment.md` describe Docker y Compose, y `auth.md` cita `ADMIN_PASSWORD` solo para el administrador inicial; ninguno describe la configuración de producción, así que T-01 no los cambia. Document comprueba si alguno debe recoger el rechazo y lo registra en `decisions.md`.
+
 ---
 
 ## 4. Interfaces
@@ -119,6 +121,7 @@ La feature no introduce ni cambia datos, y no necesita migración Alembic. No ca
 ## 7. Qualities
 
 - **NFR-01 (el valor de la contraseña no se imprime):** el mensaje del validador no contiene ningún valor, y `hide_input_in_errors=True` impide que pydantic añada `input_value` con el contenido de la configuración. Verified by: un test que fija `ADMIN_PASSWORD=ChangeMe123!` en producción y comprueba que `str(error)` no contiene `ChangeMe123!` (AC-02.2), más la inspección de la salida real de `uv run uvicorn app.main:app` en Verify.
+- **AC-01.3 y el fallo al arrancar (REQ-01):** la regla vive en `Settings`, que `create_app()` carga al importar `app.main`, antes del `lifespan`. Verified by: un test que fija producción, `SECRET_KEY` válida, `ADMIN_PASSWORD` por defecto y un `DATABASE_URL` que apunta a un puerto sin servidor, y comprueba que `create_app()` lanza `ValidationError` sin intentar conectar (con la base, ni creada ni sin responder, el resultado es el mismo); y en Verify, el arranque real con `uv run uvicorn app.main:app` en producción, que debe terminar antes de abrir el puerto y con el mensaje de REQ-02.
 - **NFR-02 (compatibilidad con las pruebas existentes):** la regla solo actúa con `ENVIRONMENT=production`, que los tests existentes no usan. Verified by: la suite completa, `cd backend && uv run pytest -q`, con PostgreSQL; resultado esperado 87 de 87 más los tests nuevos, sin editar los valores de `ADMIN_PASSWORD` ni de `ENVIRONMENT` de los existentes.
 
 ---
