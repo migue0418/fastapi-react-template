@@ -5,14 +5,14 @@ feature: F001
 title: "Retirar OpenSpec"
 roadmap-item: RM-08
 phase: build
-step: "T-04 implementada en task/001-T-04 (2b96076); revisión de la tarea, ronda 1"
+step: "T-04 aprobada en la ronda 1 (1 menor rechazado con motivo); pendiente de fusionar"
 status: in-progress
-next: "Atender la revisión de T-04; si aprueba, fusionarla y pasar la suite; cerrar Build."
+next: "Fusionar T-04, pasar la suite y cerrar Build."
 
 waiting-for-human: []
 blocked-by: []
 
-tasks: { T-01: merged, T-02: merged, T-03: merged, T-04: in-review }
+tasks: { T-01: merged, T-02: merged, T-03: merged, T-04: approved }
 
 known-failures: []
 
@@ -39,3 +39,4 @@ history:
   - "2026-11-01 build/T-03: la revisión de la ronda 1 aprueba (1 menor); pasa a approved"
   - "2026-11-01 build/T-03: R1-01 corregido (ed14b0d); fusionada con la suite en verde; pasa a merged"
   - "2026-11-01 build/T-04: implementada (2b96076); CLAUDE.md local editado; pasa a in-review"
+  - "2026-11-01 build/T-04: la revisión de la ronda 1 aprueba (1 menor, rechazado con motivo); pasa a approved"
