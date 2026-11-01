@@ -33,9 +33,9 @@ feature: F001
 - **Context:** Ver `requirements.md`. Elecciones a confirmar: la lista cerrada de menciones históricas en AC-07.1 y la comprobación del build de Docker en NFR-01.
 - **Options:** Aprobar, aprobar con cambios o replantear
 - **Recommendation (not binding):** Aprobar: cubren el alcance del brief sin ampliarlo.
-- **Status:** Open
-- **Answer:**
-- **Decided on:**
+- **Status:** Decided
+- **Answer:** "Apruebo (Recomendado)"
+- **Decided on:** 2026-11-01
 
 ---
 
