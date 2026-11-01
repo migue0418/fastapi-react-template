@@ -1,0 +1,24 @@
+# Where the feature stands: the first file read when the feature is resumed.
+# Overwritten at every checkpoint.
+
+feature: F002
+title: "Producción rechaza la contraseña de administrador por defecto"
+roadmap-item: RM-01
+phase: define
+step: "brief.md@1 puesto a aprobación (H-01)"
+status: waiting-for-human
+next: "Si el mantenedor aprueba H-01, escribir requirements.md@1 desde brief.md@1 y ponerlo a aprobación (H-02)."
+
+waiting-for-human: [H-01]
+blocked-by: []
+
+tasks: {}
+
+known-failures: []
+
+stale: []
+
+history:
+  - "2026-11-01 define/open: feature abierta en feature/002-admin-password-defecto para RM-01; camino pequeño confirmado (Q-01)"
+  - "2026-11-01 define/discover: ronda 1 respondida (Q-01 a Q-03), todas con la respuesta recomendada"
+  - "2026-11-01 define/brief: brief.md@1 puesto a aprobación (H-01)"
