@@ -1,0 +1,23 @@
+# Where the feature stands: the first file read when the feature is resumed.
+# Overwritten at every checkpoint.
+
+feature: F001
+title: "Retirar OpenSpec"
+roadmap-item: RM-08
+phase: define
+step: "Brief puesto a aprobación"
+status: waiting-for-human
+next: "Recoger la respuesta a H-01; si se aprueba, escribir los requirements."
+
+waiting-for-human: [H-01]
+blocked-by: []
+
+tasks: {}
+
+known-failures: []
+
+stale: []
+
+history:
+  - "2026-11-01 define/open: feature abierta en feature/001-retirar-openspec para RM-08"
+  - "2026-11-01 define/brief: brief.md@1 puesto a aprobación (H-01)"
