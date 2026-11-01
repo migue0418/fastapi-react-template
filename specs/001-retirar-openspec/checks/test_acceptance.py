@@ -34,11 +34,13 @@ def disk_text(path: Path) -> str:
 
 
 def test_f001_ac_01_1_six_areas_present():
+    """F001:AC-01.1"""
     present = sorted(p.stem for p in BEHAVIOUR.glob("*.md"))
     assert present == sorted(AREAS)
 
 
 def test_f001_ac_01_2_content_unchanged():
+    """F001:AC-01.2"""
     for area in AREAS:
         if area == "project-rename":
             continue
@@ -47,6 +49,7 @@ def test_f001_ac_01_2_content_unchanged():
 
 
 def test_f001_ac_05_1_catalogue_entry():
+    """F001:AC-05.1"""
     text = disk_text(ROOT / ".sdd" / "documentation.yaml")
     entries = re.split(r"\n(?=  - path: )", text)
     entry = [e for e in entries if e.startswith("  - path: docs/behaviour/")]
@@ -57,6 +60,7 @@ def test_f001_ac_05_1_catalogue_entry():
 
 
 def test_f001_ac_05_2_product_and_architecture_references():
+    """F001:AC-05.2"""
     for name in ("product.md", "architecture.md"):
         text = disk_text(ROOT / ".sdd" / name)
         assert "openspec/specs" not in text, name
@@ -64,6 +68,7 @@ def test_f001_ac_05_2_product_and_architecture_references():
 
 
 def test_f001_nfr_02_history_traceable():
+    """F001:NFR-02"""
     for area in AREAS:
         hashes = git(
             "log", "--follow", "--format=%H", "--", f"docs/behaviour/{area}.md"
