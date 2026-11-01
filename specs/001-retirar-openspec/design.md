@@ -1,7 +1,7 @@
 ---
 artifact: design
 feature: F001
-status: draft
+status: approved
 version: 3
 upstream: [brief.md@2, requirements.md@1]
 ---

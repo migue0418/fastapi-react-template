@@ -45,9 +45,9 @@ feature: F001
 - **Context:** Ver `design.md`. Revisado en `reviews/design-r1.md` y `reviews/design-r2.md`, sin hallazgos rechazados. Elecciones a confirmar: no ejecutar `up`, `/health`, usuario y puerto de la guía de verificación, aunque EP-006 es MUST; y editar `CLAUDE.md` en T-04, antes de Verify, en vez de después (Q-02).
 - **Options:** Aprobar, aprobar con cambios o replantear
 - **Recommendation (not binding):** Aprobar: es el enfoque más simple que cumple los requirements, y las dos elecciones tienen su motivo en la sección 3 de este registro.
-- **Status:** Open
-- **Answer:**
-- **Decided on:**
+- **Status:** Decided
+- **Answer:** "Apruebo (Recomendado)"
+- **Decided on:** 2026-11-01
 
 ---
 
