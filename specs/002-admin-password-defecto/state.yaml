@@ -4,10 +4,10 @@
 feature: F002
 title: "Producción rechaza la contraseña de administrador por defecto"
 roadmap-item: RM-01
-phase: verify
-step: "Build terminado: T-01 integrada en la feature; suite completa en verde (100 backend, 24 frontend)"
+phase: document
+step: "Verify run 1 terminado: evidencia en pass (feae99c) y revisión de la feature approve (0 bloqueantes, 3 menores)"
 status: ready
-next: "Ejecutar /sdd-kit:sdd-verify: comprobar la feature completa (incluido arrancar uvicorn e inspeccionar su salida, NFR-01) y dejar la evidencia."
+next: "Ejecutar /sdd-kit:sdd-document: entregar AC-05.2 (.sdd/architecture.md, product.md, roadmap.md, NC-007 de constitution.md), cerrar RM-01 y añadir al inbox del roadmap el seguimiento de R1-01 (aislar backend/.env en el test de AC-01.3)."
 
 waiting-for-human: []
 blocked-by: []
@@ -36,3 +36,4 @@ history:
   - "2026-11-01 build/T-01: implementada en task/002-T-01@5e2b5ef (100 tests en verde); en revisión"
   - "2026-11-01 build/T-01: revisión r1 approve (0 bloqueantes, 1 menor rechazado con motivo); integrada en la feature; 100 tests de backend y 24 de frontend en verde"
   - "2026-11-01 build/close: todas las tareas integradas; la feature pasa a Verify"
+  - "2026-11-01 verify/run 1: evidencia pass en feae99c (100 backend, 24 frontend, arranque real rechazado); feature-r1 approve, R1-02 corregido, R1-01 y R1-03 rechazados con motivo; la feature pasa a Document"

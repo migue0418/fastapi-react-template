@@ -1,0 +1,3 @@
+R1-01: rejected: el hallazgo es real pero menor y no afecta a ningún criterio ni calidad hoy (la evidencia pasó con el `backend/.env` actual); Verify no cambia código ni tests. Se lleva como seguimiento al roadmap en Document, para aislar el archivo de entorno en ese test (ASM-04).
+R1-02: fixed (evidence/README.md run 1: el arranque con otra contraseña pasa de la tabla de checks a los límites; no es un check del proyecto y no se cuenta como pasado)
+R1-03: rejected: AC-01.3 pide que la regla se aplique sin depender de la base; la validación vive solo en `Settings` y falla antes del lifespan, y el arranque real con base alcanzable pero vacía falló igual. El caso del administrador ya creado consta como límite en la evidencia.

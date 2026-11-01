@@ -87,6 +87,7 @@ feature: F002
 | 2026-11-01 | Design: un solo error si fallan a la vez `SECRET_KEY` y `ADMIN_PASSWORD`; nombra `SECRET_KEY`. | Aplica ASM-03, aceptado en H-02. | design.md@2, IF-01 |
 | 2026-11-01 | Design: AC-05.2 lo entrega Document, sin tarea; `docs/behaviour/` no cambia en T-01. | Los archivos de `.sdd/` solo cambian en Document. Sometido a aprobación en H-03. | design.md@2, 11 y 12; reviews/design-r1-answers.md (R1-02, R1-03) |
 | 2026-11-01 | Build T-01: mensaje «ADMIN_PASSWORD no puede ser el valor por defecto en producción. Define otra contraseña en la variable ADMIN_PASSWORD.»; la comprobación va tras la de `SECRET_KEY` (ASM-03); `hide_input_in_errors=True` bastó en `Settings` real (RISK-03 no se materializó); los tests aíslan el entorno con una fixture autouse y `_env_file=None` (ASM-04). | Estilo del mensaje de `SECRET_KEY`, sin imprimir valores; aplica el plan. | plan.md@1 T-01, task/002-T-01@5e2b5ef |
+| 2026-11-01 | Verify r1: evidencia en `pass` (commit feae99c) y revisión de la feature `approve` (0 bloqueantes, 3 menores). R1-01 (el test de AC-01.3 lee `backend/.env`) no se corrige en Verify: se lleva como seguimiento al roadmap en Document. R1-02 se corrige en la evidencia; R1-03 se rechaza con motivo. | Verify no cambia código ni tests; R1-01 no afecta a ningún criterio hoy. | evidence/README.md run 1, reviews/feature-r1.md, reviews/feature-r1-answers.md |
 
 ---
 
