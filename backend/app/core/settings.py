@@ -10,6 +10,7 @@ PROJECT_ROOT = BACKEND_DIR.parent
 DEFAULT_DATABASE_URL = (
     "postgresql+asyncpg://postgres:postgres@127.0.0.1:5432/fastapi_template"
 )
+DEFAULT_ADMIN_PASSWORD = "ChangeMe123!"
 
 
 class Settings(BaseSettings):
@@ -20,13 +21,14 @@ class Settings(BaseSettings):
     refresh_token_expire_days: int = 7
     database_url: str = DEFAULT_DATABASE_URL
     admin_username: str = "admin"
-    admin_password: str = "ChangeMe123!"
+    admin_password: str = DEFAULT_ADMIN_PASSWORD
     frontend_url: str = "http://localhost:5173"
 
     model_config = SettingsConfigDict(
         env_file=BACKEND_DIR / ".env",
         env_file_encoding="utf-8",
         extra="ignore",
+        hide_input_in_errors=True,
     )
 
     @model_validator(mode="after")
@@ -35,6 +37,11 @@ class Settings(BaseSettings):
             raise ValueError(
                 "SECRET_KEY debe tener al menos 32 caracteres en producción. "
                 "Genera una con: python -c \"import secrets; print(secrets.token_hex(32))\""
+            )
+        if self.is_production and self.admin_password == DEFAULT_ADMIN_PASSWORD:
+            raise ValueError(
+                "ADMIN_PASSWORD no puede ser el valor por defecto en producción. "
+                "Define otra contraseña en la variable ADMIN_PASSWORD."
             )
         return self
 
