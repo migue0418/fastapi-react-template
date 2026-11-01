@@ -65,6 +65,9 @@ feature: F001
 |---|---|---|---|
 | 2026-11-01 | No preguntar de nuevo el destino de `openspec/` | El mantenedor ya lo decidió en el onboarding: mover las specs y borrar el resto | RM-08 |
 | 2026-11-01 | Corregir la fuente de CON-01 tras la aprobación, sin cambiar el alcance | Citaba EP-003 sin relación con la restricción; la versión aprobada fue brief.md@1 y la corregida es brief.md@2 | H-01, CON-01 |
+| 2026-11-01 | Archivos planos `docs/behaviour/<área>.md` | Evita seis carpetas de un archivo y el nombre `spec` del flujo retirado; `git log --follow` funciona igual | design.md@1, IF-02 |
+| 2026-11-01 | Mover las specs en un commit propio, sin cambios de contenido | Asegura la detección del movimiento para NFR-02 | design.md@1, NFR-02 |
+| 2026-11-01 | Comprobar AC-07.1 y AC-03.3 con una búsqueda, sin test de repositorio | El test tendría que nombrar el término buscado y fallaría en los proyectos derivados | design.md@1 |
 
 ---
 
