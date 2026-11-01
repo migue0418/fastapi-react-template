@@ -5,14 +5,14 @@ feature: F001
 title: "Retirar OpenSpec"
 roadmap-item: RM-08
 phase: build
-step: "T-03 aprobada en la ronda 1 (1 menor, R1-01); corrigiendo el menor antes de fusionar"
+step: "T-03 fusionada; suite de backend 87/87 y 14 comprobaciones de aceptación en verde"
 status: in-progress
-next: "Fusionar T-03 tras corregir R1-01 y pasar la suite; después T-04."
+next: "Implementar T-04 en un worktree enlazado de este repositorio."
 
 waiting-for-human: []
 blocked-by: []
 
-tasks: { T-01: merged, T-02: merged, T-03: approved, T-04: pending }
+tasks: { T-01: merged, T-02: merged, T-03: merged, T-04: pending }
 
 known-failures: []
 
@@ -37,3 +37,4 @@ history:
   - "2026-11-01 build/T-02: la revisión de la ronda 1 aprueba sin hallazgos; fusionada con la suite en verde; pasa a merged"
   - "2026-11-01 build/T-03: implementada (dd19456); pasa a in-review"
   - "2026-11-01 build/T-03: la revisión de la ronda 1 aprueba (1 menor); pasa a approved"
+  - "2026-11-01 build/T-03: R1-01 corregido (ed14b0d); fusionada con la suite en verde; pasa a merged"
