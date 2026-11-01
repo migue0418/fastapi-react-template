@@ -1,8 +1,8 @@
 ---
 artifact: brief
 feature: F001
-status: draft
-version: 1
+status: approved
+version: 2
 upstream: []
 ---
 
@@ -84,7 +84,7 @@ El mantenedor y sus agentes encuentran el contrato de comportamiento en `docs/be
 
 ### CON-01: El historial de git se conserva
 
-- **Source:** Decisión del mantenedor en el onboarding: lo borrado "sigue en el historial de git". EP-003 no permite reescribirlo fuera de un PR.
+- **Source:** Decisión del mantenedor en el onboarding: lo borrado sigue en el historial de git.
 
 ### CON-02: El contrato se mueve a `docs/behaviour/`
 

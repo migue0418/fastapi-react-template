@@ -5,11 +5,11 @@ feature: F001
 title: "Retirar OpenSpec"
 roadmap-item: RM-08
 phase: define
-step: "Brief puesto a aprobación"
+step: "Requirements puestos a aprobación"
 status: waiting-for-human
-next: "Recoger la respuesta a H-01; si se aprueba, escribir los requirements."
+next: "Recoger la respuesta a H-02; si se aprueban, cerrar Define y pasar a Design."
 
-waiting-for-human: [H-01]
+waiting-for-human: [H-02]
 blocked-by: []
 
 tasks: {}
@@ -21,3 +21,5 @@ stale: []
 history:
   - "2026-11-01 define/open: feature abierta en feature/001-retirar-openspec para RM-08"
   - "2026-11-01 define/brief: brief.md@1 puesto a aprobación (H-01)"
+  - "2026-11-01 define/brief: brief.md@1 aprobado (H-01); brief.md@2 corrige la fuente de CON-01"
+  - "2026-11-01 define/requirements: requirements.md@1 puesto a aprobación (H-02)"

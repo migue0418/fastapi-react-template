@@ -21,6 +21,18 @@ feature: F001
 - **Context:** Ver `brief.md`.
 - **Options:** Aprobar, aprobar con cambios o replantear
 - **Recommendation (not binding):** Aprobar: el alcance es el que el mantenedor decidió en el onboarding, con las dos respuestas de la ronda 1.
+- **Status:** Decided
+- **Answer:** "Apruebo (Recomendado)"
+- **Decided on:** 2026-11-01
+
+### H-02: Aprobar los requirements
+
+- **Raised in:** Define / aprobación de los requirements
+- **Concerns:** requirements.md@1, construido desde brief.md@2
+- **Blocks:** Pasar a Design
+- **Context:** Ver `requirements.md`. Elecciones a confirmar: la lista cerrada de menciones históricas en AC-07.1 y la comprobación del build de Docker en NFR-01.
+- **Options:** Aprobar, aprobar con cambios o replantear
+- **Recommendation (not binding):** Aprobar: cubren el alcance del brief sin ampliarlo.
 - **Status:** Open
 - **Answer:**
 - **Decided on:**
@@ -52,6 +64,7 @@ feature: F001
 | Date | Decision | Why | Refs |
 |---|---|---|---|
 | 2026-11-01 | No preguntar de nuevo el destino de `openspec/` | El mantenedor ya lo decidió en el onboarding: mover las specs y borrar el resto | RM-08 |
+| 2026-11-01 | Corregir la fuente de CON-01 tras la aprobación, sin cambiar el alcance | Citaba EP-003 sin relación con la restricción; la versión aprobada fue brief.md@1 y la corregida es brief.md@2 | H-01, CON-01 |
 
 ---
 
