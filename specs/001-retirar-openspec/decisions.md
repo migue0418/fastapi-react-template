@@ -49,6 +49,18 @@ feature: F001
 - **Answer:** "Apruebo (Recomendado)"
 - **Decided on:** 2026-11-01
 
+### H-04: Hacer merge del PR #9
+
+- **Raised in:** Release / pull request
+- **Concerns:** PR https://github.com/migue0418/fastapi-react-template/pull/9, rama `feature/001-retirar-openspec` en `1265f0b`
+- **Blocks:** Cerrar la feature
+- **Context:** PR en borrador hacia `main`. Al hacer merge se acepta: el build de la imagen comprobado sin `docker compose up` ni `/health`; que AC-08.1 solo se reproduce en la máquina del mantenedor; ASM-01 y ASM-02 del brief. Sin fallos previos ni calidades sin verificar.
+- **Options:** Hacer merge, pedir cambios o cerrar sin merge
+- **Recommendation (not binding):** Hacer merge: todos los criterios y calidades pasan y la revisión de la feature aprobó sin bloqueantes.
+- **Status:** Open
+- **Answer:**
+- **Decided on:**
+
 ---
 
 ## 2. Discover Questions

@@ -5,11 +5,11 @@ feature: F001
 title: "Retirar OpenSpec"
 roadmap-item: RM-08
 phase: release
-step: "Document cerrado: documentación alineada y RM-08 cerrado en el roadmap"
-status: in-progress
-next: "Empezar Release: actualizar con main, comprobar de nuevo, subir la rama y abrir el PR en borrador."
+step: "Release: rama subida y PR #9 abierto en borrador; esperando el merge del mantenedor (H-04)"
+status: waiting-for-human
+next: "Revisar el estado del PR #9: si se fusiona, cerrar la feature; si hay comentarios o checks, encaminarlos."
 
-waiting-for-human: []
+waiting-for-human: [H-04]
 blocked-by: []
 
 tasks: { T-01: merged, T-02: merged, T-03: merged, T-04: merged }
@@ -44,3 +44,4 @@ history:
   - "2026-11-01 verify/run-1: evidencia escrita sobre df75bbd, resultado pass; pasa a la revisión de la feature"
   - "2026-11-01 verify/close: la revisión de la feature aprueba (3 menores rechazados con motivo); la feature pasa a Document"
   - "2026-11-01 document/close: roadmap v3, product v2 y architecture v2; RM-08 cerrado como entregado; la feature pasa a Release"
+  - "2026-11-01 release/pr: rama al día con main (de1d8a0), suite 87/87 y 15 comprobaciones en verde; PR #9 abierto en borrador (H-04)"
