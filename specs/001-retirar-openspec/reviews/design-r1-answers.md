@@ -1,0 +1,6 @@
+R1-01: fixed (design.md@2)
+R1-02: fixed (design.md@2)
+R1-03: fixed (design.md@2)
+R1-04: fixed (design.md@2)
+R1-05: fixed (design.md@2)
+R1-06: fixed (design.md@2)

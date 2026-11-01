@@ -1,6 +1,6 @@
 ---
 artifact: architecture
-version: 1
+version: 2
 status: active
 owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 ---
@@ -236,7 +236,7 @@ Razones reconstruidas a partir del código y la documentación, no registradas o
 - **Alternatives:** Desconocidas.
 - **Consequences:** Build y versión unidos; la ruta comodín debe registrarse al final.
 - **Status:** Accepted
-- **Reference:** `openspec/specs/deployment/spec.md`
+- **Reference:** `docs/behaviour/deployment.md`
 
 - **Decision:** Las migraciones se aplican en el arranque.
 - **Context:** Un único proceso y derivados sencillos.
@@ -329,8 +329,7 @@ Se comprueban por revisión; no hay comprobación automática.
 - `backend/tests/`: tests.
 - `frontend/src/{app,features,shared}/`: bootstrap, slices y código compartido.
 - `scripts/rename_project.py`: renombrado.
-- `docs/`: estándares y guías.
-- `openspec/`: material heredado (ver RM-08).
+- `docs/`: estándares, guías y `docs/behaviour/` (contrato de comportamiento).
 
 ### 10.2 Architecture-to-Code Mapping
 
@@ -349,7 +348,7 @@ La sección 3.1 nombra cada slice por su carpeta. No se observan discrepancias r
 - `docs/backend-standards.md`, `docs/frontend-standards.md`: patrones de cada área.
 - `docs/data-model.md`: entidades.
 - `docs/verification-guide.md`: cómo validar un cambio.
-- `openspec/specs/`: comportamiento detallado.
+- `docs/behaviour/`: comportamiento detallado.
 - `Dockerfile`, `docker-compose.yml`: despliegue.
 
 ---

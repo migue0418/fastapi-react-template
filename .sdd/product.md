@@ -1,6 +1,6 @@
 ---
 artifact: product
-version: 1
+version: 2
 status: active
 owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 ---
@@ -155,12 +155,12 @@ No hay otros interesados identificados.
 - **Identifier:** BR-02
 - **Rule:** Cinco intentos de login fallidos seguidos bloquean la cuenta 15 minutos, y el login responde igual si el usuario no existe, la contraseña es incorrecta o la cuenta está bloqueada.
 - **Rationale:** Frena los ataques de fuerza bruta sin revelar qué cuentas existen.
-- **Source:** `openspec/specs/auth/spec.md`
+- **Source:** `docs/behaviour/auth.md`
 
 - **Identifier:** BR-03
 - **Rule:** Reutilizar un refresh token ya revocado revoca todas las sesiones de ese usuario.
 - **Rationale:** La reutilización indica que un token puede estar comprometido.
-- **Source:** `openspec/specs/auth/spec.md`
+- **Source:** `docs/behaviour/auth.md`
 
 - **Identifier:** BR-04
 - **Rule:** Desactivar o eliminar un usuario, o cambiar o restablecer su contraseña, revoca sus refresh tokens.
@@ -243,7 +243,7 @@ Compromiso del mantenedor: producción segura primero, después integración con
 
 ## 10. References
 
-- `openspec/specs/`: contrato detallado del comportamiento actual, heredado de OpenSpec. RM-08 lo mueve a `docs/behaviour/`.
+- `docs/behaviour/`: contrato detallado del comportamiento actual, por área.
 - `docs/data-model.md`: entidades y reglas de datos.
 - `README.md`: cómo empezar un proyecto y cómo desarrollar.
 

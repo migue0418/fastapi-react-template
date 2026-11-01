@@ -1,0 +1,1 @@
+R1-01: rejected: AC-08.1 exige comprobar el `CLAUDE.md` local del mantenedor, que no se versiona (requirements.md@1, AC-08.1; design.md@3, C-05 y sección 8), así que el test solo puede pasar donde ese archivo existe. No forma parte de la suite de backend (design.md@3, C-06) y no se ejecuta en CI ni en proyectos derivados. Verify lo anota en la evidencia.

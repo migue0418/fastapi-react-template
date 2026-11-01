@@ -19,7 +19,6 @@ TEMPLATE_IDENTIFIER = "fastapi_template"
 TEMPLATE_PACKAGE_NAME = "fastapi-template"
 
 SCRIPT_PATH = "scripts/rename_project.py"
-EXCLUDED_PREFIXES = ("openspec/changes/archive/",)
 
 IDENTIFIER_PATTERN = re.compile(r"[a-z][a-z0-9]*(?:_[a-z0-9]+)*")
 # Los tests crean bases <identificador>_test_<32 hex> y PostgreSQL trunca a 63 bytes.
@@ -43,9 +42,9 @@ HELP = f"""Renombra un proyecto creado desde la plantilla.
   identificador   minúsculas, dígitos y guiones bajos (por ejemplo, gestor_bibliografico).
                   Es el nombre de la base de datos; con guiones, el de los paquetes.
 
-Reemplaza las variantes del nombre de la plantilla en los archivos versionados, salvo en
-openspec/changes/archive/ y en este script. El repositorio no puede tener cambios sin
-confirmar en archivos versionados."""
+Reemplaza las variantes del nombre de la plantilla en los archivos versionados de texto
+UTF-8, salvo en este script. El repositorio no puede tener cambios sin confirmar en
+archivos versionados."""
 
 
 class RenameError(Exception):
@@ -130,9 +129,7 @@ def list_candidate_files(root: Path) -> list[str]:
     return [
         relative
         for relative in result.stdout.split("\0")
-        if relative
-        and relative != SCRIPT_PATH
-        and not relative.startswith(EXCLUDED_PREFIXES)
+        if relative and relative != SCRIPT_PATH
     ]
 
 

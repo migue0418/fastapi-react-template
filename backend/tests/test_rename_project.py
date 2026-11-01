@@ -33,10 +33,10 @@ DISPLAY_NAME = "Gestor Bibliográfico"
 IDENTIFIER = "gestor_bibliografico"
 PACKAGE_NAME_LINE = re.compile(r'^name = "([^"]+)"', re.MULTILINE)
 
-ARCHIVED_FILE = "openspec/changes/archive/2026-01-01-old/proposal.md"
+BEHAVIOUR_FILE = "docs/behaviour/example.md"
 LATIN1_FILE = "docs/latin1.txt"
 VARIANTS_FILE = "docs/variants.md"
-EXCLUDED_FILES = (ARCHIVED_FILE, LATIN1_FILE, "scripts/rename_project.py")
+EXCLUDED_FILES = (LATIN1_FILE, "scripts/rename_project.py")
 
 TEMPLATE_FILES: dict[str, bytes] = {
     "README.md": f"# {OLD_DISPLAY_NAME}\n\nPlantilla.\n".encode(),
@@ -66,7 +66,7 @@ TEMPLATE_FILES: dict[str, bytes] = {
         indent=2,
     ).encode(),
     "frontend/index.html": f"<title>{OLD_DISPLAY_NAME}</title>\r\n".encode(),
-    ARCHIVED_FILE: f"{OLD_DISPLAY_NAME}, {OLD_IDENTIFIER}, {OLD_PACKAGE_NAME}\n".encode(),
+    BEHAVIOUR_FILE: f"# {OLD_DISPLAY_NAME}\n\nProyecto {OLD_IDENTIFIER}.\n".encode(),
     LATIN1_FILE: f"{OLD_DISPLAY_NAME}, añadido en Latin-1\n".encode("latin-1"),
     VARIANTS_FILE: f"Intro\n{OLD_DISPLAY_NAME.title()}\n{OLD_IDENTIFIER.upper()}\n".encode(),
 }
@@ -149,6 +149,7 @@ def test_renames_variants_and_lists_changed_files(
         "backend/app/core/settings.py",
         "backend/pyproject.toml",
         "backend/uv.lock",
+        "docs/behaviour/example.md",
         "frontend/index.html",
         "frontend/package-lock.json",
         "frontend/package.json",
@@ -208,13 +209,17 @@ def test_keeps_utf8_line_endings_and_bom(template_repo: Path) -> None:
     assert readme == b"# " + name + b"\n\nPlantilla.\n"
 
 
-def test_archived_changes_are_untouched(template_repo: Path) -> None:
+def test_behaviour_documents_are_renamed(template_repo: Path) -> None:
+    """F001:AC-03.1"""
     assert rename_project.main([DISPLAY_NAME, IDENTIFIER]) == 0
 
-    assert (template_repo / ARCHIVED_FILE).read_bytes() == TEMPLATE_FILES[ARCHIVED_FILE]
+    assert (template_repo / BEHAVIOUR_FILE).read_bytes() == (
+        f"# {DISPLAY_NAME}\n\nProyecto {IDENTIFIER}.\n".encode()
+    )
 
 
 def test_script_does_not_rename_itself(template_repo: Path) -> None:
+    """F001:AC-03.2"""
     script = template_repo / "scripts" / "rename_project.py"
     before = script.read_bytes()
 
@@ -226,6 +231,7 @@ def test_script_does_not_rename_itself(template_repo: Path) -> None:
 
 
 def test_non_utf8_file_is_skipped(template_repo: Path) -> None:
+    """F001:AC-03.2"""
     assert rename_project.main([DISPLAY_NAME, IDENTIFIER]) == 0
 
     assert (template_repo / LATIN1_FILE).read_bytes() == TEMPLATE_FILES[LATIN1_FILE]

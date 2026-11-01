@@ -26,6 +26,7 @@ Es la referencia versionada que viaja con la plantilla.
 - [Modelo de datos](./data-model.md): entidades base (usuarios, roles, auth).
 - [Guía de verificación](./verification-guide.md): comandos para validar un cambio de punta a punta.
 - [Estándares de documentación](./documentation-standards.md): cómo mantener estos docs.
+- [Comportamiento](./behaviour/): contrato detallado del comportamiento actual, un documento por área.
 
 ## 4. Skills de SDD
 

@@ -1,6 +1,6 @@
 ---
 artifact: roadmap
-version: 2
+version: 3
 status: active
 owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 ---
@@ -15,22 +15,11 @@ owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 
 ## 1. Focus
 
-Antes de nada, dejar una sola fuente del flujo de trabajo (RM-08). Después, que un derivado no llegue a producción expuesto por valores por defecto (`CAP-06`). Después, comprobar cada cambio automáticamente (`CAP-07`) y poder diagnosticar en operación (`CAP-08`). El mantenedor eligió el 2026-11-01 poner la seguridad primero, por delante de la recomendación de empezar por CI.
+La única fuente del flujo de trabajo ya está entregada (RM-08, F001). Ahora, que un derivado no llegue a producción expuesto por valores por defecto (`CAP-06`). Después, comprobar cada cambio automáticamente (`CAP-07`) y poder diagnosticar en operación (`CAP-08`). El mantenedor eligió el 2026-11-01 poner la seguridad primero, por delante de la recomendación de empezar por CI.
 
 ---
 
 ## 2. Sequence
-
-### RM-08: Retirar OpenSpec y conservar su contrato en docs/
-
-- **Status:** ready
-- **Outcome:** El mantenedor encuentra el contrato de comportamiento en `docs/behaviour/`, sin restos del flujo OpenSpec en el repositorio.
-- **Capability:** enabler; deja una sola fuente del flujo de trabajo y una ruta estable para `documentation.yaml`.
-- **Why:** Lo decidió el mantenedor en el onboarding: mover `openspec/specs/` y borrar `config.yaml` y el archivo de cambios. Lo colocó el primero el 2026-11-01 para que RM-01 ya actualice la ruta definitiva.
-- **Depends on:** none
-- **Boundaries:** In: mover las specs; borrar el resto; actualizar `.dockerignore`, `scripts/rename_project.py` con su test, `README.md`, `docs/development_guide.md` y las referencias en `.sdd/` / Not in: reescribir las specs
-- **Origin:** onboarding
-- **Notes:** Pequeño. Su ID es mayor que el de RM-01 porque se creó después en el onboarding; el orden lo da esta sección.
 
 ### RM-01: Producción rechaza la contraseña de administrador por defecto
 
@@ -128,7 +117,16 @@ Antes de nada, dejar una sola fuente del flujo de trabajo (RM-08). Después, que
 
 ## 4. Closed
 
-Ninguno todavía.
+### RM-08: Retirar OpenSpec y conservar su contrato en docs/
+
+- **Delivered:** F001, verificada el 2026-11-01. La fecha del merge la fija su pull request.
+- **Outcome:** El mantenedor encuentra el contrato de comportamiento en `docs/behaviour/`, sin restos del flujo OpenSpec en el repositorio.
+- **Capability:** enabler; deja una sola fuente del flujo de trabajo y una ruta estable para `documentation.yaml`.
+- **Why:** Lo decidió el mantenedor en el onboarding: mover `openspec/specs/` y borrar `config.yaml` y el archivo de cambios. Lo colocó el primero el 2026-11-01 para que RM-01 ya actualice la ruta definitiva.
+- **Depends on:** none
+- **Boundaries:** In: mover las specs; borrar el resto; actualizar `.dockerignore`, `scripts/rename_project.py` con su test, `README.md`, `docs/development_guide.md` y las referencias en `.sdd/` / Not in: reescribir las specs
+- **Origin:** onboarding
+- **Notes:** Pequeño. Su ID es mayor que el de RM-01 porque se creó después en el onboarding. Se conservó el historial de git de las specs movidas.
 
 ---
 

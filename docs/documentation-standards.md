@@ -10,6 +10,7 @@ viaja con el template y que alimenta el flujo SDD.
 - `docs/development_guide.md`: arrancar/trabajar + flujo SDD.
 - `docs/data-model.md`: entidades base.
 - `docs/verification-guide.md`: cómo validar un cambio.
+- `docs/behaviour/`: contrato detallado del comportamiento actual, un documento por área.
 - `docs/documentation-standards.md`: este documento.
 
 (`docs/superpowers/` queda fuera de control de versiones; es material local.)

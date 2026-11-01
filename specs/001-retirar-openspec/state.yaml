@@ -1,0 +1,47 @@
+# Where the feature stands: the first file read when the feature is resumed.
+# Overwritten at every checkpoint.
+
+feature: F001
+title: "Retirar OpenSpec"
+roadmap-item: RM-08
+phase: release
+step: "Release: rama subida y PR #9 abierto en borrador; esperando el merge del mantenedor (H-04)"
+status: waiting-for-human
+next: "Revisar el estado del PR #9: si se fusiona, cerrar la feature; si hay comentarios o checks, encaminarlos."
+
+waiting-for-human: [H-04]
+blocked-by: []
+
+tasks: { T-01: merged, T-02: merged, T-03: merged, T-04: merged }
+
+known-failures: []
+
+stale: []
+
+history:
+  - "2026-11-01 define/open: feature abierta en feature/001-retirar-openspec para RM-08"
+  - "2026-11-01 define/brief: brief.md@1 puesto a aprobación (H-01)"
+  - "2026-11-01 define/brief: brief.md@1 aprobado (H-01); brief.md@2 corrige la fuente de CON-01"
+  - "2026-11-01 define/requirements: requirements.md@1 puesto a aprobación (H-02)"
+  - "2026-11-01 define/close: requirements.md@1 aprobado (H-02); la feature pasa a Design"
+  - "2026-11-01 design/draft: design.md@1 escrito y enviado a revisión"
+  - "2026-11-01 design/review: ronda 1 pide cambios (2 bloqueantes, 4 menores); design.md@2 los corrige"
+  - "2026-11-01 design/review: ronda 2 aprueba (2 menores); design.md@3 los corrige"
+  - "2026-11-01 design/approval: design.md@3 puesto a aprobación (H-03)"
+  - "2026-11-01 design/close: design.md@3 aprobado (H-03); plan.md@1 comprobado; la feature pasa a Build"
+  - "2026-11-01 build/baseline: sin fallos previos; T-01 pasa a in-progress"
+  - "2026-11-01 build/T-01: implementada (05304bd); pasa a in-review"
+  - "2026-11-01 build/T-01: la revisión de la ronda 1 aprueba (1 menor); pasa a approved"
+  - "2026-11-01 build/T-01: R1-01 corregido (c481079); fusionada con la suite en verde; pasa a merged"
+  - "2026-11-01 build/T-02: implementada (e087d80); pasa a in-review"
+  - "2026-11-01 build/T-02: la revisión de la ronda 1 aprueba sin hallazgos; fusionada con la suite en verde; pasa a merged"
+  - "2026-11-01 build/T-03: implementada (dd19456); pasa a in-review"
+  - "2026-11-01 build/T-03: la revisión de la ronda 1 aprueba (1 menor); pasa a approved"
+  - "2026-11-01 build/T-03: R1-01 corregido (ed14b0d); fusionada con la suite en verde; pasa a merged"
+  - "2026-11-01 build/T-04: implementada (2b96076); CLAUDE.md local editado; pasa a in-review"
+  - "2026-11-01 build/T-04: la revisión de la ronda 1 aprueba (1 menor, rechazado con motivo); pasa a approved"
+  - "2026-11-01 build/close: T-04 fusionada; backend 87/87, 15 comprobaciones de aceptación, frontend 24/24, lint y build en verde; la feature pasa a Verify"
+  - "2026-11-01 verify/run-1: evidencia escrita sobre df75bbd, resultado pass; pasa a la revisión de la feature"
+  - "2026-11-01 verify/close: la revisión de la feature aprueba (3 menores rechazados con motivo); la feature pasa a Document"
+  - "2026-11-01 document/close: roadmap v3, product v2 y architecture v2; RM-08 cerrado como entregado; la feature pasa a Release"
+  - "2026-11-01 release/pr: rama al día con main (de1d8a0), suite 87/87 y 15 comprobaciones en verde; PR #9 abierto en borrador (H-04)"
