@@ -68,6 +68,9 @@ feature: F001
 | 2026-11-01 | Archivos planos `docs/behaviour/<área>.md` | Evita seis carpetas de un archivo y el nombre `spec` del flujo retirado; `git log --follow` funciona igual | design.md@1, IF-02 |
 | 2026-11-01 | Mover las specs en un commit propio, sin cambios de contenido | Asegura la detección del movimiento para NFR-02 | design.md@1, NFR-02 |
 | 2026-11-01 | Comprobar AC-07.1 y AC-03.3 con una búsqueda, sin test de repositorio | El test tendría que nombrar el término buscado y fallaría en los proyectos derivados | design.md@1 |
+| 2026-11-01 | Corrige la entrada anterior: los criterios de repositorio se comprueban con tests en `specs/001-retirar-openspec/checks/`, fuera de la suite de backend | Verify exige un test que nombre cada criterio (R1-01); esa carpeta ya está exceptuada en AC-07.1 y no se ejecuta en los derivados | design.md@2, C-06 |
+| 2026-11-01 | Actualizar el `CLAUDE.md` local en T-04, última tarea de Build, antes de Verify | Una tarea de Build no ve el archivo desde su copia de trabajo y Verify debe demostrar AC-08.1 (R1-02). Q-02 decía "al terminar, fuera del PR"; sigue fuera del PR y es lo último de Build | design.md@2, C-05, Q-02 |
+| 2026-11-01 | No ejecutar `up`, `/health`, usuario y puerto de la guía de verificación | La imagen no cambia y el puerto 5432 está ocupado por otro proyecto; `docker compose build backend` sí se ejecuta (R1-05) | design.md@2, NFR-01 |
 
 ---
 
@@ -80,6 +83,7 @@ feature: F001
 | 2026-11-01 | `docs/documentation-standards.md` | Nueva carpeta `docs/behaviour/` en la estructura | brief.md@1 |
 | 2026-11-01 | `.sdd/documentation.yaml`, `.sdd/product.md`, `.sdd/architecture.md` | Ruta del contrato de comportamiento | brief.md@1 |
 | 2026-11-01 | `CLAUDE.md` (local, sin versionar) | Nota sobre `openspec/` | Q-02 |
+| 2026-11-01 | `docs/base-standards.md` | Puntero a `docs/behaviour/` en su lista de documentos | design.md@2, R1-04 |
 
 ---
 
