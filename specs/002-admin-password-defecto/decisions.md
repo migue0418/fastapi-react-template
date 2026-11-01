@@ -33,9 +33,9 @@ feature: F002
 - **Context:** Ver `requirements.md`. Supuestos a revisar: ASM-03 (si fallan a la vez `SECRET_KEY` y `ADMIN_PASSWORD`, basta con que el mensaje nombre una de las dos) y el criterio AC-01.3 (la regla se aplica aunque el administrador ya exista y aunque la base no responda). Cinco requisitos y dos cualidades.
 - **Options:** Aprobar, aprobar con cambios o replantear
 - **Recommendation (not binding):** Aprobar: cubren todo el alcance del brief sin añadir nada.
-- **Status:** Open
-- **Answer:**
-- **Decided on:**
+- **Status:** Answered
+- **Answer:** "Aprobar (Recomendado)" (aprueba requirements.md@1, incluido ASM-03)
+- **Decided on:** 2026-11-01
 
 ---
 

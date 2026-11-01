@@ -1,7 +1,7 @@
 ---
 artifact: requirements
 feature: F002
-status: draft
+status: approved
 version: 1
 upstream: [brief.md@1]
 ---
@@ -192,7 +192,7 @@ Los supuestos ASM-01 (comparación exacta) y ASM-02 (el mensaje no imprime contr
 - **Basis:** La validación actual de producción informa de un solo error; el mantenedor lo corrige y reintenta.
 - **Impact:** REQ-01, REQ-02: en ese caso el arranque falla y el mensaje nombra al menos una de las dos variables.
 - **Status:** Unverified
-- **Resolution:** Pendiente de que el mantenedor lo confirme al aprobar.
+- **Resolution:** Aceptado por el mantenedor al aprobar requirements.md@1 (H-02, 2026-11-01).
 
 No hay preguntas abiertas.
 
