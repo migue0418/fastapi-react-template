@@ -236,7 +236,7 @@ Razones reconstruidas a partir del código y la documentación, no registradas o
 - **Alternatives:** Desconocidas.
 - **Consequences:** Build y versión unidos; la ruta comodín debe registrarse al final.
 - **Status:** Accepted
-- **Reference:** `openspec/specs/deployment/spec.md`
+- **Reference:** `docs/behaviour/deployment.md`
 
 - **Decision:** Las migraciones se aplican en el arranque.
 - **Context:** Un único proceso y derivados sencillos.
@@ -349,7 +349,7 @@ La sección 3.1 nombra cada slice por su carpeta. No se observan discrepancias r
 - `docs/backend-standards.md`, `docs/frontend-standards.md`: patrones de cada área.
 - `docs/data-model.md`: entidades.
 - `docs/verification-guide.md`: cómo validar un cambio.
-- `openspec/specs/`: comportamiento detallado.
+- `docs/behaviour/`: comportamiento detallado.
 - `Dockerfile`, `docker-compose.yml`: despliegue.
 
 ---

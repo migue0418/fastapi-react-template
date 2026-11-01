@@ -22,7 +22,7 @@ Plantilla de proyecto full-stack lista para usar. Incluye autenticación JWT, ge
 3. Crea `backend/.env` desde `backend/.example.env`, con un `SECRET_KEY` y un `ADMIN_PASSWORD` nuevos. Para generar la clave: `python -c "import secrets; print(secrets.token_hex(32))"`.
 4. Instala sdd-kit si aún no lo tienes y lanza `/sdd-kit:sdd-onboarding` (ver [Spec-Driven Development](#spec-driven-development-sdd-kit)).
 5. Decide qué conservas de `openspec/`, el material heredado de la plantilla:
-   - `openspec/specs/` describe el comportamiento que hereda el proyecto (auth, users, roles, health y despliegue). Úsalo como entrada del onboarding.
+   - `docs/behaviour/` describe el comportamiento que hereda el proyecto (auth, users, roles, health y despliegue). Úsalo como entrada del onboarding.
    - `openspec/changes/archive/` es el historial de cambios de la plantilla. Puedes borrarlo.
 
 ## Inicio rápido (Docker)
