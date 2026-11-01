@@ -1,0 +1,71 @@
+# The project's documentation catalogue: every document the project must keep current, beyond the
+# foundational files, and when each one must be updated.
+# In Document, every active entry whose update-when matches what the feature changed is brought in
+# line with what was built, following its format. An entry that cannot be updated is put to the
+# human; it is never skipped silently.
+
+version: 1
+
+documents:
+  - path: README.md
+    purpose: "Cómo empezar un proyecto, desarrollar y desplegar. Lo lee el mantenedor al crear un derivado."
+    required-by: team
+    update-when: ["un cambio en el arranque, los comandos, las variables de entorno o el despliegue", "un cambio en el flujo SDD"]
+    format: "Estructura actual por secciones, en español"
+    status: active
+
+  - path: docs/base-standards.md
+    purpose: "Principios generales y punto de entrada al resto de estándares."
+    required-by: team
+    update-when: ["cambia un principio general o la lista de documentos"]
+    format: "docs/documentation-standards.md"
+    status: active
+
+  - path: docs/backend-standards.md
+    purpose: "Patrones reales del backend, para imitarlos al añadir slices."
+    required-by: team
+    update-when: ["cambia la arquitectura o una convención del backend"]
+    format: "docs/documentation-standards.md"
+    status: active
+
+  - path: docs/frontend-standards.md
+    purpose: "Patrones reales del frontend, para imitarlos al añadir slices."
+    required-by: team
+    update-when: ["cambia la arquitectura o una convención del frontend"]
+    format: "docs/documentation-standards.md"
+    status: active
+
+  - path: docs/data-model.md
+    purpose: "Entidades, campos y reglas de datos."
+    required-by: team
+    update-when: ["una entidad, un campo o una relación nueva o cambiada", "cambia una regla de negocio sobre datos"]
+    format: "docs/documentation-standards.md; una sección por entidad"
+    status: active
+
+  - path: docs/development_guide.md
+    purpose: "Cómo arrancar y trabajar en la plantilla."
+    required-by: team
+    update-when: ["cambian los comandos o el flujo de trabajo"]
+    format: "docs/documentation-standards.md"
+    status: active
+
+  - path: docs/verification-guide.md
+    purpose: "Cómo validar un cambio; la referencia de EP-006."
+    required-by: team
+    update-when: ["cambia cómo se verifica un cambio"]
+    format: "docs/documentation-standards.md; secciones numeradas"
+    status: active
+
+  - path: docs/documentation-standards.md
+    purpose: "Cómo se mantiene la documentación."
+    required-by: team
+    update-when: ["cambia la estructura de docs/ o sus reglas"]
+    format: "Estructura actual, en español"
+    status: active
+
+  - path: openspec/specs/
+    purpose: "Contrato detallado del comportamiento actual, por área. RM-08 lo mueve a docs/behaviour/ y actualiza esta entrada."
+    required-by: team
+    update-when: ["cambia el comportamiento observable de auth, users, roles, health, despliegue o renombrado"]
+    format: "Una spec por área, con requisitos y escenarios Given/When/Then"
+    status: active

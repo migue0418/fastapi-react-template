@@ -1,0 +1,37 @@
+# The project's skills catalogue: the skills this project relies on as reference for its
+# technologies, architectural patterns, engineering principles and practices.
+# The project's own files win: when a skill conflicts with the constitution, the architecture or the
+# requirements, the project's file applies and the conflict is reported.
+# Known gap: no skill covers FastAPI, SQLAlchemy or React; docs/backend-standards.md and
+# docs/frontend-standards.md carry that guidance.
+
+version: 1
+
+skills:
+  - skill: superpowers:test-driven-development
+    covers: [EP-004, backend-testing, frontend-testing-and-lint]
+    use-when: [build]
+    why: "Aplica el test primero en los cambios de comportamiento y en cada corrección de bug."
+    source: "Plugin comunitario superpowers, ya instalado en Claude Code a nivel de usuario."
+    status: approved
+
+  - skill: superpowers:systematic-debugging
+    covers: [PR-002, EP-004]
+    use-when: [build, verify]
+    why: "Exige diagnosticar la causa antes de corregir un fallo o un test roto."
+    source: "Plugin comunitario superpowers, ya instalado en Claude Code a nivel de usuario."
+    status: approved
+
+  - skill: frontend-design:frontend-design
+    covers: [frontend-framework, "CAP-03"]
+    use-when: [design, build]
+    why: "Aporta criterio visual cuando un cambio crea o transforma pantallas."
+    source: "Plugin frontend-design, ya instalado en Claude Code a nivel de usuario."
+    status: approved
+
+  - skill: write-pr-report
+    covers: [EP-003]
+    use-when: [release]
+    why: "Da el formato de la descripción del PR, orientada al revisor. sdd-release sigue abriendo el PR en borrador y decide su contenido obligatorio."
+    source: "Skill propia del proyecto en .claude/skills/. No se versiona: solo está disponible si se copia la configuración local."
+    status: approved
