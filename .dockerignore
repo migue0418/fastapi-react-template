@@ -6,7 +6,6 @@
 .idea
 tmp
 docs
-openspec
 
 **/.env
 **/.env.*

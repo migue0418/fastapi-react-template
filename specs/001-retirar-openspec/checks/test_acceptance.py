@@ -110,3 +110,77 @@ def test_f001_ac_03_3_script_does_not_name_openspec():
     """F001:AC-03.3"""
     script = disk_text(ROOT / "scripts" / "rename_project.py")
     assert "openspec" not in script.lower()
+
+
+def test_f001_ac_02_1_no_tracked_files_under_openspec():
+    """F001:AC-02.1"""
+    assert git("ls-files", "openspec").strip() == ""
+
+
+def test_f001_ac_02_2_removed_files_remain_in_history():
+    """F001:AC-02.2"""
+    assert git("cat-file", "-t", f"{BASE}:openspec/config.yaml").strip() == "blob"
+    subprocess.run(["git", "merge-base", "--is-ancestor", BASE, "HEAD"], cwd=ROOT, check=True)
+
+
+def test_f001_ac_04_1_readme_start_steps():
+    """F001:AC-04.1"""
+    text = disk_text(ROOT / "README.md")
+    start = text.index("Empezar un proyecto nuevo")
+    end = text.index("\n## ", start)
+    section = text[start:end]
+    assert "openspec" not in section.lower()
+    assert "docs/behaviour/" in section
+
+
+def test_f001_ac_04_2_no_links_into_openspec():
+    """F001:AC-04.2"""
+    files = [ROOT / "README.md", *sorted((ROOT / "docs").rglob("*.md"))]
+    for path in files:
+        assert "openspec/" not in disk_text(path).lower(), path
+
+
+def test_f001_ac_05_3_documentation_structure():
+    """F001:AC-05.3"""
+    standards = disk_text(ROOT / "docs" / "documentation-standards.md")
+    assert "`docs/behaviour/`" in standards
+    guide = disk_text(ROOT / "docs" / "development_guide.md")
+    assert "openspec" not in guide.lower()
+
+
+def test_f001_ac_06_1_dockerignore_entry_removed():
+    """F001:AC-06.1"""
+    lines = [
+        line.strip()
+        for line in disk_text(ROOT / ".dockerignore").splitlines()
+        if line.strip() and not line.startswith("#")
+    ]
+    assert "openspec" not in "\n".join(lines).lower()
+    assert "docs" in lines
+
+
+def test_f001_ac_07_1_closed_list_of_mentions():
+    """F001:AC-07.1"""
+    result = subprocess.run(
+        ["git", "grep", "-niI", "-e", "openspec", "-e", "opsx"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+    stray = []
+    for line in result.stdout.splitlines():
+        path, lineno, _ = line.split(":", 2)
+        if path.startswith("specs/001-retirar-openspec/"):
+            continue
+        if path == ".sdd/constitution.md":
+            continue
+        if path == ".sdd/roadmap.md":
+            lines = disk_text(ROOT / path).splitlines()
+            heading = max(
+                i for i in range(int(lineno)) if lines[i].startswith("### ")
+            )
+            if lines[heading].startswith("### RM-08"):
+                continue
+        stray.append(line)
+    assert stray == []

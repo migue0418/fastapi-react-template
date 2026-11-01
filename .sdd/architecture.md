@@ -330,7 +330,6 @@ Se comprueban por revisión; no hay comprobación automática.
 - `frontend/src/{app,features,shared}/`: bootstrap, slices y código compartido.
 - `scripts/rename_project.py`: renombrado.
 - `docs/`: estándares y guías.
-- `openspec/`: material heredado (ver RM-08).
 
 ### 10.2 Architecture-to-Code Mapping
 

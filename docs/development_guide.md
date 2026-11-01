@@ -69,7 +69,7 @@ Si la descarga falla con `Host key verification failed`, define `CLAUDE_CODE_PLU
 
 - Cada feature vive en `specs/NNN-<slug>/`; el contexto de todo el proyecto, en `.sdd/`.
 - Los pasos de verificación que el agente ejecuta están en [docs/verification-guide.md](./verification-guide.md).
-- `openspec/` es material heredado: sirve de entrada para el onboarding y se elimina cuando exista `.sdd/`.
+- El contrato de comportamiento heredado de la plantilla está en `docs/behaviour/`: sirve de entrada para el onboarding.
 
 ## Verificación
 
