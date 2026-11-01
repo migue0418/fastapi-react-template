@@ -84,6 +84,7 @@ feature: F001
 | 2026-11-01 | Actualizar el `CLAUDE.md` local en T-04, última tarea de Build, antes de Verify | Una tarea de Build no ve el archivo desde su copia de trabajo y Verify debe demostrar AC-08.1 (R1-02). Q-02 decía "al terminar, fuera del PR"; sigue fuera del PR y es lo último de Build | design.md@2, C-05, Q-02 |
 | 2026-11-01 | Línea base de Build sin fallos previos: backend 87/87 sobre `postgres:15` desechable en el puerto 55432, frontend 24/24 y ESLint limpio | Cada tarea se juzga sin fallos conocidos | state.yaml |
 | 2026-11-01 | T-01: las comprobaciones de aceptación leen el original con `git show de1d8a0:<ruta>` y normalizan los finales de línea; AC-01.2 deja fuera project-rename, cuya comparación es AC-01.3 de T-02 | Los archivos en disco están en CRLF y el índice en LF; project-rename solo cambia en T-02 | plan.md T-01, T-02 |
+| 2026-11-01 | T-02: AC-01.3 se comprueba aplicando al original de `de1d8a0` solo las dos ediciones previstas y comparando sin finales de línea; AC-03.1 pasa también antes de quitar la exclusión (excepción declarada a EP-004), y la prueba en rojo es AC-03.3 | plan.md T-02 | plan.md T-02 |
 | 2026-11-01 | No ejecutar `up`, `/health`, usuario y puerto de la guía de verificación | La imagen no cambia y el puerto 5432 está ocupado por otro proyecto; `docker compose build backend` sí se ejecuta (R1-05) | design.md@2, NFR-01 |
 
 ---
@@ -98,6 +99,7 @@ feature: F001
 | 2026-11-01 | `.sdd/documentation.yaml`, `.sdd/product.md`, `.sdd/architecture.md` | Ruta del contrato de comportamiento | brief.md@1 |
 | 2026-11-01 | `CLAUDE.md` (local, sin versionar) | Nota sobre `openspec/` | Q-02 |
 | 2026-11-01 | `docs/base-standards.md` | Puntero a `docs/behaviour/` en su lista de documentos | design.md@2, R1-04 |
+| 2026-11-01 | T-02: `docs/behaviour/project-rename.md` (exclusión retirada) y línea 20 de `README.md` | Quedan para T-03 el resto del paso 5 del README, `.dockerignore`, `docs/development_guide.md` y `.sdd/architecture.md` 10.1 | plan.md T-02 |
 | 2026-11-01 | T-01: `.sdd/documentation.yaml`, `product.md`, `architecture.md`, `docs/documentation-standards.md`, `docs/base-standards.md` y `README.md` redirigidos a `docs/behaviour/` | Siguen con `openspec` el resto del README (T-02 y T-03), `architecture.md` 10.1 y `docs/development_guide.md` (T-03) | plan.md T-01 |
 
 ---
