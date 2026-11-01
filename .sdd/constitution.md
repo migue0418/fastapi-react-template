@@ -1,6 +1,6 @@
 ---
 artifact: constitution
-version: 1.0.0
+version: 1.1.0
 status: active
 owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 ---
@@ -214,6 +214,23 @@ MUST
 
 **Applicability**
 Toda tarea y toda feature, según lo que toquen.
+
+### EP-007 — Proceso proporcional al tamaño del cambio
+
+**Practice**
+Antes de empezar un cambio, el agente lo clasifica y propone el camino más ligero que cubra su riesgo. El mantenedor lo confirma.
+
+- **Trivial:** documentación, renombrados, borrados o ajustes sin comportamiento nuevo, que no tocan seguridad, datos, despliegue ni dependencias. Rama `chore/<slug>`, un PR y la verificación de EP-006. Sin feature SDD.
+- **Pequeño:** un único comportamiento observable, pocos archivos y sin decisiones difíciles de revertir. Feature SDD con una sola tarea.
+- **Normal:** el resto. Feature SDD completa, con las tareas que pida el diseño.
+
+Un cambio que toque seguridad, datos persistentes, despliegue o dependencias nunca es trivial. Las revisiones independientes del flujo SDD se mantienen en el camino pequeño y en el normal.
+
+**Normative level**
+SHOULD
+
+**Applicability**
+Todo cambio, incluidos los del agente. Concreta PR-004.
 
 ---
 
