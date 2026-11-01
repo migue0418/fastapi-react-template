@@ -5,9 +5,9 @@ feature: F001
 title: "Retirar OpenSpec"
 roadmap-item: RM-08
 phase: verify
-step: "Build cerrado; T-01 a T-04 fusionadas y todas las comprobaciones en verde"
+step: "Verify run 1: evidencia escrita (pass); revisión de la feature, ronda 1"
 status: in-progress
-next: "Empezar Verify sobre la rama de la feature, con un PostgreSQL desechable nuevo y el build de Docker."
+next: "Atender la revisión de la feature; si no hay bloqueantes, pasar a Document."
 
 waiting-for-human: []
 blocked-by: []
@@ -41,3 +41,4 @@ history:
   - "2026-11-01 build/T-04: implementada (2b96076); CLAUDE.md local editado; pasa a in-review"
   - "2026-11-01 build/T-04: la revisión de la ronda 1 aprueba (1 menor, rechazado con motivo); pasa a approved"
   - "2026-11-01 build/close: T-04 fusionada; backend 87/87, 15 comprobaciones de aceptación, frontend 24/24, lint y build en verde; la feature pasa a Verify"
+  - "2026-11-01 verify/run-1: evidencia escrita sobre df75bbd, resultado pass; pasa a la revisión de la feature"
