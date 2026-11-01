@@ -1,6 +1,6 @@
 ---
 artifact: roadmap
-version: 3
+version: 4
 status: active
 owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 ---
@@ -15,22 +15,11 @@ owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 
 ## 1. Focus
 
-La única fuente del flujo de trabajo ya está entregada (RM-08, F001). Ahora, que un derivado no llegue a producción expuesto por valores por defecto (`CAP-06`). Después, comprobar cada cambio automáticamente (`CAP-07`) y poder diagnosticar en operación (`CAP-08`). El mantenedor eligió el 2026-11-01 poner la seguridad primero, por delante de la recomendación de empezar por CI.
+La única fuente del flujo de trabajo (RM-08, F001) y el rechazo de la contraseña de administrador por defecto (RM-01, F002) ya están entregados. Ahora, que un derivado no llegue a producción expuesto por los demás valores por defecto (`CAP-06`). Después, comprobar cada cambio automáticamente (`CAP-07`) y poder diagnosticar en operación (`CAP-08`). El mantenedor eligió el 2026-11-01 poner la seguridad primero, por delante de la recomendación de empezar por CI.
 
 ---
 
 ## 2. Sequence
-
-### RM-01: Producción rechaza la contraseña de administrador por defecto
-
-- **Status:** ready
-- **Outcome:** El mantenedor ve que un derivado se niega a arrancar en producción con la contraseña de administrador por defecto, y un mensaje le dice qué cambiar.
-- **Capability:** CAP-06
-- **Why:** Cierra el riesgo más directo: un administrador con contraseña pública. El mantenedor lo situó el primero.
-- **Depends on:** none
-- **Boundaries:** In: `ADMIN_PASSWORD` por defecto / Not in: `SECRET_KEY`, que ya se rechaza por longitud; credenciales de Compose (RM-03)
-- **Origin:** onboarding
-- **Notes:** Sin CI todavía: la verificación la ejecuta el agente (NC-006).
 
 ### RM-02: El límite de login se aplica por cliente real tras un proxy
 
@@ -113,9 +102,31 @@ La única fuente del flujo de trabajo ya está entregada (RM-08, F001). Ahora, q
 - **Origin:** onboarding
 - **Notes:** Relacionado con RM-03.
 
+### RM-10: El test de arranque sin base de datos no depende de `backend/.env`
+
+- **Status:** candidate
+- **Outcome:** El mantenedor ve pasar los tests de configuración con cualquier `backend/.env` local, incluido uno con una `ADMIN_PASSWORD` propia.
+- **Capability:** enabler; hace fiable la suite local.
+- **Why:** El test de AC-01.3 de F002 llama a `create_app()`, que lee `backend/.env`; con una contraseña propia el test falla (revisión R1-01, ASM-04).
+- **Depends on:** none
+- **Boundaries:** TBD
+- **Origin:** F002 (`reviews/feature-r1.md`, R1-01)
+- **Notes:** Muy pequeño; puede ser una chore. Relacionado con RM-09.
+
 ---
 
 ## 4. Closed
+
+### RM-01: Producción rechaza la contraseña de administrador por defecto
+
+- **Delivered:** F002, verificada el 2026-11-01. La fecha del merge la fija su pull request.
+- **Outcome:** El mantenedor ve que un derivado se niega a arrancar en producción con la contraseña de administrador por defecto, y un mensaje le dice qué cambiar.
+- **Capability:** CAP-06
+- **Why:** Cierra el riesgo más directo: un administrador con contraseña pública. El mantenedor lo situó el primero.
+- **Depends on:** none
+- **Boundaries:** In: `ADMIN_PASSWORD` por defecto / Not in: `SECRET_KEY`, que ya se rechaza por longitud; credenciales de Compose (RM-03)
+- **Origin:** onboarding
+- **Notes:** Sin CI todavía: la verificación la ejecutó el agente (NC-006).
 
 ### RM-08: Retirar OpenSpec y conservar su contrato en docs/
 

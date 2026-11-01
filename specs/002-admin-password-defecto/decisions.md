@@ -88,6 +88,7 @@ feature: F002
 | 2026-11-01 | Design: AC-05.2 lo entrega Document, sin tarea; `docs/behaviour/` no cambia en T-01. | Los archivos de `.sdd/` solo cambian en Document. Sometido a aprobación en H-03. | design.md@2, 11 y 12; reviews/design-r1-answers.md (R1-02, R1-03) |
 | 2026-11-01 | Build T-01: mensaje «ADMIN_PASSWORD no puede ser el valor por defecto en producción. Define otra contraseña en la variable ADMIN_PASSWORD.»; la comprobación va tras la de `SECRET_KEY` (ASM-03); `hide_input_in_errors=True` bastó en `Settings` real (RISK-03 no se materializó); los tests aíslan el entorno con una fixture autouse y `_env_file=None` (ASM-04). | Estilo del mensaje de `SECRET_KEY`, sin imprimir valores; aplica el plan. | plan.md@1 T-01, task/002-T-01@5e2b5ef |
 | 2026-11-01 | Verify r1: evidencia en `pass` (commit feae99c) y revisión de la feature `approve` (0 bloqueantes, 3 menores). R1-01 (el test de AC-01.3 lee `backend/.env`) no se corrige en Verify: se lleva como seguimiento al roadmap en Document. R1-02 se corrige en la evidencia; R1-03 se rechaza con motivo. | Verify no cambia código ni tests; R1-01 no afecta a ningún criterio hoy. | evidence/README.md run 1, reviews/feature-r1.md, reviews/feature-r1-answers.md |
+| 2026-11-01 | Document: `docs/behaviour/deployment.md` recibe un requisito nuevo y `backend/.example.env` un comentario; el diseño había dejado ambos a juicio de Document. RM-01 se cierra como entregado por F002 y R1-01 pasa al inbox como RM-10. Sin brechas entre el código y la especificación. | El rechazo es comportamiento observable del despliegue (catálogo, `docs/behaviour/`). R1-01 se había llevado a Document como seguimiento. | docs/behaviour/deployment.md, .sdd/roadmap.md (RM-01, RM-10), reviews/feature-r1-answers.md |
 
 ---
 
@@ -99,6 +100,7 @@ feature: F002
 | 2026-11-01 | docs/behaviour/ | Si hay una spec de despliegue o configuración, recoger el nuevo rechazo; hoy `docs/behaviour/auth.md` solo cita `ADMIN_PASSWORD` para el administrador inicial. | RM-01 |
 | 2026-11-01 | .sdd/architecture.md, .sdd/product.md, .sdd/roadmap.md, .sdd/constitution.md | Cerrar el gap de 9.2, la limitación de 9.2 de product, cerrar RM-01, y actualizar NC-007 (hoy dice que solo se rechaza `SECRET_KEY`). | RM-01 |
 | 2026-11-01 | README.md | Hecho en T-01: tabla de variables y paso 3 de la guía de inicio dicen que en producción `ADMIN_PASSWORD` no puede ser `ChangeMe123!`. Queda para Document: archivos de `.sdd/` (AC-05.2). | task/002-T-01@5e2b5ef |
+| 2026-11-01 | .sdd/architecture.md@3, .sdd/product.md@3, .sdd/constitution.md@1.1.1, .sdd/roadmap.md@4, docs/behaviour/deployment.md, backend/.example.env | Hecho en Document: 6.5, 7.3 y 9.2 de architecture; 9.2 y estado de CAP-06 (Partial) de product; NC-007; RM-01 cerrado y RM-10 añadido; requisito de despliegue y comentario del `.env` de ejemplo. Entrega AC-05.2. Catálogo: el resto de entradas no se activan (sin cambios en comandos, flujo, datos, estándares ni otras áreas de `docs/behaviour/`). | AC-05.2, RM-01 |
 
 ---
 
