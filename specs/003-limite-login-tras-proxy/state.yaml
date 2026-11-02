@@ -4,10 +4,10 @@
 feature: F003
 title: "El límite de login se aplica por cliente real tras un proxy"
 roadmap-item: RM-02
-phase: build
-step: "Build: T-01 y T-02 integradas; T-03 en implementación"
+phase: verify
+step: "Build cerrado: T-01 a T-03 integradas, suite sin fallos nuevos"
 status: in-progress
-next: "Build en curso: T-03 en implementación; al integrarla, cerrar Build y pasar a Verify."
+next: "Ejecutar /sdd-kit:sdd-verify; repetir la segunda fila de S1 recreando el servicio (nota de T-02 r1)."
 
 waiting-for-human: []
 blocked-by: []
@@ -15,7 +15,7 @@ blocked-by: []
 tasks:
   T-01: merged
   T-02: merged
-  T-03: approved
+  T-03: merged
 
 known-failures:
   - "backend pytest: 3 failed y 49 errors por PostgreSQL de tests no disponible en el entorno (48 pasan); frontend limpio"
@@ -39,3 +39,5 @@ history:
   - "2026-11-02 build/T-01: aprobada en r1 (2 menores) e integrada; suite sin fallos nuevos"
   - "2026-11-02 build/T-02: aprobada en r1 (3 menores)"
   - "2026-11-02 build/T-02: integrada con sus correcciones de r1; suite sin fallos nuevos; T-03 en implementación"
+  - "2026-11-02 build/T-03: aprobada en r1 (3 menores corregidos) e integrada"
+  - "2026-11-02 build/close: las tres tareas integradas; la feature pasa a Verify"
