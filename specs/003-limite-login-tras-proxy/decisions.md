@@ -108,6 +108,7 @@ Evidencia previa, leída antes de preguntar: `backend/app/core/limiter.py` usa `
 | 2026-11-02 | Design: revisión de diseño ronda 2, `approve` (0 bloqueantes, 1 menor R2-01), corregido en design.md@3 sin cambiar el enfoque | Una red CIDR en AC-03.1 podía incluir al contenedor no confiado de AC-02.3 | design.md@3, reviews/design-r2.md |
 | 2026-11-02 | Design: la comprobación es un procedimiento del plan con registro en `evidence/t02-comprobacion-proxy.md`, no un script ni un test versionado | PR-004; un test automático necesitaría Docker. Se puede automatizar con RM-05 | design.md@1, NFR-01 |
 | 2026-11-02 | Design: tres tareas; T-03 (README) depende de T-02 para describir solo lo observado | AC-04.2 compara el README con los resultados | design.md@1, T-01 a T-03 |
+| 2026-11-02 | Build, línea base: `uv run python -m pytest -q` en la rama de la feature da 3 failed, 48 passed, 49 errors, todos por `RuntimeError: PostgreSQL de tests no disponible` (no hay PostgreSQL ni contenedores en marcha). Frontend: lint limpio, 24 tests pasan. Se registran como fallos conocidos | Entorno sin PostgreSQL, no un defecto del código. Ninguna tarea de F003 toca código del backend, así que se juzgan por no añadir fallos | known-failures, NC-005 |
 
 ---
 
