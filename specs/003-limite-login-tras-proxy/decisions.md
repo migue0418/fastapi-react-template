@@ -49,6 +49,18 @@ feature: F003
 - **Answer:** "Aprobar (Recomendado)" (requirements.md@1)
 - **Decided on:** 2026-11-02
 
+### H-04: Valor por defecto de uvicorn fuera de Compose (OQ-02)
+
+- **Raised in:** Design / revisión de diseño ronda 1 (R1-03)
+- **Concerns:** design.md@1 OQ-02, REQ-01, CON-01, RISK-04
+- **Blocks:** Aprobar el diseño
+- **Context:** REQ-01 y CON-01 dicen que por defecto no se confía en ningún proxy. uvicorn confía por defecto en `127.0.0.1`: en Compose no afecta (ninguna conexión externa llega con esa IP), pero ejecutando uvicorn en local con un proxy en la misma máquina, la cabecera se respeta.
+- **Options:** (A) Documentar el límite en el README y no cambiar el valor por defecto; REQ-01 se cumple en Compose. (B) Fijar `FORWARDED_ALLOW_IPS=""` en el Dockerfile; no cambia nada para Compose y obliga a quien use la imagen detrás de un proxy local en `127.0.0.1` a definir la variable. No cubre el arranque local de uvicorn, que no usa el Dockerfile.
+- **Recommendation (not binding):** A: B toca la imagen sin cambiar el comportamiento en Compose y no cubre el caso local.
+- **Status:** Decided
+- **Answer:** "Documentar el límite (Recomendado)"
+- **Decided on:** 2026-11-02
+
 ---
 
 ## 2. Discover Questions
@@ -80,6 +92,7 @@ Evidencia previa, leída antes de preguntar: `backend/app/core/limiter.py` usa `
 | 2026-11-02 | Se abre la rama `feature/003-limite-login-tras-proxy` desde `main` al día con `origin/main` | EP-001; número 003 libre (specs/ solo tiene 001 y 002, sin ramas abiertas) | F003 |
 | 2026-11-02 | Design: sin código de aplicación; la confianza en cabeceras la decide uvicorn con `FORWARDED_ALLOW_IPS` (ADR-0001, proposed) | Un experimento aislado con uvicorn 0.47.0 y slowapi confirmó el comportamiento documentado; Q-01 pide una sola variable y el valor por defecto seguro | design.md@1, ASM-01, REQ-01 a REQ-03 |
 | 2026-11-02 | Design: no se fija `FORWARDED_ALLOW_IPS=""` en el Dockerfile | En Compose ninguna conexión externa llega como `127.0.0.1`; cambiaría la imagen sin necesidad (límite en OQ-02 y RISK-04) | design.md@1, REQ-01 |
+| 2026-11-02 | Design: revisión de diseño ronda 1, `changes-required` (1 bloqueante, 4 menores); todos aceptados y corregidos en design.md@2. R1-01 se verificó en `uvicorn/middleware/proxy_headers.py:163-164`: con `*` la IP es la primera entrada de la cabecera y la fija el cliente | La entrada anterior sobre el Dockerfile queda confirmada por H-04 | design.md@2, reviews/design-r1.md, H-04 |
 | 2026-11-02 | Design: la comprobación es un procedimiento del plan con registro en `evidence/t02-comprobacion-proxy.md`, no un script ni un test versionado | PR-004; un test automático necesitaría Docker. Se puede automatizar con RM-05 | design.md@1, NFR-01 |
 | 2026-11-02 | Design: tres tareas; T-03 (README) depende de T-02 para describir solo lo observado | AC-04.2 compara el README con los resultados | design.md@1, T-01 a T-03 |
 

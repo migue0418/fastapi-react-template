@@ -5,9 +5,9 @@ feature: F003
 title: "El límite de login se aplica por cliente real tras un proxy"
 roadmap-item: RM-02
 phase: design
-step: "design.md@1 y ADR-0001 escritos; pendiente la revisión independiente (ronda 1)"
+step: "design.md@2 revisado tras la ronda 1 (H-04 decidido); pendiente la revisión de la ronda 2"
 status: in-progress
-next: "Lanzar la revisión de diseño (sdd-review, tipo design, ronda 1), responder los hallazgos, pedir la aprobación al mantenedor y escribir el plan."
+next: "Revisar la ronda 2 del diseño; si aprueba, pedir al mantenedor la aprobación de design.md y escribir el plan."
 
 waiting-for-human: []
 blocked-by: []
@@ -27,3 +27,4 @@ history:
   - "2026-11-02 define/requirements: requirements.md@1 escrito desde brief.md@1 y puesto a aprobación (H-03)"
   - "2026-11-02 define/close: requirements.md@1 aprobado (H-03); la feature pasa a Design"
   - "2026-11-02 design/design: design.md@1 (sin código de aplicación, 3 tareas) y ADR-0001 proposed escritos tras un experimento aislado con uvicorn y slowapi"
+  - "2026-11-02 design/review: ronda 1 changes-required (R1-01 bloqueante, R1-02 a R1-05 menores), respondida con design.md@2; H-04 decidido por el mantenedor (documentar el límite)"

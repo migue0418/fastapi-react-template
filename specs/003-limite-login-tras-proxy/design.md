@@ -2,7 +2,7 @@
 artifact: design
 feature: F003
 status: draft
-version: 1
+version: 2
 upstream: [brief.md@1, requirements.md@1]
 ---
 
@@ -74,7 +74,7 @@ El trabajo se reduce a tres piezas: la variable visible en la configuración de 
 
 ### C-03: Configuración de ejemplo
 
-- **Responsibility:** Muestra `FORWARDED_ALLOW_IPS` en `backend/.example.env`, comentada, con una red de ejemplo que no es un comodín y una nota en español de cuándo definirla.
+- **Responsibility:** Muestra `FORWARDED_ALLOW_IPS` en `backend/.example.env`, comentada, con el valor realista más estrecho (una sola IP o una red CIDR pequeña, nunca un comodín ni un rango amplio como `10.0.0.0/8` o `172.16.0.0/12`) y una nota en español que dice que se sustituya por la dirección del proxy y cuándo definirla.
 - **Covers:** REQ-03, REQ-04
 - **Status:** Changed
 - **Owns:** El texto de ejemplo de la variable.
@@ -110,7 +110,7 @@ El trabajo se reduce a tres piezas: la variable visible en la configuración de 
 - **Provided by:** C-01
 - **Used by:** Quien despliega, mediante `backend/.env`; C-03 y C-04 la documentan.
 - **Operations:** Entrada: lista separada por comas de IPs o redes CIDR, o `*`. Salida: las conexiones incluidas pueden fijar la IP del cliente con `X-Forwarded-For`. Sin definir, uvicorn usa `127.0.0.1`. Un valor vacío, o ningún valor válido, no confía en nadie.
-- **Guarantees:** Con una lista concreta, solo esas conexiones fijan la IP del cliente. Con la lista de confianza, la IP resultante es la primera no confiada empezando por la derecha de la cabecera, así que un cliente no puede elegir su IP anteponiendo valores a una cabecera que el proxy completa. `*` confía en cualquier conexión y no debe usarse con el puerto 8000 accesible.
+- **Guarantees:** Con una lista concreta de IPs o redes, solo esas conexiones fijan la IP del cliente, y la IP resultante es la primera no confiada empezando por la derecha de la cabecera: un cliente no puede elegir su IP anteponiendo valores a una cabecera que el proxy completa (`proxy_headers.py:166-170`). Esa garantía no vale para `*` (`always_trust`): uvicorn toma la primera entrada de la cabecera (`proxy_headers.py:163-164`), que controla el cliente, así que con `*` cualquier cliente puede falsificar su IP aunque el puerto 8000 esté cerrado. Lo mismo ocurre con una red lo bastante amplia como para incluir clientes reales o contenedores ajenos, que además puede exponer el 8000 a quien no es el proxy.
 - **Compatibility:** No cambia nada para quien no la define: el comportamiento actual se conserva (AC-01.2, AC-03.2).
 
 ---
@@ -131,8 +131,8 @@ La feature no introduce ni cambia datos, ni esquema ni migraciones. Los contador
 
 ## 7. Qualities
 
-- **NFR-01:** C-05 ejecuta AC-01.1, AC-02.1 y AC-02.3 contra la aplicación en marcha con Compose, con IPs de origen distintas simuladas mediante `X-Forwarded-For` desde el host (ASM-05). Verified by: el registro de ejecución de T-02, que Verify repite como evidencia.
-- **NFR-02:** No se modifica `limiter.py` ni los decoradores. Verified by: `git diff main -- backend/app` vacío en esos archivos, y la suite de backend existente (`uv run pytest -q` con PostgreSQL).
+- **NFR-01:** C-05 ejecuta AC-01.1, AC-02.1 y AC-02.3 contra la aplicación en marcha con Compose, con dos fuentes de origen (ASM-05): el host, que hace de proxy y envía `X-Forwarded-For` distintos, y un segundo contenedor en la red del proyecto, con otra IP y fuera de la lista de confianza, que hace de conexión no confiada en AC-02.3. Si no se puede montar la segunda fuente, AC-02.3 se declara no verificado. Verified by: el registro de ejecución de T-02, que Verify repite como evidencia.
+- **NFR-02:** No se modifica `limiter.py` ni los decoradores. Verified by: `git diff main -- backend/app` vacío para `core/limiter.py` y `features/auth/router.py`, y los 429 observados en T-02 (a partir del undécimo intento de login y del vigésimo primero de refresh, con las ventanas de 1 minuto). La suite de backend existente (`uv run pytest -q`) solo se ejecuta como regresión: no comprueba los valores del límite.
 
 ---
 
@@ -141,7 +141,8 @@ La feature no introduce ni cambia datos, ni esquema ni migraciones. Los contador
 | Failure | How it is detected | What the system does | How it recovers |
 |---|---|---|---|
 | Valor de `FORWARDED_ALLOW_IPS` con un error de escritura | La comprobación de AC-02.1 con la variable definida da cupo compartido | uvicorn lo trata como literal y no confía en nadie (falla cerrado) | README indica cómo comprobarlo y el formato de la lista |
-| Valor demasiado amplio (`*` o una red que incluye clientes) con el 8000 accesible | AC-02.3 con esa configuración | Cualquiera falsifica su IP y salta el límite | README lo advierte (ya lo hace); el ejemplo no usa `*` (RISK-01) |
+| `*` | Escenario adicional de T-02: con `*`, una conexión envía `X-Forwarded-For` con una IP distinta en cada intento y no se limita | uvicorn toma la primera entrada de la cabecera, que elige el cliente, aunque el 8000 esté cerrado | No usar `*`; el README lo dice (RISK-01) |
+| Una red amplia que incluye clientes reales o contenedores ajenos | Revisión del valor y AC-02.3 con una conexión de esa red | Esas conexiones pueden fijar su IP con la cabecera y saltar el límite | Lista con la IP o la red mínima del proxy; el ejemplo es estrecho (RISK-01) |
 | La IP de la conexión no es la del proxy (Docker Desktop enmascara) | T-02 lee la IP de origen que ve el contenedor antes de fijar la lista | Con una lista que no la incluye no hay confianza | Usar la IP o red de esa conexión (ASM-05) |
 | La comprobación no reproduce el fallo (OQ-01) | T-02 | La feature se cierra con la evidencia y la documentación | Se aplica OQ-01 |
 | Ejecución en proceso local sin Docker con un proxy en `127.0.0.1` | Documentado, no detectado | uvicorn confía por defecto en `127.0.0.1` y respeta la cabecera de esa conexión | README lo menciona (RISK-04); no afecta a Compose |
@@ -151,13 +152,13 @@ La feature no introduce ni cambia datos, ni esquema ni migraciones. Los contador
 ## 9. Decisions
 
 - **ADRs:** ADR-0001 (la confianza en cabeceras de proxy se delega en uvicorn), `decided-by: design`, `proposed` hasta la aprobación.
-- **Human decisions:** H-01 (flujo normal), Q-01 (valor por defecto seguro y una variable) y Q-02 (sin aviso ni rechazo en arranque). No hay nuevas puertas de un solo sentido: el valor por defecto no cambia y la lista de confianza es una decisión de cada despliegue, reversible editando `backend/.env`.
+- **Human decisions:** H-01 (flujo normal), Q-01 (valor por defecto seguro y una variable), Q-02 (sin aviso ni rechazo en arranque) y H-04 (documentar el valor por defecto de uvicorn fuera de Compose). No hay nuevas puertas de un solo sentido: el valor por defecto no cambia y la lista de confianza es una decisión de cada despliegue, reversible editando `backend/.env`.
 - **Research:** ninguna nota. El experimento de la sección 1 y la lectura del código de uvicorn 0.47.0 (`config.py`, `middleware/proxy_headers.py`) sustituyen a una investigación.
 
 ### 9.1 Alternatives Considered
 
 - **Dónde decidir la confianza:** frente a un campo nuevo en `Settings` con `ProxyHeadersMiddleware` propio, y frente a una clave de limitador que lea `X-Forwarded-For` directamente, se elige la variable de uvicorn: no añade código, no duplica la lógica del servidor y una clave que lea la cabecera sin lista de confianza permitiría falsificarla (contradice REQ-01). Ver ADR-0001.
-- **Valor por defecto en el Dockerfile:** frente a fijar `FORWARDED_ALLOW_IPS=""` en la imagen, se deja el valor por defecto de uvicorn. En Compose ninguna conexión externa llega desde `127.0.0.1` del contenedor, así que REQ-01 se cumple sin tocar el despliegue; fijarlo cambiaría la imagen sin necesidad. El límite es el de RISK-04.
+- **Valor por defecto en el Dockerfile:** frente a fijar `FORWARDED_ALLOW_IPS=""` en la imagen, se deja el valor por defecto de uvicorn, por decisión del mantenedor (H-04). En Compose ninguna conexión externa llega desde `127.0.0.1` del contenedor, así que REQ-01 se cumple sin tocar el despliegue; el límite fuera de Compose es el de RISK-04 y se documenta.
 - **Comprobación como script o test versionado:** frente a un script o un test en el repo, se ejecuta un procedimiento documentado en el plan y se deja el registro. Un test automático necesitaría Docker o un servidor real, y la constitución pide proporcionalidad (PR-004); si RM-05 entrega CI, se puede automatizar entonces.
 - **Aviso en arranque:** descartado en Q-02.
 
@@ -167,8 +168,8 @@ La feature no introduce ni cambia datos, ni esquema ni migraciones. Los contador
 
 ### ASM-05: Un cliente en el host puede hacer de proxy en la comprobación
 
-- **Basis:** Compose publica el 8000 y el contenedor ve las conexiones desde la IP de la puerta de enlace de su red, no desde la IP del cliente; el host envía `X-Forwarded-For` arbitrarios (ASM-03).
-- **Impact if incorrect:** AC-01.1, AC-02.1 y AC-02.3 se declararían no verificados, o se usarían contenedores con IPs distintas.
+- **Basis:** Compose publica el 8000 y el contenedor ve las conexiones del host desde la IP de la puerta de enlace de su red, no desde la IP del cliente; el host envía `X-Forwarded-For` arbitrarios (ASM-03). Un segundo contenedor en esa red tiene otra IP y sirve de conexión no confiada para AC-02.3.
+- **Impact if incorrect:** AC-01.1 y AC-02.1 se declararían no verificados, o se usarían contenedores con IPs distintas; AC-02.3 se declararía no verificado si no se puede montar la segunda fuente.
 - **Status:** Unverified
 
 ### ASM-06: uvicorn 0.47.0 acepta redes CIDR y listas separadas por comas
@@ -179,9 +180,10 @@ La feature no introduce ni cambia datos, ni esquema ni migraciones. Los contador
 
 ### OQ-02: ¿Basta con documentar que, fuera de Docker, `127.0.0.1` se confía por defecto?
 
-- **Impact:** REQ-01 dice "sin proxy de confianza configurado, se ignora la cabecera". Con uvicorn local, la conexión desde `127.0.0.1` ya es de confianza por defecto, así que ahí una cabecera falsificada desde la propia máquina sí se respeta. En Compose no ocurre.
-- **Proposed default:** Sí: se documenta en el README (T-03) y no se cambia el valor por defecto, porque no afecta a ningún despliegue con Compose y quien ejecuta uvicorn local desde la propia máquina ya es de confianza.
-- **Status:** Open
+- **Impact:** REQ-01 dice "sin proxy de confianza configurado, se ignora la cabecera". Con uvicorn local, la conexión desde `127.0.0.1` ya es de confianza por defecto, así que ahí una cabecera enviada desde la propia máquina sí se respeta. En Compose no ocurre: REQ-01 y CON-01 se cumplen en el contexto de Compose, el único del brief (sección 2).
+- **Proposed default:** Documentarlo en el README (T-03) sin cambiar el valor por defecto.
+- **Status:** Resolved
+- **Resolution:** Decidido por el mantenedor el 2026-11-02 (H-04): "Documentar el límite (Recomendado)".
 
 ### RISK-03: Un valor mal escrito falla en silencio
 
@@ -193,7 +195,7 @@ La feature no introduce ni cambia datos, ni esquema ni migraciones. Los contador
 
 - **Likelihood:** Low
 - **Impact:** Low
-- **Mitigation:** Se documenta (OQ-02). Ningún cliente externo llega con esa IP en Compose.
+- **Mitigation:** Se documenta (OQ-02, H-04). Ningún cliente externo llega con esa IP en Compose.
 
 ---
 
@@ -201,9 +203,9 @@ La feature no introduce ni cambia datos, ni esquema ni migraciones. Los contador
 
 | Task | Delivers | Acceptance criteria | Technologies | Depends on |
 |---|---|---|---|---|
-| T-01 | La variable, comentada y con un valor de ejemplo sin comodín, en `backend/.example.env` | AC-04.1 | validation-and-settings (el archivo se lee con `extra="ignore"`) | None |
-| T-02 | La comprobación ejecutada con Compose aislado y su registro | AC-01.1, AC-01.2, AC-02.1, AC-02.2, AC-02.3, AC-03.1, AC-03.2 | packaging-and-deployment, rate-limiting, backend-framework | None |
-| T-03 | La sección del README alineada con lo observado | AC-04.2 | Ninguna | T-02 |
+| T-01 | La variable, comentada y con el valor de ejemplo más estrecho (sin comodín ni rango amplio), en `backend/.example.env` | AC-04.1 | validation-and-settings (el archivo se lee con `extra="ignore"`) | None |
+| T-02 | La comprobación ejecutada con Compose aislado y dos fuentes de origen, incluido el escenario adicional con `*`, y su registro | AC-01.1, AC-01.2, AC-02.1, AC-02.2, AC-02.3, AC-03.1, AC-03.2 | packaging-and-deployment, rate-limiting, backend-framework | None |
+| T-03 | La sección del README alineada con lo observado, con la advertencia sobre `*` y redes amplias y el valor por defecto de uvicorn fuera de Compose | AC-04.2 | Ninguna | T-02 |
 
 ---
 
@@ -215,7 +217,7 @@ La feature no introduce ni cambia datos, ni esquema ni migraciones. Los contador
 - Ningún componente sin requisito. Respeta CON-01 a CON-04 y las constricciones de la constitución; no cambia ninguna tecnología fijada.
 
 - **Coverage gaps:** None
-- **Unresolved dependencies:** OQ-02 (propuesta por defecto, no bloquea).
+- **Unresolved dependencies:** None. OQ-02 está resuelta por H-04; REQ-01 se cumple en el contexto de Compose.
 
 ---
 

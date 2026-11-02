@@ -38,8 +38,8 @@ El limitador de login cuenta por `request.client.host`. Tras un proxy esa IP es 
 ### Option A: Delegar en uvicorn con `FORWARDED_ALLOW_IPS`
 
 - **Description:** uvicorn ya reescribe `client` según esa variable; la feature la documenta y la comprueba.
-- **Pros:** Sin código nuevo; comportamiento mantenido por el servidor; la lista de confianza se aplica con el algoritmo de "primera IP no confiada desde la derecha".
-- **Cons:** Un valor mal escrito se trata como literal, sin aviso; la variable vive fuera de `Settings`.
+- **Pros:** Sin código nuevo; comportamiento mantenido por el servidor; con una lista de IPs o redes se aplica el algoritmo de "primera IP no confiada desde la derecha".
+- **Cons:** Un valor mal escrito se trata como literal, sin aviso; la variable vive fuera de `Settings`; con `*` uvicorn toma la primera entrada de la cabecera, que controla el cliente, así que `*` permite falsificar la IP aunque el puerto 8000 esté cerrado.
 - **Fit:** Cumple todos los drivers.
 - **Reversal cost:** Low, solo configuración y documentación.
 - **Operational cost:** Ninguno añadido.
@@ -73,8 +73,8 @@ Chosen option: "Option A", porque cumple los requisitos sin código nuevo y dele
 ## 5. Consequences
 
 - **Positive:** Sin cambios en el código de aplicación; el valor por defecto de uvicorn se conserva.
-- **Negative:** Un valor mal escrito falla cerrado y en silencio (F003:RISK-03).
-- **Required:** README y `.example.env` nombran la variable; la comprobación se ejecuta contra la aplicación real.
+- **Negative:** Un valor mal escrito falla cerrado y en silencio (F003:RISK-03). Fuera de Compose, uvicorn confía por defecto en `127.0.0.1`; el mantenedor decidió documentarlo (F003 H-04).
+- **Required:** README y `.example.env` nombran la variable; el valor de ejemplo es el más estrecho; la documentación advierte de que `*` y las redes amplias permiten falsificar la IP; la comprobación se ejecuta contra la aplicación real.
 
 ---
 
