@@ -25,13 +25,16 @@ from app.web import spa
 from fastapi.testclient import TestClient
 from sqlalchemy.engine import URL, make_url
 
-DEFAULT_TEST_DATABASE_ADMIN_URL = (
-    "postgresql+asyncpg://postgres:postgres@127.0.0.1:5432/postgres"
-)
-
-
 def _get_test_database_admin_url() -> str:
-    return os.getenv("TEST_DATABASE_ADMIN_URL", DEFAULT_TEST_DATABASE_ADMIN_URL)
+    admin_url = os.getenv("TEST_DATABASE_ADMIN_URL")
+    if not admin_url:
+        raise RuntimeError(
+            "Falta TEST_DATABASE_ADMIN_URL. Debe apuntar a un PostgreSQL con "
+            "permiso para crear y borrar bases de datos, por ejemplo "
+            "postgresql+asyncpg://postgres:<contraseña>@127.0.0.1:5432/postgres. "
+            "Defínela en la shell antes de ejecutar pytest; el README explica cómo.",
+        )
+    return admin_url
 
 
 def _quote_identifier(identifier: str) -> str:
@@ -122,6 +125,26 @@ def build_client(monkeypatch) -> Generator[TestClient, None, None]:
                 yield client
         finally:
             asyncio.run(close_database())
+
+
+@pytest.mark.parametrize("valor", [None, ""], ids=["sin-definir", "vacia"])
+def test_temporary_database_exige_admin_url(monkeypatch, valor: str | None) -> None:
+    """F004:AC-06.1 F004:AC-06.2"""
+    if valor is None:
+        monkeypatch.delenv("TEST_DATABASE_ADMIN_URL", raising=False)
+    else:
+        monkeypatch.setenv("TEST_DATABASE_ADMIN_URL", valor)
+
+    async def _no_conectar(*args, **kwargs):
+        pytest.fail("No debe abrirse ninguna conexión sin TEST_DATABASE_ADMIN_URL")
+
+    monkeypatch.setattr(asyncpg, "connect", _no_conectar)
+
+    with pytest.raises(RuntimeError, match="TEST_DATABASE_ADMIN_URL") as exc_info:
+        with temporary_database(monkeypatch):
+            pytest.fail("temporary_database no debió ceder la base de datos")
+
+    assert "PostgreSQL de tests no disponible" not in str(exc_info.value)
 
 
 async def _fetch_alembic_version(database_url: str) -> str | None:
