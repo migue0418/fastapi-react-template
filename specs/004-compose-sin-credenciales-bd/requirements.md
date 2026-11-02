@@ -1,7 +1,7 @@
 ---
 artifact: requirements
 feature: F004
-status: draft
+status: approved
 version: 1
 upstream: [brief.md@1]
 ---
@@ -240,8 +240,8 @@ Los supuestos ASM-01 a ASM-04 y la pregunta OQ-01 viven en `brief.md@1`, secció
 
 - **Basis:** Q-07 pidió que los tests «se detengan con un mensaje». Detener toda la ejecución ocultaría el resultado de los tests que no necesitan base de datos, que hoy se pueden lanzar sin ella (F003 los registró pasando). Fallar con error, no omitir, mantiene PR-002.
 - **Impact:** REQ-06 y AC-06.1 a AC-06.4.
-- **Status:** Unverified
-- **Resolution:** A confirmar por el mantenedor al aprobar estos requisitos (H-04).
+- **Status:** Confirmed
+- **Resolution:** Confirmado por el mantenedor al aprobar estos requisitos (H-04, 2026-11-02).
 
 ---
 
@@ -258,7 +258,7 @@ Cobertura del alcance de `brief.md@1`, 5.1:
 Nota: con un mínimo de 16 caracteres, el rechazo de `postgres` ya queda implícito en REQ-02. Se conserva AC-02.2 como criterio explícito por pedirlo el mantenedor (Q-04), y ASM-04 queda sin efecto práctico mientras el mínimo sea de 16.
 
 - **Coverage gaps:** None
-- **Unresolved dependencies:** OQ-01 (abierta con valor por defecto, fuera de alcance) y ASM-05 (a confirmar en H-04).
+- **Unresolved dependencies:** OQ-01 (abierta con valor por defecto, fuera de alcance) y ASM-05 (confirmado en H-04).
 
 ---
 

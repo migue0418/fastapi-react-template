@@ -4,12 +4,12 @@
 feature: F004
 title: "Compose sin credenciales fijas de base de datos"
 roadmap-item: RM-03
-phase: define
-step: "requirements: requirements.md@1 puesto a aprobación"
-status: waiting-for-human
-next: "Recoger la respuesta a H-04. Si aprueba, cerrar Define y pasar a Design; si pide cambios, revisar los requisitos."
+phase: design
+step: "define cerrado: brief.md@1 y requirements.md@1 aprobados"
+status: in-progress
+next: "Ejecutar /sdd-kit:sdd-design: diseñar cómo se cumplen REQ-01 a REQ-07 y NFR-01 y NFR-02, y dividir el trabajo en tareas (valorar una para Compose y otra para los tests). Ejecuta /clear antes."
 
-waiting-for-human: [H-04]
+waiting-for-human: []
 blocked-by: []
 
 tasks: {}
@@ -26,3 +26,4 @@ history:
   - "2026-11-02 define/brief: ronda 3 respondida (Q-07); brief.md@1 escrito y puesto a aprobación (H-03)"
   - "2026-11-02 define/brief: brief.md@1 aprobado por el mantenedor (H-03)"
   - "2026-11-02 define/requirements: requirements.md@1 escrito desde brief.md@1 y puesto a aprobación (H-04)"
+  - "2026-11-02 define/close: requirements.md@1 aprobado (H-04); la feature pasa a Design"

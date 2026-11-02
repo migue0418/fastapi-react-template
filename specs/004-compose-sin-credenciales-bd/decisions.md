@@ -57,9 +57,9 @@ feature: F004
 - **Context:** Siete requisitos funcionales y dos cualidades. Decisiones de interpretación que el mantenedor debe confirmar: (1) con el mínimo de 16 caracteres, «distinta de `postgres`» queda cubierta por la longitud y se conserva solo como criterio de aceptación explícito (AC-02.2); (2) ASM-05: si falta `TEST_DATABASE_ADMIN_URL`, fallan con el mensaje los tests que usan la base de datos, y los que no la usan siguen ejecutándose, en lugar de abortar toda la ejecución; (3) el ejemplo versionado deja de traer una URL con contraseña (AC-05.1), lo que cambia el flujo de desarrollo local sin Docker.
 - **Options:** Aprobar / aprobar con cambios / replantear
 - **Recommendation (not binding):** Aprobar tras revisar ASM-05 y el punto (3).
-- **Status:** Open
-- **Answer:** _(pendiente)_
-- **Decided on:** _(pendiente)_
+- **Status:** Decided
+- **Answer:** Aprobar (Recomendado). Aprueba requirements.md@1, con los tres puntos de interpretación y ASM-05.
+- **Decided on:** 2026-11-02
 
 ---
 
