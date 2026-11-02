@@ -96,9 +96,9 @@ feature: F004
 - **Context:** Tres tareas: T-01 Compose (contraseña en el `.env` de la raíz, servicio previo `postgres-check`, ejemplos sin contraseña), T-02 tests (exigen `TEST_DATABASE_ADMIN_URL`) y T-03 README, que depende de las dos primeras. Sin decisiones de sentido único, sin ADR y sin cambios en el stack. La revisión independiente (ronda 1) aprobó con 6 hallazgos menores, todos corregidos en @2; ninguno rechazado. A revisar: la contraseña no puede llevar caracteres reservados de URL ni `$` (RISK-04) y no se comprueba, porque sería una regla de composición excluida del brief; un rechazo por contenido deja un contenedor parado y un volumen vacío (RISK-05, ya aceptado en H-05); el flujo de «Desarrollo local» sin Docker pasa a exigir añadir la contraseña a `DATABASE_URL` (H-04, punto 3).
 - **Options:** Aprobar / aprobar con cambios / replantear
 - **Recommendation (not binding):** Aprobar.
-- **Status:** Open
-- **Answer:**
-- **Decided on:**
+- **Status:** Decided
+- **Answer:** Aprobar (Recomendado). Aprueba design.md@2.
+- **Decided on:** 2026-11-02
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 artifact: design
 feature: F004
-status: draft
+status: approved
 version: 2
 upstream: [brief.md@1, requirements.md@2]
 ---
