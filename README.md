@@ -35,7 +35,7 @@ docker compose up --build
 
 `POSTGRES_PASSWORD` es la contraseña de PostgreSQL y no tiene valor por defecto. Defínela en el `.env` de la raíz (no versionado), con al menos 16 caracteres, distinta de `postgres`, y mejor alfanumérica y ASCII (los caracteres `@ / : # % $` rompen la URL de conexión). Para generar una: `python -c "import secrets; print(secrets.token_hex(24))"`.
 
-Si falta o no cumple el mínimo, `docker compose up` termina con un mensaje en español y no arranca PostgreSQL ni el backend. Con `docker compose up -d` el mensaje no sale por pantalla: léelo con `docker compose logs postgres-check`.
+Si la contraseña es demasiado corta o igual a `postgres`, `docker compose up` termina con un mensaje en español y no arranca PostgreSQL ni el backend. Con `docker compose up -d` ese mensaje no sale por pantalla: léelo con `docker compose logs postgres-check`. Si la variable falta o está vacía, Compose rechaza la configuración antes de crear nada y muestra el mensaje en pantalla incluso con `-d`.
 
 Compose construye `DATABASE_URL` del backend con esa contraseña y sobrescribe la de `backend/.env`.
 
