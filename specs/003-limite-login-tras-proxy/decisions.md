@@ -85,6 +85,18 @@ feature: F003
 - **Answer:** "A"
 - **Decided on:** 2026-11-02
 
+### H-07: Fusionar el PR de F003 en main
+
+- **Raised in:** Release / PR https://github.com/migue0418/fastapi-react-template/pull/13 (borrador, 2026-11-02)
+- **Concerns:** toda la feature F003; brief.md@1, requirements.md@1, design.md@3, plan.md@1, evidence run 2
+- **Blocks:** Cerrar la feature
+- **Context:** La rama incluye el último `origin/main` (sin cambios nuevos). Checks repetidos en Release: backend 3 failed y 49 errors por PostgreSQL de tests no disponible (fallos conocidos, 49 pasan); frontend lint, test y build limpios. El proyecto no exige tareas de release (sin changelog ni versión). El PR lista lo que se acepta: siete criterios probados con procedimiento manual (H-06), suite de backend no ejecutada con PostgreSQL, entorno de prueba simulado, valores no verificados.
+- **Options:** (A) Marcar el PR como listo y fusionarlo. (B) Pedir cambios en el PR. (C) Cerrarlo sin fusionar.
+- **Recommendation (not binding):** A.
+- **Status:** Open
+- **Answer:** —
+- **Decided on:** —
+
 ---
 
 ## 2. Discover Questions

@@ -5,11 +5,11 @@ feature: F003
 title: "El límite de login se aplica por cliente real tras un proxy"
 roadmap-item: RM-02
 phase: release
-step: "Document cerrado; Release pendiente"
+step: "PR #13 en borrador, esperando al mantenedor"
 status: in-progress
-next: "Ejecutar /sdd-kit:sdd-release: poner la rama al día con main, repetir las comprobaciones y abrir el PR en borrador. Ejecuta /clear antes."
+next: "Esperar al mantenedor: PR https://github.com/migue0418/fastapi-react-template/pull/13 (H-07). Tras el merge, ejecutar /sdd-kit:sdd-release para cerrar la feature. Ejecuta /clear antes."
 
-waiting-for-human: []
+waiting-for-human: [H-07]
 blocked-by: []
 
 tasks:
@@ -44,3 +44,4 @@ history:
   - "2026-11-02 verify/run-1: checks y S1 a S5 repetidos, evidencia en fail por siete criterios sin test con su ID; revisión de feature r1 approve (4 menores); H-06 puesto al mantenedor"
   - "2026-11-02 verify/run-2: H-06 decidido (A); checks y S1 a S5 repetidos, evidencia pass; revisión de feature r2 approve (2 menores respondidos); la feature pasa a Document"
   - "2026-11-02 document/close: README, architecture v4, stack v2, product v4 y roadmap v5 actualizados; RM-02 cerrada y RM-11 añadida; nada espera al mantenedor; la feature pasa a Release"
+  - "2026-11-02 release/pr: rama al día con main, checks repetidos sin fallos nuevos, sin tareas de release; PR #13 en borrador y H-07 abierto"
