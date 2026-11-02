@@ -5,11 +5,11 @@ feature: F004
 title: "Compose sin credenciales fijas de base de datos"
 roadmap-item: RM-03
 phase: design
-step: "define cerrado: brief.md@1 y requirements.md@1 aprobados"
-status: in-progress
-next: "Ejecutar /sdd-kit:sdd-design: diseñar cómo se cumplen REQ-01 a REQ-07 y NFR-01 y NFR-02, y dividir el trabajo en tareas (valorar una para Compose y otra para los tests). Ejecuta /clear antes."
+step: "design/fase 2: R1-01 (AC-02.1 y AC-02.2 inalcanzables con docker compose up) puesto al mantenedor en H-05"
+status: waiting-for-human
+next: "Recoger la respuesta a H-05. Si cambia REQ-02, revisar los requisitos en Define (/sdd-kit:sdd-define, revisión de requisitos aprobados) y volver a /sdd-kit:sdd-design. Mientras tanto no depende de H-05: el diseño de REQ-01, REQ-03 a REQ-07 y los tests. Ejecuta /clear antes."
 
-waiting-for-human: []
+waiting-for-human: [H-05]
 blocked-by: []
 
 tasks: {}
@@ -27,3 +27,4 @@ history:
   - "2026-11-02 define/brief: brief.md@1 aprobado por el mantenedor (H-03)"
   - "2026-11-02 define/requirements: requirements.md@1 escrito desde brief.md@1 y puesto a aprobación (H-04)"
   - "2026-11-02 define/close: requirements.md@1 aprobado (H-04); la feature pasa a Design"
+  - "2026-11-02 design/fase 2: probado en Compose v5.4.0 que la longitud no se valida sin crear contenedores; hallazgo R1-01 en reviews/findings-1.md y decisión H-05 puesta al mantenedor"

@@ -61,6 +61,21 @@ feature: F004
 - **Answer:** Aprobar (Recomendado). Aprueba requirements.md@1, con los tres puntos de interpretación y ASM-05.
 - **Decided on:** 2026-11-02
 
+### H-05: Cómo se rechaza una contraseña corta o `postgres` si Compose no puede hacerlo sin crear contenedores
+
+- **Raised in:** Design / Phase 2 (incógnita: cómo valida Compose la longitud)
+- **Concerns:** requirements.md@1 (REQ-02, AC-02.1, AC-02.2), brief.md@1 (5.1, Q-04, Q-06), reviews/findings-1.md#R1-01
+- **Blocks:** El diseño de REQ-02 y la tarea de Compose. REQ-01, REQ-03 a REQ-07 y los tests (REQ-06) no dependen de la respuesta.
+- **Context:** Comprobado con Compose v5.4.0: la interpolación nativa solo rechaza «sin definir» y «vacía». Medir la longitud exige una comprobación dentro de Compose, que se ejecuta cuando Compose ya ha creado los contenedores y el volumen. Los criterios AC-02.1 y AC-02.2 piden que no se cree ninguno. Los requisitos se revisan en Define y el mantenedor los aprueba de nuevo.
+- **Options:**
+  - A. Comprobación dentro de Compose (servicio previo que falla): rechaza < 16 y `postgres` con mensaje en español. Hay que reformular AC-02.1 y AC-02.2: ningún servicio arranca, la base queda sin inicializar; el contenedor de comprobación y el volumen vacío sí quedan creados.
+  - B. Solo la interpolación nativa: Compose rechaza sin definir y vacía. El mínimo de 16 y `postgres` pasan a la documentación y al comentario del ejemplo, sin comprobación. Se retira REQ-02.
+  - C. B más un script multiplataforma (Python, con `uv run`, como `rename_project.py`) que valida el mínimo y lanza Compose. Quien ejecute `docker compose up` directamente se salta la comprobación de longitud.
+- **Recommendation (not binding):** A. Es la única que mantiene la validación pedida en Q-04 y Q-06 con el comando `docker compose up` de siempre. Su coste es que un rechazo deja un contenedor parado y un volumen vacío, que no guardan ninguna contraseña.
+- **Status:** Open
+- **Answer:**
+- **Decided on:**
+
 ---
 
 ## 2. Discover Questions
