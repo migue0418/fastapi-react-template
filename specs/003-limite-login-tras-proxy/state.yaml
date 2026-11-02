@@ -13,8 +13,8 @@ waiting-for-human: []
 blocked-by: []
 
 tasks:
-  T-01: pending
-  T-02: pending
+  T-01: approved
+  T-02: in-review
   T-03: pending
 
 known-failures:

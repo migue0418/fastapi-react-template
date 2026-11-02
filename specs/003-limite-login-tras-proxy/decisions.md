@@ -110,6 +110,9 @@ Evidencia previa, leída antes de preguntar: `backend/app/core/limiter.py` usa `
 | 2026-11-02 | Design: tres tareas; T-03 (README) depende de T-02 para describir solo lo observado | AC-04.2 compara el README con los resultados | design.md@1, T-01 a T-03 |
 | 2026-11-02 | Build, línea base: `uv run python -m pytest -q` en la rama de la feature da 3 failed, 48 passed, 49 errors, todos por `RuntimeError: PostgreSQL de tests no disponible` (no hay PostgreSQL ni contenedores en marcha). Frontend: lint limpio, 24 tests pasan. Se registran como fallos conocidos | Entorno sin PostgreSQL, no un defecto del código. Ninguna tarea de F003 toca código del backend, así que se juzgan por no añadir fallos | known-failures, NC-005 |
 
+| 2026-11-02 | Build T-01: el test de AC-04.1 vive en `backend/tests/test_settings.py` (fuera de la lista de archivos de la tarea, que solo nombra `backend/.example.env`) y lee `.example.env` por ruta relativa al propio test | AC-04.1 exige un test que lo nombre; ahí están los tests de ajustes. Lo juzga la revisión de T-01 | F003 T-01, AC-04.1 |
+| 2026-11-02 | Build T-02: la comprobación usó Docker 29.7.2, proyecto Compose temporal `f003check`, puerto 18000 y puerta de enlace 172.25.0.1; se quitó el mapeo de PostgreSQL de la copia del compose y cada petición usó `Connection: close`. Quedan no verificados: redes CIDR amplias (/16), valor mal escrito, ejecución local sin Docker y un proxy real | Registro en `evidence/t02-comprobacion-proxy.md`; T-03 no puede dar por hecho lo no verificado | F003 T-02, AC-02.3, AC-03.1 |
+
 ---
 
 ## 4. Documentation Impact
@@ -121,6 +124,8 @@ Evidencia previa, leída antes de preguntar: `backend/app/core/limiter.py` usa `
 | 2026-11-02 | `.sdd/architecture.md` 6.1 y 8.1, y `.sdd/stack.yaml` (`rate-limiting`) | Resumir ADR-0001 y quitar la remisión a RM-02 | ADR-0001 |
 | 2026-11-02 | `backend/.example.env` | Variable comentada con una red de ejemplo (T-01) | AC-04.1 |
 | 2026-11-02 | README, sección "Despliegue detrás de un proxy" | Alinear con lo observado y documentar el valor por defecto de uvicorn fuera de Compose (T-03) | AC-04.2, OQ-02 |
+| 2026-11-02 | T-03 (README) | Su texto debe coincidir con la nota nueva de `backend/.example.env` (T-01) | AC-04.2 |
+| 2026-11-02 | `.sdd/` (architecture, stack) y ADR-0001 | Los resultados de T-02 confirman el diseño; Document los resume | F003 T-02 |
 
 ---
 
