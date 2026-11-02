@@ -25,6 +25,18 @@ feature: F004
 - **Answer:** Pequeño (Recomendado)
 - **Decided on:** 2026-11-02
 
+### H-02: La feature absorbe RM-09 y pasa a «Normal»
+
+- **Raised in:** Define / Discover, ronda 2 (Q-03, Q-05)
+- **Concerns:** RM-03, RM-09, H-01
+- **Blocks:** El alcance del brief
+- **Context:** El mantenedor respondió «Dentro» a Q-03 (el valor por defecto de los tests). Eso es el resultado de RM-09, fuera de RM-03. Absorberlo da a la feature dos comportamientos valorables por separado, lo que supera una señal de tamaño de la metodología (el resultado lleva un «y»), y ensancha el ítem: es un cambio de roadmap y decisión del mantenedor.
+- **Options:** Absorber RM-09 (reclasificar a Normal, dos tareas; RM-09 se cierra absorbido en RM-03) / Dejarlo fuera (RM-09 sigue en el inbox)
+- **Recommendation (not binding):** Dejarlo fuera, por alcance mínimo. El mantenedor eligió absorberlo.
+- **Status:** Decided
+- **Answer:** Absorber RM-09
+- **Decided on:** 2026-11-02
+
 ---
 
 ## 2. Discover Questions
@@ -67,13 +79,24 @@ Sigue lo que abrieron Q-03 («Dentro») y Q-04 («unos mínimos»). Q-03 ensanch
 
 - **Why it matters:** RM-03 solo cubre `docker-compose.yml` y su configuración. Cambiar el valor por defecto de los tests es el resultado de RM-09 («los tests no usan por defecto un PostgreSQL ajeno»): absorberlo da a la feature dos comportamientos que el mantenedor valoraría por separado y las señales de tamaño de la metodología lo desaconsejan. La feature pasaría de «Pequeño» a «Normal» (H-01) y RM-09 se cerraría como entregada por F004.
 - **Recommended:** Fuera: RM-09 sigue aparte y esta feature solo documenta cómo apuntar los tests a la base de Compose. Es la opción de menor alcance y la que respeta el ítem. Si el mantenedor prefiere absorberlo, es decisión suya y se reclasifica.
-- **Answer:** _(pendiente)_
-- **Answered on:** _(pendiente)_
+- **Answer:** Absorber RM-09
+- **Answered on:** 2026-11-02
 
 #### Q-06: ¿Qué mínimos debe cumplir la contraseña de PostgreSQL?
 
 - **Why it matters:** Define los requisitos y criterios de aceptación de la validación. Q-04 ya fijó que no puede ser `postgres` ni estar vacía; falta decidir los mínimos de longitud y de composición.
 - **Recommended:** Al menos 16 caracteres y distinta de `postgres`, sin reglas de composición (mayúsculas, dígitos, símbolos). La longitud aporta más que la composición, y la contraseña la usa una máquina, no una persona. Mínimos más exigentes que los de `SECRET_KEY` no tendrían sentido.
+- **Answer:** 16+ caracteres, sin composición (Recomendado)
+- **Answered on:** 2026-11-02
+
+### Round 3
+
+Sigue lo que abrió Q-05: absorber RM-09 obliga a decidir qué comportamiento tienen los tests cuando no se configura su conexión.
+
+#### Q-07: Al lanzar los tests sin configurar `TEST_DATABASE_ADMIN_URL`, ¿qué deben hacer?
+
+- **Why it matters:** Es el comportamiento observable de la parte de RM-09 (no tocar el servidor de otro proyecto). Cambia los requisitos y criterios de aceptación de los tests.
+- **Recommended:** Que la suite se detenga con un mensaje en español que nombre `TEST_DATABASE_ADMIN_URL` y diga qué poner. Es seguro y visible (PR-002, NC-009). Saltarse los tests dejaría una suite en verde sin haber probado nada.
 - **Answer:** _(pendiente)_
 - **Answered on:** _(pendiente)_
 
@@ -85,6 +108,8 @@ Sigue lo que abrieron Q-03 («Dentro») y Q-04 («unos mínimos»). Q-03 ensanch
 |---|---|---|---|
 | 2026-11-02 | La feature entrega RM-03 entera, sin dividirla. | Cumple los criterios de `ready` y ninguna señal de tamaño: un resultado, un usuario (Mantenedor), sin dependencias. | RM-03 |
 | 2026-11-02 | Rama `feature/004-compose-sin-credenciales-bd` y commits convencionales en español. | EP-001 y EP-002 de la constitución. | F004 |
+| 2026-11-02 | Corrige la primera fila: la feature entrega RM-03 ensanchado con RM-09 (H-02), no RM-03 a secas. En `roadmap.md` (versión 6) RM-03 amplía su resultado y RM-09 pasa a Closed como absorbido, sin borrarse. | Decisión del mantenedor en Q-05; un ítem ensanchado cambia el roadmap en la rama. | H-02, RM-03, RM-09 |
+| 2026-11-02 | La feature se reclasifica de «Pequeño» a «Normal». Su tamaño se revisa en Design por si conviene dividirla en dos tareas. | EP-007: dos comportamientos observables dejan de caber en una sola tarea. El mantenedor conocía la consecuencia al decidir Q-05. | H-01, H-02 |
 
 ---
 
@@ -95,6 +120,7 @@ Sigue lo que abrieron Q-03 («Dentro») y Q-04 («unos mínimos»). Q-03 ensanch
 | 2026-11-02 | `README.md` | El inicio rápido (Docker) ya no puede decir `admin` / `ChangeMe123!` junto a una base sin configurar; añadir el paso de la contraseña de PostgreSQL y el procedimiento para un volumen ya inicializado. | RM-03 |
 | 2026-11-02 | `docs/behaviour/deployment.md` | Nuevo requisito sobre las credenciales de la base de datos de Compose. | RM-03 |
 | 2026-11-02 | `.sdd/architecture.md` (9.2), `.sdd/product.md` (CAP-06), `.sdd/constitution.md` (NC-007) | El gap de `postgres:postgres` pasa a cerrado; NC-007 ya no cita `postgres:postgres` como valor por defecto versionado de Compose. | RM-03 |
+| 2026-11-02 | `.sdd/architecture.md` (9.2), `README.md`, `docs/development_guide.md`, `docs/verification-guide.md` | El gap de los tests contra `127.0.0.1:5432` pasa a cerrado (RM-09). El README y las guías sustituyen el valor por defecto de `TEST_DATABASE_ADMIN_URL` por la obligación de definirla. | RM-09, H-02 |
 
 ---
 

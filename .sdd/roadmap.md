@@ -1,6 +1,6 @@
 ---
 artifact: roadmap
-version: 5
+version: 6
 status: active
 owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 ---
@@ -21,16 +21,16 @@ La única fuente del flujo de trabajo (RM-08, F001), el rechazo de la contraseñ
 
 ## 2. Sequence
 
-### RM-03: Compose sin credenciales fijas de base de datos
+### RM-03: Compose sin credenciales fijas de base de datos y tests sin PostgreSQL ajeno por defecto
 
 - **Status:** ready
-- **Outcome:** El mantenedor despliega con Compose usando una contraseña de PostgreSQL elegida por él, sin ninguna fija en el archivo versionado.
+- **Outcome:** El mantenedor despliega con Compose usando una contraseña de PostgreSQL elegida por él, sin ninguna fija en el archivo versionado, y lanza los tests sin crear ni borrar bases en el servidor de otro proyecto.
 - **Capability:** CAP-06
 - **Why:** Completa el rechazo de valores por defecto en el despliegue.
 - **Depends on:** none
-- **Boundaries:** In: `docker-compose.yml` y su configuración / Not in: gestión de secretos externa
+- **Boundaries:** In: `docker-compose.yml` y su configuración, y el valor por defecto de la conexión de los tests / Not in: gestión de secretos externa
 - **Origin:** onboarding
-- **Notes:** Puede afectar a un volumen de datos ya inicializado, y a los valores que los tests usan por defecto.
+- **Notes:** Puede afectar a un volumen de datos ya inicializado. Ensanchado el 2026-11-02 por el mantenedor (F004, H-02) para absorber RM-09; su resultado lleva un «y», señal de tamaño aceptada a sabiendas.
 
 ### RM-04: Superficie HTTP reducida en producción
 
@@ -80,17 +80,6 @@ La única fuente del flujo de trabajo (RM-08, F001), el rechazo de la contraseñ
 
 ## 3. Inbox
 
-### RM-09: Los tests no usan por defecto un PostgreSQL ajeno
-
-- **Status:** candidate
-- **Outcome:** Al lanzar los tests sin configurar nada, el mantenedor no crea ni borra bases en el servidor de otro proyecto.
-- **Capability:** enabler; protege a los demás proyectos locales.
-- **Why:** Se detectó en el onboarding: el puerto 5432 lo ocupaba `gestorbibliografico`.
-- **Depends on:** none
-- **Boundaries:** TBD
-- **Origin:** onboarding
-- **Notes:** Relacionado con RM-03.
-
 ### RM-10: El test de arranque sin base de datos no depende de `backend/.env`
 
 - **Status:** candidate
@@ -116,6 +105,17 @@ La única fuente del flujo de trabajo (RM-08, F001), el rechazo de la contraseñ
 ---
 
 ## 4. Closed
+
+### RM-09: Los tests no usan por defecto un PostgreSQL ajeno
+
+- **Absorbed into:** RM-03, por decisión del mantenedor el 2026-11-02 (F004, H-02). Se da por entregado cuando F004 lo esté.
+- **Outcome:** Al lanzar los tests sin configurar nada, el mantenedor no crea ni borra bases en el servidor de otro proyecto.
+- **Capability:** enabler; protege a los demás proyectos locales.
+- **Why:** Se detectó en el onboarding: el puerto 5432 lo ocupaba `gestorbibliografico`.
+- **Depends on:** none
+- **Boundaries:** TBD
+- **Origin:** onboarding
+- **Notes:** Relacionado con RM-03.
 
 ### RM-02: El límite de login se aplica por cliente real tras un proxy
 
