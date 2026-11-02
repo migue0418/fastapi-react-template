@@ -1,6 +1,6 @@
 ---
 artifact: architecture
-version: 3
+version: 4
 status: active
 owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 ---
@@ -182,7 +182,7 @@ Una transacción por caso de uso. Las fechas se guardan en UTC sin zona y la API
 - Refresh token en cookie HttpOnly con `path=/api/auth`, `samesite=lax` y `secure` en producción.
 - Cabeceras de seguridad por middleware, con HSTS solo en producción. No hay CSP.
 - CORS restringido a `FRONTEND_URL` en producción.
-- Rate limiting en los endpoints de autenticación.
+- Rate limiting en los endpoints de autenticación, por IP remota. Tras un proxy, uvicorn decide de qué conexiones acepta `X-Forwarded-For` con `FORWARDED_ALLOW_IPS` (ADR-0001); sin ella no confía en ninguna.
 
 Las reglas obligatorias están en `constitution.md`.
 
@@ -228,7 +228,7 @@ Dos contenedores en Compose: `backend`, con la imagen multi-etapa, usuario sin p
 
 ### 8.1 Key Decisions
 
-Razones reconstruidas a partir del código y la documentación, no registradas originalmente como decisiones. Aún no hay ADR.
+Las dos primeras son razones reconstruidas a partir del código y la documentación, no registradas originalmente. La tercera tiene ADR.
 
 - **Decision:** La SPA se sirve desde el backend.
 - **Context:** Plantilla con despliegue simple.
@@ -245,6 +245,14 @@ Razones reconstruidas a partir del código y la documentación, no registradas o
 - **Consequences:** Varias réplicas podrían competir al migrar.
 - **Status:** Accepted
 - **Reference:** `docs/backend-standards.md`
+
+- **Decision:** La confianza en las cabeceras de un proxy se delega en uvicorn (`FORWARDED_ALLOW_IPS`), sin middleware ni `key_func` propios.
+- **Context:** Tras un proxy, el limitador de login veía la IP del proxy y todos los clientes compartían cupo (F003).
+- **Rationale:** Una sola variable para quien despliega, valor por defecto seguro y sin código de seguridad propio.
+- **Alternatives:** Middleware propio con un campo de `Settings`; clave del limitador que lee `X-Forwarded-For` (descartada: cualquier cliente falsifica su IP).
+- **Consequences:** Un valor mal escrito falla cerrado y sin aviso; `*` y las redes amplias permiten falsificar la IP; fuera de Compose uvicorn confía por defecto en `127.0.0.1`.
+- **Status:** Accepted
+- **Reference:** `docs/adr/ADR-0001-confianza-en-cabeceras-de-proxy-delegada-en-uvicorn.md`
 
 ### 8.2 Architectural Constraints
 
@@ -269,10 +277,10 @@ Basada en el código y la documentación revisados el 2026-11-01, no en un siste
 - **Status:** Closed: `Settings` lo rechaza al arrancar en producción (F002)
 - **Reference:** RM-01
 
-- **Gap:** El rate limiter usa la IP remota sin configuración de proxy visible.
-- **Impact:** Inferido, sin comprobar: tras un proxy, todos los clientes podrían compartir el mismo límite.
-- **Status:** Under investigation
-- **Reference:** RM-02
+- **Gap:** El rate limiter usa la IP remota y, tras un proxy, veía la IP del proxy.
+- **Impact:** Confirmado con una ejecución real (F003): sin configurar, todos los clientes tras el proxy compartían el mismo límite.
+- **Status:** Closed: `FORWARDED_ALLOW_IPS` hace que cada cliente tenga el suyo, sin cambiar código (F003, ADR-0001). Límites documentados en el README: valor mal escrito sin aviso, `*` y redes amplias, y `127.0.0.1` de confianza por defecto fuera de Compose
+- **Reference:** RM-02, ADR-0001
 
 - **Gap:** `docker-compose.yml` fija `postgres:postgres`.
 - **Impact:** Credenciales conocidas en un despliegue real.

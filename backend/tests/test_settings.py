@@ -94,3 +94,35 @@ def test_f002_asm_03_short_key_and_default_password_names_secret_key(monkeypatch
     with pytest.raises(ValidationError) as exc:
         build(monkeypatch, "production", DEFAULT_PASSWORD, key="short")
     assert "SECRET_KEY" in str(exc.value)
+
+
+def test_f003_ac_04_1_example_env_shows_forwarded_allow_ips():
+    """F003:AC-04.1"""
+    from pathlib import Path
+
+    example = Path(__file__).resolve().parents[1] / ".example.env"
+    lines = example.read_text(encoding="utf-8").splitlines()
+    declarations = [
+        line for line in lines if line.lstrip("# ").startswith("FORWARDED_ALLOW_IPS=")
+    ]
+    assert len(declarations) == 1
+    declaration = declarations[0]
+    assert declaration.startswith("#"), "la variable debe ir comentada"
+    value = declaration.lstrip("# ").split("=", 1)[1].strip()
+    assert value and "*" not in value
+    index = lines.index(declaration)
+    assert lines[index - 1].startswith("#"), "falta la nota encima de la variable"
+    note = []
+    for line in reversed(lines[:index]):
+        if not line.startswith("#"):
+            break
+        note.append(line)
+    note_text = " ".join(note).lower()
+    assert "proxy" in note_text and "cupo" in note_text, "la nota debe estar en español"
+
+    from io import StringIO
+
+    from dotenv import dotenv_values
+
+    loaded = dotenv_values(stream=StringIO(declaration.lstrip("# ")))
+    assert loaded["FORWARDED_ALLOW_IPS"] == value

@@ -1,0 +1,47 @@
+# Where the feature stands: the first file read when the feature is resumed.
+# Overwritten at every checkpoint.
+
+feature: F003
+title: "El límite de login se aplica por cliente real tras un proxy"
+roadmap-item: RM-02
+phase: release
+step: "PR #13 en borrador, esperando al mantenedor"
+status: in-progress
+next: "Esperar al mantenedor: PR https://github.com/migue0418/fastapi-react-template/pull/13 (H-07). Tras el merge, ejecutar /sdd-kit:sdd-release para cerrar la feature. Ejecuta /clear antes."
+
+waiting-for-human: [H-07]
+blocked-by: []
+
+tasks:
+  T-01: merged
+  T-02: merged
+  T-03: merged
+
+known-failures:
+  - "backend pytest: 3 failed y 49 errors por PostgreSQL de tests no disponible en el entorno (49 pasan, con el test de AC-04.1); frontend limpio"
+
+stale: []
+
+history:
+  - "2026-11-02 define/open: feature abierta en feature/003-limite-login-tras-proxy para RM-02; camino normal confirmado por el mantenedor (H-01)"
+  - "2026-11-02 define/discover: ronda 1 puesta al mantenedor (Q-01, Q-02)"
+  - "2026-11-02 define/discover: ronda 1 respondida (Q-01, Q-02) con las respuestas recomendadas"
+  - "2026-11-02 define/brief: brief.md@1 escrito y puesto a aprobación (H-02)"
+  - "2026-11-02 define/brief: brief.md@1 aprobado por el mantenedor (H-02)"
+  - "2026-11-02 define/requirements: requirements.md@1 escrito desde brief.md@1 y puesto a aprobación (H-03)"
+  - "2026-11-02 define/close: requirements.md@1 aprobado (H-03); la feature pasa a Design"
+  - "2026-11-02 design/design: design.md@1 (sin código de aplicación, 3 tareas) y ADR-0001 proposed escritos tras un experimento aislado con uvicorn y slowapi"
+  - "2026-11-02 design/review: ronda 1 changes-required (R1-01 bloqueante, R1-02 a R1-05 menores), respondida con design.md@2; H-04 decidido por el mantenedor (documentar el límite)"
+  - "2026-11-02 design/review: ronda 2 approve (R2-01 menor corregido en design.md@3); design.md@3 puesto a aprobación (H-05)"
+  - "2026-11-02 design/approval: design.md@3 aprobado (H-05); ADR-0001 accepted; plan.md@1 escrito y comprobado (consistencia limpia)"
+  - "2026-11-02 design/close: la feature pasa a Build con T-01 a T-03 pendientes"
+  - "2026-11-02 build/baseline: fallos conocidos registrados (backend sin PostgreSQL de tests)"
+  - "2026-11-02 build/T-01: aprobada en r1 (2 menores) e integrada; suite sin fallos nuevos"
+  - "2026-11-02 build/T-02: aprobada en r1 (3 menores)"
+  - "2026-11-02 build/T-02: integrada con sus correcciones de r1; suite sin fallos nuevos; T-03 en implementación"
+  - "2026-11-02 build/T-03: aprobada en r1 (3 menores corregidos) e integrada"
+  - "2026-11-02 build/close: las tres tareas integradas; la feature pasa a Verify"
+  - "2026-11-02 verify/run-1: checks y S1 a S5 repetidos, evidencia en fail por siete criterios sin test con su ID; revisión de feature r1 approve (4 menores); H-06 puesto al mantenedor"
+  - "2026-11-02 verify/run-2: H-06 decidido (A); checks y S1 a S5 repetidos, evidencia pass; revisión de feature r2 approve (2 menores respondidos); la feature pasa a Document"
+  - "2026-11-02 document/close: README, architecture v4, stack v2, product v4 y roadmap v5 actualizados; RM-02 cerrada y RM-11 añadida; nada espera al mantenedor; la feature pasa a Release"
+  - "2026-11-02 release/pr: rama al día con main, checks repetidos sin fallos nuevos, sin tareas de release; PR #13 en borrador y H-07 abierto"

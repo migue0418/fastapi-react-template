@@ -3,7 +3,7 @@
 # frontend/package-lock.json, Dockerfile, docker-compose.yml).
 # Entries with `fixed: true` are the human's constraints and never change without the human.
 
-version: 1
+version: 2
 
 technologies:
   - concern: backend-language
@@ -100,8 +100,8 @@ technologies:
     status: decided
     decided-by: existing
     fixed: false
-    rationale: "Ya en uso, en memoria y por IP remota; ver RM-02 para su comportamiento tras un proxy."
-    adr: null
+    rationale: "Ya en uso, en memoria y por IP remota; tras un proxy, uvicorn fija la IP del cliente con FORWARDED_ALLOW_IPS (ADR-0001)."
+    adr: ADR-0001
     decision: null
     research: null
 

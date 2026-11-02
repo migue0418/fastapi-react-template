@@ -1,0 +1,5 @@
+R1-01: fixed (design.md@2: IF-01 Guarantees, tabla de fallos con filas para `*` y redes amplias, T-02 con escenario adicional con `*`, T-03 con la advertencia; ADR-0001 secciones 3 y 5)
+R1-02: fixed (design.md@2: ASM-05 y NFR-01 con segunda fuente en un contenedor de la red del proyecto, o AC-02.3 no verificado; filas de la tabla de fallos reformuladas)
+R1-03: fixed (design.md@2: OQ-02 resuelta por decisión del mantenedor, H-04; REQ-01 y CON-01 se cumplen en el contexto de Compose; sección 9.1 y 12)
+R1-04: fixed (design.md@2: NFR-02 se verifica con el diff de `limiter.py` y `auth/router.py` y los 429 observados en T-02; la suite solo es regresión)
+R1-05: fixed (design.md@2: C-03 y T-01 piden el valor realista más estrecho y la nota de sustituirlo por la dirección del proxy)
