@@ -17,6 +17,8 @@ Comandos: `curl -s -o /dev/null -w "%{http_code}" -H "X-Forwarded-For: <ip>" -H 
 
 ### S1: sin variable (`FORWARDED_ALLOW_IPS` vacía en el contenedor)
 
+Nota: este registro dice que el servicio se recreó entre escenarios; no consta si también se recreó entre las dos filas de S1 (ambas usan la IP de conexión `172.25.0.1`). La segunda fila no se puede dar por válida solo con este registro: Verify debe repetirla recreando el servicio antes.
+
 | Prueba | Secuencia observada (11 intentos) |
 |---|---|
 | `login` desde el host, `X-Forwarded-For` distinto en cada intento (`198.51.100.1` a `.11`) | 401 x10, **429** |
@@ -64,7 +66,7 @@ Comandos: `curl -s -o /dev/null -w "%{http_code}" -H "X-Forwarded-For: <ip>" -H 
 | AC-02.3 (una conexión que no es del proxy no elige su IP) | Cumple | S3: el segundo contenedor (fuera de la lista) recibe 429 en el 11 con cabeceras distintas. |
 | AC-03.1 (la variable basta) | Cumple | S2 y S4: solo se definió la variable (IP sola y red `/31`); AC-02.1 y AC-02.3 se cumplen en ambos. |
 | AC-03.2 (sin variable, valor por defecto seguro) | Cumple | S1: se cumplen AC-01.1 y AC-01.2 sin definirla. |
-| NFR-01 (evidencia ejecutada de AC-01.1, AC-02.1 y AC-02.3) | Cumple | Ejecutados contra la aplicación en marcha, con origen host y segundo contenedor. Nada declarado no verificado. |
+| NFR-01 (evidencia ejecutada de AC-01.1, AC-02.1 y AC-02.3) | Cumple | Ejecutados contra la aplicación en marcha, con origen host y segundo contenedor. Nada declarado no verificado de AC-01.1, AC-02.1 y AC-02.3 (los puntos de la sección "No verificado" quedan fuera de ese objetivo). |
 | NFR-02 (límites actuales sin cambios) | Cumple | 429 en el intento 11 en `login` y `token`, y en el 21 en `refresh` (S2). `git diff main -- backend/app/core/limiter.py backend/app/features/auth/router.py` vacío. |
 
 Escenario adicional del diseño (S5, `*`): con `*`, un cliente puede falsificar su IP con `X-Forwarded-For` y no se limita, ni desde el host ni desde un contenedor ajeno a la lista. Confirma el riesgo RISK-01 y que el README debe desaconsejar `*`.
