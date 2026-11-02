@@ -1,0 +1,23 @@
+# Where the feature stands: the first file read when the feature is resumed.
+# Overwritten at every checkpoint.
+
+feature: F004
+title: "Compose sin credenciales fijas de base de datos"
+roadmap-item: RM-03
+phase: define
+step: "discover: ronda 1 puesta al mantenedor"
+status: waiting-for-human
+next: "Recoger las respuestas de la ronda 1 (Q-01 a Q-04) y, con ellas, escribir brief.md@1 y ponerlo a aprobación."
+
+waiting-for-human: [Q-01, Q-02, Q-03, Q-04]
+blocked-by: []
+
+tasks: {}
+
+known-failures: []
+
+stale: []
+
+history:
+  - "2026-11-02 define/open: feature abierta en feature/004-compose-sin-credenciales-bd para RM-03; camino pequeño confirmado por el mantenedor (H-01)"
+  - "2026-11-02 define/discover: ronda 1 puesta al mantenedor (Q-01 a Q-04)"
