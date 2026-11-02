@@ -113,7 +113,7 @@ Evidencia previa, leída antes de preguntar: `backend/app/core/limiter.py` usa `
 | 2026-11-02 | Build T-02: la comprobación usó Docker 29.7.2, proyecto Compose temporal `f003check`, puerto 18000 y puerta de enlace 172.25.0.1; se quitó el mapeo de PostgreSQL de la copia del compose y cada petición usó `Connection: close`. Quedan no verificados: redes CIDR amplias (/16), valor mal escrito, ejecución local sin Docker y un proxy real | Registro en `evidence/t02-comprobacion-proxy.md`; T-03 no puede dar por hecho lo no verificado | F003 T-02, AC-02.3, AC-03.1 |
 | 2026-11-02 | Build T-01 r1: R1-01 corregido (el test lee todo el bloque de comentario y carga la variable con `dotenv_values`); R1-02 rechazado (el test debe existir para AC-04.1; añadir `backend/tests/test_settings.py` a la lista Files de T-01 sería un cambio del plan) | Un cambio del plan va a Design; la desviación queda registrada aquí | reviews/task-T-01-r1-answers.md |
 | 2026-11-02 | Build T-02 r1: R1-01 y R1-03 corregidos en la redacción; R1-02 rechazado (el bucle de `X-Forwarded-For` y el script del segundo contenedor no constan, reconstruirlos sería inventar lo ejecutado). Verify debe repetir la segunda fila de S1 recreando el servicio y puede completar los scripts | No se inventa lo no registrado | reviews/task-T-02-r1-answers.md |
-
+| 2026-11-02 | Build T-03: el README separa lo observado en T-02 (S1 a S5) de lo que afirma el diseño (primera IP no confiada desde la derecha, valor por defecto de uvicorn fuera de Compose) y marca como no ejecutados las redes amplias y el valor mal escrito. Que `*` permite falsificar la IP «aunque el puerto 8000 esté cerrado» viene del diseño (IF-01): T-02 no lo probó con el puerto cerrado | AC-04.2: sin afirmaciones que el registro no respalde | F003 T-03, evidence/t02-comprobacion-proxy.md |
 ---
 
 ## 4. Documentation Impact
@@ -127,7 +127,7 @@ Evidencia previa, leída antes de preguntar: `backend/app/core/limiter.py` usa `
 | 2026-11-02 | README, sección "Despliegue detrás de un proxy" | Alinear con lo observado y documentar el valor por defecto de uvicorn fuera de Compose (T-03) | AC-04.2, OQ-02 |
 | 2026-11-02 | T-03 (README) | Su texto debe coincidir con la nota nueva de `backend/.example.env` (T-01) | AC-04.2 |
 | 2026-11-02 | `.sdd/` (architecture, stack) y ADR-0001 | Los resultados de T-02 confirman el diseño; Document los resume | F003 T-02 |
-
+| 2026-11-02 | README, tabla «Variables de entorno relevantes» | Falta una fila para `FORWARDED_ALLOW_IPS`; T-03 no la añadió por limitarse a la sección del proxy. Candidata para Document o un seguimiento | AC-04.2 |
 ---
 
 ## 5. Maintenance Guidelines

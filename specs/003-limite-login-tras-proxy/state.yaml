@@ -15,7 +15,7 @@ blocked-by: []
 tasks:
   T-01: merged
   T-02: merged
-  T-03: in-progress
+  T-03: approved
 
 known-failures:
   - "backend pytest: 3 failed y 49 errors por PostgreSQL de tests no disponible en el entorno (48 pasan); frontend limpio"
