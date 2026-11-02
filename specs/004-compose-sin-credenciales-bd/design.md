@@ -2,7 +2,7 @@
 artifact: design
 feature: F004
 status: draft
-version: 1
+version: 2
 upstream: [brief.md@1, requirements.md@2]
 ---
 
@@ -79,7 +79,7 @@ Los tests (REQ-06) son independientes de Compose: `temporary_database` exige `TE
 - **Depends on:** La variable `POSTGRES_PASSWORD` (IF-01), recibida por entorno; la imagen `postgres:15` que ya usa el stack (sin imagen nueva); `sh` de esa imagen.
 - **On failure:** Sale con código 1 y escribe el mensaje en su salida de error. Con `restart: "no"` no se reinicia en bucle. `postgres` no arranca y `docker compose up` termina con error.
 
-Decisiones de forma: servicio propio, no un cambio en el arranque de `postgres` (con `restart: unless-stopped` un fallo allí provocaría un bucle de reinicios); `entrypoint: ["sh", "-c"]` con el guion en línea en el propio YAML, sin archivo aparte, para que no dependa de finales de línea ni de permisos en Windows. La longitud se mide con `${#POSTGRES_PASSWORD}` y la igualdad con `postgres` es exacta (ASM-04). El mensaje nombra `POSTGRES_PASSWORD`, indica el mínimo de 16 y el `.env` de la raíz, y propone cómo generar una. No imprime el valor.
+Decisiones de forma: servicio propio, no un cambio en el arranque de `postgres` (con `restart: unless-stopped` un fallo allí provocaría un bucle de reinicios); `entrypoint: ["sh", "-c"]` con el guion en línea en el propio YAML, sin archivo aparte, para que no dependa de finales de línea ni de permisos en Windows. La longitud se mide en caracteres con `printf %s "$POSTGRES_PASSWORD" | wc -m` (no con `${#VAR}`, que en `dash` cuenta bytes; comprobado, ver ASM-06) y la igualdad con `postgres` es exacta (ASM-04). Todo `$` del shell en el guion en línea se escribe `$$` en el YAML, porque Compose interpola cualquier `${...}` antes de pasar el texto al contenedor (un `${VAR#…}` sin escapar se rechaza como interpolación inválida, `findings-1.md`). El mensaje nombra `POSTGRES_PASSWORD`, indica el mínimo de 16 y el `.env` de la raíz, y propone cómo generar una. No imprime el valor.
 
 ### C-02: Servicios `postgres` y `backend` de Compose
 
@@ -114,6 +114,8 @@ Decisiones de forma: servicio propio, no un cambio en el arranque de `postgres` 
 
 Se elimina `DEFAULT_TEST_DATABASE_ADMIN_URL`. Los tests que no usan la base (configuración, renombrado) no pasan por esta función y siguen ejecutándose (AC-06.4). El mensaje nombra `TEST_DATABASE_ADMIN_URL`, dice que debe apuntar a un PostgreSQL con permiso para crear y borrar bases, da un ejemplo con un marcador de posición que no es un valor real y remite al README.
 
+Verificación (EP-004, test primero): los tests nuevos se escriben antes del cambio y no necesitan PostgreSQL. Con `monkeypatch.delenv` (y con la variable vacía) comprueban que `temporary_database` lanza el error con el texto en español y que `asyncpg.connect` no se llama nunca (AC-06.1, AC-06.2). Además, en T-02 se lanza la suite real sin la variable y se comprueba que los tests con base de datos fallan (no se omiten) y los demás pasan (AC-06.1, AC-06.4); y con la variable apuntando a un servidor válido, que la suite pasa como antes (AC-06.3). AC-06.2 se completa con un segundo servidor PostgreSQL en `127.0.0.1:5432` y la comprobación de que no recibe ninguna base nueva, si el puerto está libre en el entorno.
+
 ### C-05: README
 
 - **Responsibility:** Describir el flujo nuevo para que baste por sí solo.
@@ -123,7 +125,7 @@ Se elimina `DEFAULT_TEST_DATABASE_ADMIN_URL`. Los tests que no usan la base (con
 - **Depends on:** C-01 a C-04 ya construidos, para describir lo que hacen.
 - **On failure:** No aplica.
 
-Cambia: el inicio rápido (Docker), con el paso de crear el `.env` de la raíz y definir la contraseña, y la nota de que `docker compose up -d` deja el mensaje de rechazo en `docker compose logs postgres-check`; un apartado sobre el volumen ya inicializado con las dos salidas (borrar el volumen con `docker compose down -v` y empezar de cero, o cambiar la contraseña dentro de la base con `ALTER USER` mediante `docker compose exec postgres psql`); el apartado Tests, que sustituye el valor por defecto por la obligación de definir `TEST_DATABASE_ADMIN_URL` y explica cómo apuntarla a la base de Compose; y la fila de la tabla de variables. Indica que la contraseña conviene alfanumérica (ver RISK-04).
+Cambia: el inicio rápido (Docker), con el paso de crear el `.env` de la raíz y definir la contraseña, y, en ese mismo apartado, la nota de que `docker compose up -d` deja el mensaje de rechazo en `docker compose logs postgres-check`; «Desarrollo local» (sin Docker), con la nota de que `DATABASE_URL` del ejemplo no trae contraseña y hay que añadirla (el cambio de flujo aceptado en H-04, punto 3); un apartado sobre el volumen ya inicializado con las dos salidas (borrar el volumen con `docker compose down -v`, avisando de que **destruye los datos** de la aplicación, y empezar de cero; o cambiar la contraseña dentro de la base con `\password` interactivo de `psql` mediante `docker compose exec postgres psql -U postgres`, sin escribirla en la línea de comandos, y reiniciar el backend si hace falta, lo que AC-07.2 comprueba con una ejecución real); el apartado Tests, que sustituye el valor por defecto por la obligación de definir `TEST_DATABASE_ADMIN_URL` y explica cómo apuntarla a la base de Compose; y la fila de la tabla de variables. Indica que la contraseña conviene alfanumérica y ASCII (ver RISK-04).
 
 ---
 
@@ -181,10 +183,10 @@ La feature no introduce ni cambia datos de la aplicación: ni tablas, ni migraci
 |---|---|---|---|
 | `POSTGRES_PASSWORD` ausente o vacía | Compose, al cargar el archivo | No crea nada; código distinto de 0; mensaje de C-02 | Definirla en el `.env` de la raíz |
 | Contraseña corta o igual a `postgres` | C-01 (`exit 1`) | `postgres` queda creado sin arrancar; el volumen queda vacío; el backend no arranca; código distinto de 0 | Cambiar la contraseña y repetir `docker compose up`; sin borrar nada (AC-02.4, comprobado) |
-| `docker compose up -d` con contraseña corta | El comando devuelve el error «didn't complete successfully» sin el mensaje | El mensaje queda en los logs de C-01 | `docker compose logs postgres-check` (lo dice el README) |
+| `docker compose up -d` con contraseña corta | El comando devuelve el error «didn't complete successfully» sin el mensaje | El mensaje queda en los logs de C-01 | `docker compose logs postgres-check` (lo dice el README, en el inicio rápido). T-01 prueba este caso y deja constancia en la evidencia |
 | Volumen ya inicializado con otra contraseña | El backend no queda sano; PostgreSQL rechaza la autenticación | PostgreSQL conserva la contraseña antigua (ASM-03) | Las dos salidas del README: `down -v`, o `ALTER USER` |
 | Contraseña con caracteres reservados de URL (`@`, `/`, `:`, `#`, `%`) o con `$` | El backend no conecta, o Compose interpola de más | Un stack no sano | Usar una contraseña alfanumérica (RISK-04) |
-| Contraseña no ASCII | Ninguna comprobación la detecta | `sh` de la imagen cuenta bytes, no caracteres: podría aceptar una de menos de 16 caracteres | Documentado en el README: usar ASCII (ASM-06) |
+| Contraseña no ASCII | C-01 mide en caracteres (`wc -m`, ASM-06) | Se rechaza si tiene menos de 16 caracteres | Como cualquier rechazo. Caracteres no ASCII pueden fallar en la URL de conexión (RISK-04) |
 | `TEST_DATABASE_ADMIN_URL` ausente o vacía | C-04, antes de conectar | Cada test con base de datos falla con error; los demás se ejecutan | Definirla (README) |
 | `TEST_DATABASE_ADMIN_URL` apunta a un servidor inalcanzable | `asyncpg`/`OSError` | Mensaje existente «PostgreSQL de tests no disponible», sin la URL | Arrancar el servidor o corregir la URL |
 | Entorno que depende del valor por defecto (agente, CI futuro) | Los tests con base de datos fallan | Mensaje de C-04 | Definir la variable en ese entorno (RISK-03) |
@@ -213,11 +215,11 @@ La feature no introduce ni cambia datos de la aplicación: ni tablas, ni migraci
 
 Los supuestos ASM-01 a ASM-05, OQ-01 y RISK-01 a RISK-03 siguen como en `brief.md@1` y `requirements.md@2`. ASM-01 y ASM-02 se concretan aquí: la contraseña vive en el `.env` de la raíz (C-03) y el ejemplo la trae vacía.
 
-### ASM-06: `sh` de la imagen `postgres:15` cuenta bytes, no caracteres
+### ASM-06: `wc -m` de la imagen `postgres:15` cuenta caracteres, y `${#VAR}` de su `sh` cuenta bytes
 
-- **Basis:** La imagen es Debian y su `sh` es `dash`, que no usa la configuración regional. No se ha ejecutado con una contraseña no ASCII.
-- **Impact if incorrect:** Si contara caracteres, la nota del README sobre ASCII sobraría. Si hubiera una diferencia mayor, habría que medir la longitud de otra forma.
-- **Status:** Unverified
+- **Basis:** Comprobado el 2026-11-02 con la imagen `postgres:15` (`LANG=en_US.utf8`): una contraseña de 15 caracteres `ñ` da 30 con `${#VAR}` y `wc -c`, y 15 con `wc -m`. Por eso C-01 mide con `wc -m`.
+- **Impact if incorrect:** Si otra versión de la imagen cambiara la configuración regional, una contraseña no ASCII podría contarse en bytes. T-01 repite la comprobación con el guion final.
+- **Status:** Confirmed (con la imagen actual; T-01 la repite con el guion final)
 
 ### RISK-04: Una contraseña con caracteres reservados deja el stack sin conectar
 
@@ -255,7 +257,7 @@ NFR-01 se verifica dentro de T-01 (casos de Compose) y de T-02 (caso de los test
 - Tamaño: dos resultados que el mantenedor aceptó juntos (H-02), en dos tareas independientes y una de documentación; no se propone volver a separar RM-09 (RISK-02).
 
 - **Coverage gaps:** None
-- **Unresolved dependencies:** OQ-01 (fuera de alcance, con valor por defecto). ASM-03 y ASM-06 sin verificar: ASM-03 se comprueba en T-03 (AC-07.2) y ASM-06 en T-01.
+- **Unresolved dependencies:** OQ-01 (fuera de alcance, con valor por defecto). ASM-03 sin verificar: se comprueba en T-03 (AC-07.2). ASM-06 comprobado, y T-01 lo repite con el guion final.
 
 ---
 

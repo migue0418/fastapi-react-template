@@ -88,6 +88,18 @@ feature: F004
 - **Answer:** Aprobar (Recomendado). Aprueba requirements.md@2.
 - **Decided on:** 2026-11-02
 
+### H-07: Aprobación de design.md@2
+
+- **Raised in:** Design / Phase 6
+- **Concerns:** design.md@2 (built from brief.md@1 y requirements.md@2), reviews/design-r1.md y reviews/design-r1-answers.md, ASM-03, ASM-06, RISK-04, RISK-05
+- **Blocks:** Escribir el plan y pasar a Build
+- **Context:** Tres tareas: T-01 Compose (contraseña en el `.env` de la raíz, servicio previo `postgres-check`, ejemplos sin contraseña), T-02 tests (exigen `TEST_DATABASE_ADMIN_URL`) y T-03 README, que depende de las dos primeras. Sin decisiones de sentido único, sin ADR y sin cambios en el stack. La revisión independiente (ronda 1) aprobó con 6 hallazgos menores, todos corregidos en @2; ninguno rechazado. A revisar: la contraseña no puede llevar caracteres reservados de URL ni `$` (RISK-04) y no se comprueba, porque sería una regla de composición excluida del brief; un rechazo por contenido deja un contenedor parado y un volumen vacío (RISK-05, ya aceptado en H-05); el flujo de «Desarrollo local» sin Docker pasa a exigir añadir la contraseña a `DATABASE_URL` (H-04, punto 3).
+- **Options:** Aprobar / aprobar con cambios / replantear
+- **Recommendation (not binding):** Aprobar.
+- **Status:** Open
+- **Answer:**
+- **Decided on:**
+
 ---
 
 ## 2. Discover Questions
@@ -163,6 +175,8 @@ Sigue lo que abrió Q-05: absorber RM-09 obliga a decidir qué comportamiento ti
 | 2026-11-02 | La feature se reclasifica de «Pequeño» a «Normal». Su tamaño se revisa en Design por si conviene dividirla en dos tareas. | EP-007: dos comportamientos observables dejan de caber en una sola tarea. El mantenedor conocía la consecuencia al decidir Q-05. | H-01, H-02 |
 | 2026-11-02 | Design se detiene en la Fase 2 hasta que Define revise AC-02.1 y AC-02.2 según H-05 (opción A). Notas para esa revisión y para el diseño posterior: (1) la comprobación debe ser un servicio previo con `restart: "no"`; hacerla en el arranque de `postgres` provocaría un bucle de reinicios por su `restart: unless-stopped`; (2) con la opción A, un rechazo por longitud deja creados el contenedor de comprobación (parado con error), el contenedor de PostgreSQL (sin arrancar), el volumen (sin inicializar) y la red; (3) con `up -d` el mensaje queda en los logs del servicio de comprobación y Compose solo informa de que falló. | Evita rediseñar tras la revisión de Define. | H-05, R1-01, AC-02.1, AC-02.2 |
 | 2026-11-02 | Define revisa requirements.md@1 -> @2 por H-05 (A): reformula REQ-02, AC-02.1 y AC-02.2 (nada arranca, volumen sin inicializar; el contenedor de comprobación y el volumen vacío pueden quedar creados) y añade AC-02.4 (corregir la contraseña tras un rechazo). Supuesto de la redacción: los criterios se comprueban con `docker compose up` sin `-d`, donde el mensaje se ve en la salida. @2 queda en borrador, puesto a aprobación (H-06). | Cierra R1-01; el cambio altera comportamiento aprobado, así que vuelve al mantenedor. | H-05, R1-01, REQ-02 |
+| 2026-11-02 | Design (design.md@1 y @2): (1) la contraseña vive en un `.env` en la raíz con la variable `POSTGRES_PASSWORD`, porque es lo que Compose lee para interpolar sin opciones, y `.example.env` en la raíz la trae vacía; (2) la comprobación es el servicio `postgres-check` con la imagen `postgres:15`, `sh -c` en línea y `restart: "no"`, y mide con `wc -m` (comprobado: `${#VAR}` cuenta bytes); (3) `${POSTGRES_PASSWORD:?mensaje}` con el mismo mensaje en cada uso (comprobado: un uso sin `:?` añade una advertencia); (4) `backend/.example.env` pierde la contraseña de `DATABASE_URL`; (5) los tests lanzan `RuntimeError` en `_get_test_database_admin_url` (variable ausente o vacía) antes de conectar; (6) sin ADR, sin cambios en `stack.yaml`, sin pytest que dependa de Docker (las comprobaciones de Compose son ejecuciones reales, y RM-05 las automatizará). | Todo reversible y dentro del stack y del alcance aprobados. Probado con Compose v5.4.0: rechazo, recuperación sin borrar nada (AC-02.4) y conteo de caracteres. | H-05, REQ-02, REQ-04, REQ-06, ASM-06 |
+| 2026-11-02 | La revisión independiente del diseño (ronda 1, design.md@1) aprobó con 6 hallazgos menores; los 6 se corrigieron en design.md@2 (`reviews/design-r1-answers.md`). El R1-02 se resolvió midiendo en caracteres, sin rebajar REQ-02. | Phase 5 del diseño. | R1-01 a R1-06 |
 
 ---
 
