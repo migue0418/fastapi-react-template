@@ -5,12 +5,12 @@ feature: F003
 title: "El límite de login se aplica por cliente real tras un proxy"
 roadmap-item: RM-02
 phase: verify
-step: "Build cerrado: T-01 a T-03 integradas, suite sin fallos nuevos"
-status: in-progress
-next: "Ejecutar /sdd-kit:sdd-verify; repetir la segunda fila de S1 recreando el servicio (nota de T-02 r1)."
+step: "Run 1 hecha: evidencia en fail por siete criterios sin test que nombre su ID; revisión de feature approve; esperando H-06"
+status: waiting-for-human
+next: "Responder H-06. Si A (aceptar el procedimiento): ejecutar /sdd-kit:sdd-verify de nuevo (run 2) para registrar la decisión y los comandos del segundo contenedor, y pasar a Document. Si B: /sdd-kit:sdd-design añade la tarea de automatización. Ejecuta /clear antes."
 
-waiting-for-human: []
-blocked-by: []
+waiting-for-human: [H-06]
+blocked-by: ["AC-01.1 a AC-03.2 sin test que nombre su ID (evidence/README.md, Failure 1)"]
 
 tasks:
   T-01: merged
@@ -18,7 +18,7 @@ tasks:
   T-03: merged
 
 known-failures:
-  - "backend pytest: 3 failed y 49 errors por PostgreSQL de tests no disponible en el entorno (48 pasan); frontend limpio"
+  - "backend pytest: 3 failed y 49 errors por PostgreSQL de tests no disponible en el entorno (49 pasan, con el test de AC-04.1); frontend limpio"
 
 stale: []
 
@@ -41,3 +41,4 @@ history:
   - "2026-11-02 build/T-02: integrada con sus correcciones de r1; suite sin fallos nuevos; T-03 en implementación"
   - "2026-11-02 build/T-03: aprobada en r1 (3 menores corregidos) e integrada"
   - "2026-11-02 build/close: las tres tareas integradas; la feature pasa a Verify"
+  - "2026-11-02 verify/run-1: checks y S1 a S5 repetidos, evidencia en fail por siete criterios sin test con su ID; revisión de feature r1 approve (4 menores); H-06 puesto al mantenedor"
