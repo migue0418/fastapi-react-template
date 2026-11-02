@@ -1,6 +1,6 @@
 ---
 artifact: roadmap
-version: 4
+version: 5
 status: active
 owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 ---
@@ -15,22 +15,11 @@ owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 
 ## 1. Focus
 
-La única fuente del flujo de trabajo (RM-08, F001) y el rechazo de la contraseña de administrador por defecto (RM-01, F002) ya están entregados. Ahora, que un derivado no llegue a producción expuesto por los demás valores por defecto (`CAP-06`). Después, comprobar cada cambio automáticamente (`CAP-07`) y poder diagnosticar en operación (`CAP-08`). El mantenedor eligió el 2026-11-01 poner la seguridad primero, por delante de la recomendación de empezar por CI.
+La única fuente del flujo de trabajo (RM-08, F001), el rechazo de la contraseña de administrador por defecto (RM-01, F002) y el límite de login por cliente real tras un proxy (RM-02, F003) ya están entregados. Ahora, que un derivado no llegue a producción expuesto por los demás valores por defecto (`CAP-06`). Después, comprobar cada cambio automáticamente (`CAP-07`) y poder diagnosticar en operación (`CAP-08`). El mantenedor eligió el 2026-11-01 poner la seguridad primero, por delante de la recomendación de empezar por CI.
 
 ---
 
 ## 2. Sequence
-
-### RM-02: El límite de login se aplica por cliente real tras un proxy
-
-- **Status:** ready
-- **Outcome:** Detrás de un proxy, un cliente que supera el límite de login queda limitado sin afectar a los demás clientes.
-- **Capability:** CAP-06
-- **Why:** El README recomienda desplegar tras un proxy, donde el límite podría fallar. Va después de RM-01 porque aquí el riesgo aún está sin confirmar.
-- **Depends on:** none
-- **Boundaries:** In: comportamiento tras un proxy con el despliegue actual / Not in: contadores compartidos entre réplicas
-- **Origin:** onboarding
-- **Notes:** Primero hay que confirmar el fallo: hoy es una inferencia (`architecture.md`, 9.2). Si no se confirma, se cierra con la evidencia. Confiar en cabeceras de proxy abre el riesgo de que se falsifiquen.
 
 ### RM-03: Compose sin credenciales fijas de base de datos
 
@@ -63,7 +52,7 @@ La única fuente del flujo de trabajo (RM-08, F001) y el rechazo de la contrase�
 - **Depends on:** none
 - **Boundaries:** TBD
 - **Origin:** onboarding
-- **Notes:** GitHub Actions está como `proposed` en `stack.yaml`.
+- **Notes:** GitHub Actions está como `proposed` en `stack.yaml`. F003 dejó la comprobación del límite tras un proxy como procedimiento manual con Docker (H-06); la automatización está en RM-11, para que el mantenedor decida si entra aquí o aparte.
 
 ### RM-06: Logs estructurados por petición
 
@@ -113,9 +102,31 @@ La única fuente del flujo de trabajo (RM-08, F001) y el rechazo de la contrase�
 - **Origin:** F002 (`reviews/feature-r1.md`, R1-01)
 - **Notes:** Muy pequeño; puede ser una chore. Relacionado con RM-09.
 
+### RM-11: La comprobación del límite de login tras un proxy se ejecuta sola
+
+- **Status:** candidate
+- **Outcome:** El mantenedor ve pasar o fallar, sin ejecutar nada a mano, la comprobación de que cada cliente tras un proxy tiene su propio límite y de que una cabecera falsificada se ignora.
+- **Capability:** CAP-06
+- **Why:** F003 la verificó con un procedimiento manual con Docker, aceptado como riesgo registrado (H-06, opción B descartada por alcance). Hoy ningún test nombra AC-01.1 a AC-03.2 de F003.
+- **Depends on:** RM-05
+- **Boundaries:** TBD
+- **Origin:** F003 (`decisions.md`, H-06; `evidence/README.md`, sección 3)
+- **Notes:** Necesita Docker en el entorno de ejecución. Los comandos exactos y el script del segundo contenedor constan en la evidencia de F003. Puede quedar absorbida por RM-05 si el mantenedor lo decide.
+
 ---
 
 ## 4. Closed
+
+### RM-02: El límite de login se aplica por cliente real tras un proxy
+
+- **Delivered:** F003, verificada el 2026-11-02. La fecha del merge la fija su pull request.
+- **Outcome:** Detrás de un proxy, un cliente que supera el límite de login queda limitado sin afectar a los demás clientes.
+- **Capability:** CAP-06
+- **Why:** El README recomienda desplegar tras un proxy, donde el límite podría fallar. Va después de RM-01 porque aquí el riesgo aún está sin confirmar.
+- **Depends on:** none
+- **Boundaries:** In: comportamiento tras un proxy con el despliegue actual / Not in: contadores compartidos entre réplicas
+- **Origin:** onboarding
+- **Notes:** El fallo se confirmó con una ejecución real y se resolvió sin código nuevo: uvicorn decide con `FORWARDED_ALLOW_IPS` (ADR-0001). Sin la variable los clientes comparten cupo; con ella, cada uno tiene el suyo; una conexión no confiada no puede elegir su IP. Quedan sin ejecutar: uvicorn local sin Docker, varias entradas de `X-Forwarded-For`, `*` con el 8000 cerrado y un proxy real.
 
 ### RM-01: Producción rechaza la contraseña de administrador por defecto
 

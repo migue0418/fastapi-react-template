@@ -1,6 +1,6 @@
 ---
 artifact: product
-version: 3
+version: 4
 status: active
 owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 ---
@@ -107,7 +107,7 @@ No hay otros interesados identificados.
 - **Purpose:** Que un derivado no llegue a producción expuesto por valores por defecto de la plantilla.
 - **Primary users:** Mantenedor
 - **Scope:** Rechazo de secretos por defecto, rate limiting correcto tras un proxy, credenciales de Compose, y superficie HTTP en producción.
-- **Status:** Partial: producción ya rechaza `SECRET_KEY` y `ADMIN_PASSWORD` por defecto (F002); el resto está planificado
+- **Status:** Partial: producción ya rechaza `SECRET_KEY` y `ADMIN_PASSWORD` por defecto (F002) y el límite de login se aplica por cliente real tras un proxy con `FORWARDED_ALLOW_IPS` (F003); el resto está planificado
 
 ### CAP-07: Integración continua
 

@@ -4,10 +4,10 @@
 feature: F003
 title: "El límite de login se aplica por cliente real tras un proxy"
 roadmap-item: RM-02
-phase: document
-step: "Verify cerrado (run 2 pass); Document pendiente"
+phase: release
+step: "Document cerrado; Release pendiente"
 status: in-progress
-next: "Ejecutar /sdd-kit:sdd-document. Corregir el README (R1-01, R1-04) y citar 14b4cc5 para /16 y valor mal escrito; ver decisions.md sección 4."
+next: "Ejecutar /sdd-kit:sdd-release: poner la rama al día con main, repetir las comprobaciones y abrir el PR en borrador. Ejecuta /clear antes."
 
 waiting-for-human: []
 blocked-by: []
@@ -43,3 +43,4 @@ history:
   - "2026-11-02 build/close: las tres tareas integradas; la feature pasa a Verify"
   - "2026-11-02 verify/run-1: checks y S1 a S5 repetidos, evidencia en fail por siete criterios sin test con su ID; revisión de feature r1 approve (4 menores); H-06 puesto al mantenedor"
   - "2026-11-02 verify/run-2: H-06 decidido (A); checks y S1 a S5 repetidos, evidencia pass; revisión de feature r2 approve (2 menores respondidos); la feature pasa a Document"
+  - "2026-11-02 document/close: README, architecture v4, stack v2, product v4 y roadmap v5 actualizados; RM-02 cerrada y RM-11 añadida; nada espera al mantenedor; la feature pasa a Release"
