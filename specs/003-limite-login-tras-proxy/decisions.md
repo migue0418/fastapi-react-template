@@ -33,6 +33,18 @@ feature: F003
 - **Context:** El brief recoge el alcance acordado en Q-01 y Q-02: valor por defecto seguro, una variable para quien despliega tras un proxy, y comprobación en una ejecución real.
 - **Options:** Aprobar, aprobar con cambios, o replantear.
 - **Recommendation (not binding):** Aprobar tras revisar ASM-01 a ASM-03 y OQ-01.
+- **Status:** Decided
+- **Answer:** "Aprobar (Recomendado)" (brief.md@1)
+- **Decided on:** 2026-11-02
+
+### H-03: Aprobar requirements.md@1
+
+- **Raised in:** Define / requirements approval
+- **Concerns:** requirements.md@1, brief.md@1
+- **Blocks:** Cerrar Define y pasar a Design
+- **Context:** Cuatro requisitos y dos cualidades construidos desde brief.md@1.
+- **Options:** Aprobar, aprobar con cambios, o replantear.
+- **Recommendation (not binding):** Aprobar tras confirmar que el rechazo por exceso es el `429` actual de los tres endpoints limitados.
 - **Status:** Open
 - **Answer:** (pendiente)
 - **Decided on:** (pendiente)
