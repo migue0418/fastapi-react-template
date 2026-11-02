@@ -78,6 +78,10 @@ Evidencia previa, leída antes de preguntar: `backend/app/core/limiter.py` usa `
 | Date | Decision | Why | Refs |
 |---|---|---|---|
 | 2026-11-02 | Se abre la rama `feature/003-limite-login-tras-proxy` desde `main` al día con `origin/main` | EP-001; número 003 libre (specs/ solo tiene 001 y 002, sin ramas abiertas) | F003 |
+| 2026-11-02 | Design: sin código de aplicación; la confianza en cabeceras la decide uvicorn con `FORWARDED_ALLOW_IPS` (ADR-0001, proposed) | Un experimento aislado con uvicorn 0.47.0 y slowapi confirmó el comportamiento documentado; Q-01 pide una sola variable y el valor por defecto seguro | design.md@1, ASM-01, REQ-01 a REQ-03 |
+| 2026-11-02 | Design: no se fija `FORWARDED_ALLOW_IPS=""` en el Dockerfile | En Compose ninguna conexión externa llega como `127.0.0.1`; cambiaría la imagen sin necesidad (límite en OQ-02 y RISK-04) | design.md@1, REQ-01 |
+| 2026-11-02 | Design: la comprobación es un procedimiento del plan con registro en `evidence/t02-comprobacion-proxy.md`, no un script ni un test versionado | PR-004; un test automático necesitaría Docker. Se puede automatizar con RM-05 | design.md@1, NFR-01 |
+| 2026-11-02 | Design: tres tareas; T-03 (README) depende de T-02 para describir solo lo observado | AC-04.2 compara el README con los resultados | design.md@1, T-01 a T-03 |
 
 ---
 
@@ -87,6 +91,9 @@ Evidencia previa, leída antes de preguntar: `backend/app/core/limiter.py` usa `
 |---|---|---|---|
 | 2026-11-02 | README, sección "Despliegue detrás de un proxy" | Probable ajuste a lo que se compruebe en la ejecución real | RM-02 |
 | 2026-11-02 | `.sdd/architecture.md` 9.2 y `.sdd/roadmap.md` | Cerrar o reformular la deuda inferida del límite tras un proxy | RM-02 |
+| 2026-11-02 | `.sdd/architecture.md` 6.1 y 8.1, y `.sdd/stack.yaml` (`rate-limiting`) | Resumir ADR-0001 y quitar la remisión a RM-02 | ADR-0001 |
+| 2026-11-02 | `backend/.example.env` | Variable comentada con una red de ejemplo (T-01) | AC-04.1 |
+| 2026-11-02 | README, sección "Despliegue detrás de un proxy" | Alinear con lo observado y documentar el valor por defecto de uvicorn fuera de Compose (T-03) | AC-04.2, OQ-02 |
 
 ---
 
