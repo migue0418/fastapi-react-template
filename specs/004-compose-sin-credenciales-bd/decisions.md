@@ -145,9 +145,9 @@ feature: F004
 - **Context:** Rama al día con `main` (sin commits nuevos), backend 103 passed, frontend lint, test y build correctos. Al fusionar se aceptan los riesgos H-08 y H-09, el cambio incompatible para derivados (`POSTGRES_PASSWORD` y `TEST_DATABASE_ADMIN_URL` obligatorias) y RM-12 como seguimiento. Sin tareas de release: el proyecto no exige changelog ni versión.
 - **Options:** (A) Fusionar, tras marcar el PR como listo. (B) Pedir cambios en el PR. (C) Cerrar sin fusionar.
 - **Recommendation (not binding):** A.
-- **Status:** Open
-- **Answer:**
-- **Decided on:**
+- **Status:** Decided
+- **Answer:** A: fusionado. El mantenedor: «ya he hecho el merge del pr». PR #15 en estado MERGED el 2026-11-02T23:14:58Z (merge `afe7331` en `main`).
+- **Decided on:** 2026-11-03
 
 ---
 
@@ -233,6 +233,7 @@ Sigue lo que abrió Q-05: absorber RM-09 obliga a decidir qué comportamiento ti
 | 2026-11-03 | Document: no hay diferencias entre el código y la especificación. La revisión de la feature (`reviews/feature-r1.md`, sección 3.1) contrastó cada criterio con el código y no halló ninguna; Document releyó `docker-compose.yml`, `.example.env`, `backend/.example.env`, `.gitignore` y el diff de `test_api.py` frente a lo que describen los documentos. Las limitaciones declaradas (RISK-04 caracteres reservados y `$`; RISK-05 contenedor parado y volumen vacío tras un rechazo por contenido) se documentan como límites. | Fase 3 de Document. | G-ninguno, RISK-04, RISK-05 |
 | 2026-11-03 | Document corrige en el README el paso 3 de «Empezar un proyecto nuevo» (T-03 R1-02, rechazado entonces por alcance): ahora remite al `.env` de la raíz. Es documentación, dentro de lo que Document puede tocar, y cierra feature-r1 R1-04. | Evita que quien crea un derivado siga un paso sin `POSTGRES_PASSWORD`. | T-03 R1-02, feature-r1 R1-04 |
 | 2026-11-03 | Roadmap (versión 7): RM-03 cerrado como entregado por F004 y movido a Closed; RM-09 pasa de «se da por entregado cuando F004 lo esté» a entregado; RM-12 añadido al inbox (automatizar los casos de Compose y verificar NFR-02 en Linux, H-08 y H-09); notas en RM-10 y RM-11. Sin reordenar la secuencia ni retirar ítems. El Focus pasa a RM-04. | Fase 3 de Document. | RM-03, RM-09, RM-12, H-08, H-09 |
+| 2026-11-03 | Release, cierre: PR #15 fusionado en `main` por el mantenedor (H-11, A). `main` ya muestra RM-03 en Closed (entregado por F004, que absorbe RM-09) y RM-12 en el inbox como seguimiento. Ramas `feature/004-compose-sin-credenciales-bd` limpiadas, local y remota (EP-003: el cierre entra por PR `chore/cerrar-f004`). La feature queda `done`. | Fase 6 de Release. | H-11, RM-03, RM-09, RM-12 |
 
 ---
 
