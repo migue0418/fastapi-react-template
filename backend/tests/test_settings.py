@@ -112,3 +112,17 @@ def test_f003_ac_04_1_example_env_shows_forwarded_allow_ips():
     assert value and "*" not in value
     index = lines.index(declaration)
     assert lines[index - 1].startswith("#"), "falta la nota encima de la variable"
+    note = []
+    for line in reversed(lines[:index]):
+        if not line.startswith("#"):
+            break
+        note.append(line)
+    note_text = " ".join(note).lower()
+    assert "proxy" in note_text and "cupo" in note_text, "la nota debe estar en español"
+
+    from io import StringIO
+
+    from dotenv import dotenv_values
+
+    loaded = dotenv_values(stream=StringIO(declaration.lstrip("# ")))
+    assert loaded["FORWARDED_ALLOW_IPS"] == value

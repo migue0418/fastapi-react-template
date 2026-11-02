@@ -1,0 +1,2 @@
+R1-01: fixed (test_settings.py: la nota, leída entera, debe contener "proxy" y "cupo"; además se carga la variable descomentada con dotenv_values y se comprueba su valor)
+R1-02: rejected (el test del AC-04.1 es necesario para que el criterio tenga un test que lo nombre, como exige la constitución; no se cambia código. Añadir backend/tests/test_settings.py a los Files de T-01 en plan.md corresponde a Design/Build, no a esta tarea)
