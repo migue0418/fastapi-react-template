@@ -5,17 +5,17 @@ feature: F004
 title: "Compose sin credenciales fijas de base de datos"
 roadmap-item: RM-03
 phase: build
-step: "build/task-loop: T-02 mergeada (103 passed); T-01 en revisión (ronda 1)"
+step: "build/task-loop: T-01 y T-02 mergeadas (103 passed); T-03 en implementación"
 status: in-progress
-next: "Reanudar /sdd-kit:sdd-build: leer reviews/task-T-01-r1.md (si existe) y actuar según su veredicto; mergear T-01 con la suite completa; después T-03. Antes de las comprobaciones de Compose, el puerto 127.0.0.1:5432 debe estar libre."
+next: "Reanudar /sdd-kit:sdd-build: T-03 (README) en curso; revisarla y mergearla con la suite completa. Antes de las comprobaciones de Compose, el puerto 127.0.0.1:5432 debe estar libre."
 
 waiting-for-human: []
 blocked-by: []
 
 tasks:
-  T-01: {status: in-review, depends-on: []}
+  T-01: {status: merged, depends-on: []}
   T-02: {status: merged, depends-on: []}
-  T-03: {status: pending, depends-on: [T-01, T-02]}
+  T-03: {status: in-progress, depends-on: [T-01, T-02]}
 
 known-failures: []
 
@@ -38,3 +38,4 @@ history:
   - "2026-11-02 design/close: design.md@2 aprobado (H-07); plan.md@1 escrito y checked (3 tareas); la feature pasa a Build"
   - "2026-11-02 build/baseline: suite de backend en la rama de la feature, 101 passed, sin fallos previos; T-01 y T-02 pasan a in-progress"
   - "2026-11-02 build/T-02: implementada; revisión ronda 1 aprobada (2 menores: R1-01 corregido, R1-02 rechazado con motivo); mergeada en la rama de la feature; suite completa 103 passed y sin bases fastapi_template_test_* sobrantes"
+  - "2026-11-02 build/T-01: implementada; revisión ronda 1 aprobada (2 menores, ambos rechazados con motivo); mergeada; suite completa 103 passed; T-03 pasa a in-progress"

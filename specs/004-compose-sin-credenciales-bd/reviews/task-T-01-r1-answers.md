@@ -1,0 +1,2 @@
+R1-01: rejected: el mensaje idéntico en los tres usos de `:?` es una consecuencia aceptada en design.md@2 (sección 9.1); un uso sin `:?` añade una advertencia de Compose, y los criterios AC-01.1 y AC-01.2 se cumplen.
+R1-02: rejected: el hallazgo no pide cambio de código; la ejecución desde PowerShell y la verificación en Linux de NFR-02 pasan a Verify, donde Linux se declarará no verificado si no hay entorno.
