@@ -132,9 +132,9 @@ feature: F004
 - **Context:** La sección 4 de este registro preveía actualizar NC-007. Tras F004 `postgres:postgres` ya no está versionado en Compose, y el Rationale dice que impedir las credenciales de Compose «es la transición de RM-03, y hasta entonces es responsabilidad de quien despliega». La constitución solo cambia de forma deliberada y con el mantenedor, así que Document no la edita. Cambio propuesto: quitar `postgres:postgres` de la lista de valores por defecto de la Rule y sustituir la frase del Rationale por que Compose exige `POSTGRES_PASSWORD` y producción rechaza los tres secretos por defecto (F002, F004).
 - **Options:** (A) Aprobar el cambio propuesto en esta rama antes del PR. (B) Dejar NC-007 como está y hacer el cambio más adelante o en otra feature.
 - **Recommendation (not binding):** A. Es un cambio de texto sin cambio de regla, y evita que la constitución contradiga el código.
-- **Status:** Open
-- **Answer:**
-- **Decided on:**
+- **Status:** Decided
+- **Answer:** A: actualizar NC-007 (Recomendado)
+- **Decided on:** 2026-11-03
 
 ---
 
