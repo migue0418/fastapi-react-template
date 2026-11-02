@@ -59,9 +59,9 @@ feature: F002
 - **Context:** Rama al día con `main` (0 commits por detrás); backend 100 passed, frontend lint, 24 tests y build en verde. Sin chores de release en el catálogo. La descripción lista lo que se acepta al fusionar.
 - **Options:** Fusionar, pedir cambios o cerrar sin fusionar
 - **Recommendation (not binding):** Fusionar tras marcarlo como listo.
-- **Status:** Open
-- **Answer:** 
-- **Decided on:** 
+- **Status:** Answered
+- **Answer:** El mantenedor fusionó el PR #11 en `main` (commit e44d8e9).
+- **Decided on:** 2026-11-01
 
 ---
 
