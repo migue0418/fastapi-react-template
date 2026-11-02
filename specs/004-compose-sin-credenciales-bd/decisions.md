@@ -100,6 +100,30 @@ feature: F004
 - **Answer:** Aprobar (Recomendado). Aprueba design.md@2.
 - **Decided on:** 2026-11-02
 
+### H-08: Quince criterios de aceptación sin un test que nombre su ID
+
+- **Raised in:** Verify, run 1 (evidence/README.md, fallo 1; reviews/feature-r1.md, R1-02)
+- **Concerns:** AC-01.1, AC-01.2, AC-02.1 a AC-02.4, AC-03.1, AC-04.1, AC-05.1, AC-05.2, AC-06.3, AC-06.4, AC-07.1 a AC-07.3 (requirements.md@2); design.md@2 (sección 3, C-04, y sección 11); plan.md@1 («How it is checked»)
+- **Blocks:** Que la evidencia pase a `pass` y la feature pase a Document
+- **Context:** Solo AC-06.1 y AC-06.2 tienen un test que nombra su ID. Los otros 15 se comprobaron con ejecuciones reales de Compose, inspección o la suite completa, como fijaron el diseño y el plan, y todos dieron el resultado esperado (evidence/README.md, sección 2). La regla de Verify exige un test que nombre cada criterio, así que la run 1 queda en `fail` por esto y solo por esto. La revisión de la feature (ronda 1) aprobó sin hallazgos bloqueantes y señala que la decisión es del mantenedor. En F003 se resolvió igual en H-06.
+- **Options:** (A) Aceptar las ejecuciones registradas como prueba de esos 15 criterios, como riesgo registrado: no cambia el código, se repite Verify (run 2) con la misma evidencia y el resultado pasa a `pass`. (B) Exigir tests con ID: Design añade tareas de arreglo (por ejemplo, tests que inspeccionen `docker-compose.yml` y los ejemplos, y que nombren los criterios que pytest sí puede comprobar) y la feature vuelve a Build. Los criterios que exigen arrancar Compose no se pueden cubrir con pytest sin Docker.
+- **Recommendation (not binding):** A. Un test de pytest no puede arrancar Compose, y las ejecuciones están registradas con su resultado y su límite.
+- **Status:** Open
+- **Answer:**
+- **Decided on:**
+
+### H-09: NFR-02 sin verificar en Linux
+
+- **Raised in:** Verify, run 1 (evidence/README.md, sección 3.1)
+- **Concerns:** NFR-02 (requirements.md@2); PR-002
+- **Blocks:** Que la evidencia pase a `pass`
+- **Context:** El rechazo y el arranque de REQ-01 a REQ-04 dan el resultado esperado desde PowerShell en Windows, incluido un caso con contraseña no ASCII. No hay entorno Linux disponible. NFR-02 es `Should` y su campo Verify prevé declararlo no verificado si no hay entorno (PR-002). El guion de `postgres-check` corre en la imagen `postgres:15`, igual en ambos entornos; lo que podría variar es el shell del mantenedor al exportar la variable, que el README cubre con la sintaxis de PowerShell y de bash.
+- **Options:** (A) Aceptar como riesgo registrado que NFR-02 se verifique en Linux más adelante (por ejemplo, en el primer despliegue de un derivado). (B) Proporcionar un entorno Linux (WSL, una máquina o CI) y repetir los casos de SC-02 antes de seguir.
+- **Recommendation (not binding):** A.
+- **Status:** Open
+- **Answer:**
+- **Decided on:**
+
 ---
 
 ## 2. Discover Questions
@@ -192,6 +216,7 @@ Sigue lo que abrió Q-05: absorber RM-09 obliga a decidir qué comportamiento ti
 | 2026-11-02 | `docs/behaviour/deployment.md` | Nuevo requisito sobre las credenciales de la base de datos de Compose. | RM-03 |
 | 2026-11-02 | `.sdd/architecture.md` (9.2), `.sdd/product.md` (CAP-06), `.sdd/constitution.md` (NC-007) | El gap de `postgres:postgres` pasa a cerrado; NC-007 ya no cita `postgres:postgres` como valor por defecto versionado de Compose. | RM-03 |
 | 2026-11-02 | `.sdd/architecture.md` (9.2), `README.md`, `docs/development_guide.md`, `docs/verification-guide.md` | El gap de los tests contra `127.0.0.1:5432` pasa a cerrado (RM-09). El README y las guías sustituyen el valor por defecto de `TEST_DATABASE_ADMIN_URL` por la obligación de definirla. | RM-09, H-02 || 2026-11-02 | `README.md` (T-02) | La línea 65 y siguientes y la fila de la tabla de variables aún dicen que hay un valor por defecto `postgres:postgres`; las cubre T-03. Indicar el esquema `postgresql+asyncpg://` de `TEST_DATABASE_ADMIN_URL`. | T-02, AC-07.3 || 2026-11-02 | `README.md`, `backend/.example.env` (T-01) | El inicio rápido necesita el paso del `.env` de la raíz; la nota de que con `-d` el mensaje de rechazo está en `docker compose logs postgres-check`; el volumen vacío que deja un rechazo y el que conserva la contraseña antigua (ASM-03); `DATABASE_URL` de `backend/.example.env` ya no trae contraseña. | T-01, AC-07.1, AC-07.2 |
+| 2026-11-02 | `CLAUDE.md` (sección Comandos), `docs/development_guide.md` | `docker compose up --build` ya no basta: falla sin el `.env` de la raíz con `POSTGRES_PASSWORD`. Añadir ese paso. Y, si el mantenedor lo quiere, la frase en el paso 3 de «Empezar un proyecto nuevo» del README (rechazada en T-03 R1-02 por alcance; queda como seguimiento). | RM-03; reviews/feature-r1.md R1-04 |
 
 ---
 
