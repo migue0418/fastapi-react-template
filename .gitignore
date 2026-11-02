@@ -34,3 +34,6 @@ docs/superpowers/
 tmp/
 
 .playwright-mcp/
+
+# Contraseña local de Docker Compose
+/.env
