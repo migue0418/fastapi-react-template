@@ -5,11 +5,11 @@ feature: F003
 title: "El límite de login se aplica por cliente real tras un proxy"
 roadmap-item: RM-02
 phase: define
-step: "Discover: ronda 1 puesta al mantenedor (Q-01, Q-02)"
+step: "Brief: brief.md@1 puesto a aprobación (H-02)"
 status: waiting-for-human
-next: "Recoger las respuestas de Q-01 y Q-02 y escribir brief.md@1 desde ellas."
+next: "Si el mantenedor aprueba brief.md@1 (H-02), escribir requirements.md desde él y ponerlo a aprobación."
 
-waiting-for-human: [Q-01, Q-02]
+waiting-for-human: [H-02]
 blocked-by: []
 
 tasks: {}
@@ -21,3 +21,5 @@ stale: []
 history:
   - "2026-11-02 define/open: feature abierta en feature/003-limite-login-tras-proxy para RM-02; camino normal confirmado por el mantenedor (H-01)"
   - "2026-11-02 define/discover: ronda 1 puesta al mantenedor (Q-01, Q-02)"
+  - "2026-11-02 define/discover: ronda 1 respondida (Q-01, Q-02) con las respuestas recomendadas"
+  - "2026-11-02 define/brief: brief.md@1 escrito y puesto a aprobación (H-02)"

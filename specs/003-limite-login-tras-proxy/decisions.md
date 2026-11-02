@@ -25,6 +25,18 @@ feature: F003
 - **Answer:** "RM-02, flujo normal (Recomendado)"
 - **Decided on:** 2026-11-02
 
+### H-02: Aprobar brief.md@1
+
+- **Raised in:** Define / brief approval
+- **Concerns:** brief.md@1, Q-01, Q-02
+- **Blocks:** Escribir requirements.md
+- **Context:** El brief recoge el alcance acordado en Q-01 y Q-02: valor por defecto seguro, una variable para quien despliega tras un proxy, y comprobación en una ejecución real.
+- **Options:** Aprobar, aprobar con cambios, o replantear.
+- **Recommendation (not binding):** Aprobar tras revisar ASM-01 a ASM-03 y OQ-01.
+- **Status:** Open
+- **Answer:** (pendiente)
+- **Decided on:** (pendiente)
+
 ---
 
 ## 2. Discover Questions
@@ -37,15 +49,15 @@ Evidencia previa, leída antes de preguntar: `backend/app/core/limiter.py` usa `
 
 - **Why it matters:** Fija el alcance: solo comprobar y documentar, o también cambiar la configuración entregada.
 - **Recommended:** Mantener el valor por defecto seguro (no confiar en ningún proxy) y que quien despliega solo tenga que definir una variable, con el comportamiento comprobado en una ejecución real: sin la variable, los clientes comparten cupo; con ella, cada cliente tiene el suyo; y una cabecera falsificada desde una IP no confiada se ignora.
-- **Answer:** (pendiente)
-- **Answered on:** (pendiente)
+- **Answer:** "Comprobar y dejar una variable (Recomendado)"
+- **Answered on:** 2026-11-02
 
 #### Q-02: ¿Debe producción avisar o negarse a arrancar si no se ha configurado la IP del proxy?
 
 - **Why it matters:** La app no puede saber si hay un proxy delante. Un rechazo bloquearía despliegues sin proxy; un aviso añadiría comportamiento nuevo de arranque.
 - **Recommended:** No. Queda como no objetivo; la documentación y la comprobación de Q-01 cubren a quien despliega tras un proxy.
-- **Answer:** (pendiente)
-- **Answered on:** (pendiente)
+- **Answer:** "No, no objetivo (Recomendado)"
+- **Answered on:** 2026-11-02
 
 ---
 
