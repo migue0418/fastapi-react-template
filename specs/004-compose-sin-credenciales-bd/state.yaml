@@ -5,11 +5,12 @@ feature: F004
 title: "Compose sin credenciales fijas de base de datos"
 roadmap-item: RM-03
 phase: release
-step: "document: documentación alineada con lo construido, RM-03 cerrado y RM-12 añadido; Document cerrado"
-status: done
-next: "Ejecutar /sdd-kit:sdd-release para abrir el PR en borrador. Ejecuta /clear antes: el estado vive en los archivos de la feature. H-10 (NC-007 de la constitución) está abierta y no bloquea: si el mantenedor la decide con A antes, se aplica en esta rama."
+step: "release: PR #15 en borrador abierto, a la espera del merge del mantenedor"
+status: waiting-for-human
+next: "El mantenedor revisa el PR #15, lo marca como listo y lo fusiona (H-11). Después, ejecutar /sdd-kit:sdd-release para cerrar la feature. Ejecuta /clear antes."
 
-waiting-for-human: [H-10]
+waiting-for-human: [H-11]
+pull-request: https://github.com/migue0418/fastapi-react-template/pull/15
 blocked-by: []
 
 tasks:
@@ -43,3 +44,4 @@ history:
   - "2026-11-02 verify/run 1: checks ejecutados en commit 0158d38 (backend 103 passed con la variable, 52 rechazos sin ella; frontend lint, test y build correctos; casos de Compose y README correctos); evidence/README.md en fail por la trazabilidad; revisión de la feature ronda 1 aprobada (reviews/feature-r1.md) y respondida; H-08 y H-09 puestas al mantenedor"
   - "2026-11-03 verify/run 2: H-08 (A) y H-09 (A) decididas; sin cambios de código desde 0158d38, checks no repetidos; evidence/README.md en pass con H-08 y H-09 como riesgos registrados; la feature pasa a Document"
   - "2026-11-03 document: README, CLAUDE.md, development_guide, verification-guide, behaviour/deployment, architecture@5, product@5 y roadmap@7 alineados; RM-03 cerrado, RM-09 entregado, RM-12 añadido; NC-007 de la constitución pendiente del mantenedor (H-10, no bloquea); la feature pasa a Release"
+  - "2026-11-03 release: H-10 decidida (A), NC-007 y constitución@1.1.2 actualizadas; rama al día con main; backend 103 passed y frontend lint, test y build correctos; sin tareas de release; PR #15 en borrador abierto y H-11 (merge) puesta al mantenedor"

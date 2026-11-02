@@ -136,6 +136,19 @@ feature: F004
 - **Answer:** A: actualizar NC-007 (Recomendado)
 - **Decided on:** 2026-11-03
 
+
+### H-11: Fusionar el pull request de F004 en main
+
+- **Raised in:** Release
+- **Concerns:** PR #15 (https://github.com/migue0418/fastapi-react-template/pull/15); toda la feature F004
+- **Blocks:** El cierre de la feature
+- **Context:** Rama al día con `main` (sin commits nuevos), backend 103 passed, frontend lint, test y build correctos. Al fusionar se aceptan los riesgos H-08 y H-09, el cambio incompatible para derivados (`POSTGRES_PASSWORD` y `TEST_DATABASE_ADMIN_URL` obligatorias) y RM-12 como seguimiento. Sin tareas de release: el proyecto no exige changelog ni versión.
+- **Options:** (A) Fusionar, tras marcar el PR como listo. (B) Pedir cambios en el PR. (C) Cerrar sin fusionar.
+- **Recommendation (not binding):** A.
+- **Status:** Open
+- **Answer:**
+- **Decided on:**
+
 ---
 
 ## 2. Discover Questions
