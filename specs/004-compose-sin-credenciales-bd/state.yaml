@@ -5,11 +5,11 @@ feature: F004
 title: "Compose sin credenciales fijas de base de datos"
 roadmap-item: RM-03
 phase: define
-step: "discover: ronda 3 puesta al mantenedor"
+step: "brief: brief.md@1 puesto a aprobación"
 status: waiting-for-human
-next: "Recoger la respuesta de la ronda 3 (Q-07) y, con ella, escribir brief.md@1 y ponerlo a aprobación."
+next: "Recoger la respuesta a H-03. Si aprueba, escribir requirements.md@1 desde brief.md@1 y ponerlo a aprobación; si pide cambios, revisar el brief."
 
-waiting-for-human: [Q-07]
+waiting-for-human: [H-03]
 blocked-by: []
 
 tasks: {}
@@ -23,3 +23,4 @@ history:
   - "2026-11-02 define/discover: ronda 1 puesta al mantenedor (Q-01 a Q-04)"
   - "2026-11-02 define/discover: ronda 1 respondida; Q-03 («Dentro») ensancha el alcance y Q-04 pide mínimos; ronda 2 puesta al mantenedor (Q-05, Q-06)"
   - "2026-11-02 define/discover: ronda 2 respondida; H-02 decide absorber RM-09 y reclasificar a Normal; roadmap.md@6 ensancha RM-03 y cierra RM-09 como absorbido; ronda 3 puesta al mantenedor (Q-07)"
+  - "2026-11-02 define/brief: ronda 3 respondida (Q-07); brief.md@1 escrito y puesto a aprobación (H-03)"

@@ -37,6 +37,18 @@ feature: F004
 - **Answer:** Absorber RM-09
 - **Decided on:** 2026-11-02
 
+### H-03: Aprobación de brief.md@1
+
+- **Raised in:** Define / brief approval
+- **Concerns:** brief.md@1, ASM-01 a ASM-04, OQ-01, RISK-01 a RISK-03
+- **Blocks:** Escribir requirements.md
+- **Context:** El brief recoge las respuestas Q-01 a Q-07 y las decisiones H-01 y H-02. Supuestos a revisar: ASM-01 (contraseña escrita una sola vez en un archivo local), ASM-02 (el ejemplo no trae contraseña por defecto), ASM-03 (el volumen conserva la contraseña antigua), ASM-04 (comparación exacta con `postgres`). Pregunta abierta con valor por defecto: OQ-01 (no rechazar la URL por defecto de la aplicación).
+- **Options:** Aprobar / aprobar con cambios / replantear
+- **Recommendation (not binding):** Aprobar, tras revisar ASM-02 y OQ-01, que son las dos que más pueden cambiar el alcance.
+- **Status:** Open
+- **Answer:** _(pendiente)_
+- **Decided on:** _(pendiente)_
+
 ---
 
 ## 2. Discover Questions
@@ -97,8 +109,8 @@ Sigue lo que abrió Q-05: absorber RM-09 obliga a decidir qué comportamiento ti
 
 - **Why it matters:** Es el comportamiento observable de la parte de RM-09 (no tocar el servidor de otro proyecto). Cambia los requisitos y criterios de aceptación de los tests.
 - **Recommended:** Que la suite se detenga con un mensaje en español que nombre `TEST_DATABASE_ADMIN_URL` y diga qué poner. Es seguro y visible (PR-002, NC-009). Saltarse los tests dejaría una suite en verde sin haber probado nada.
-- **Answer:** _(pendiente)_
-- **Answered on:** _(pendiente)_
+- **Answer:** Detenerse con un mensaje (Recomendado)
+- **Answered on:** 2026-11-02
 
 ---
 
