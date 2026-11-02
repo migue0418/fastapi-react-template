@@ -72,9 +72,9 @@ feature: F004
   - B. Solo la interpolación nativa: Compose rechaza sin definir y vacía. El mínimo de 16 y `postgres` pasan a la documentación y al comentario del ejemplo, sin comprobación. Se retira REQ-02.
   - C. B más un script multiplataforma (Python, con `uv run`, como `rename_project.py`) que valida el mínimo y lanza Compose. Quien ejecute `docker compose up` directamente se salta la comprobación de longitud.
 - **Recommendation (not binding):** A. Es la única que mantiene la validación pedida en Q-04 y Q-06 con el comando `docker compose up` de siempre. Su coste es que un rechazo deja un contenedor parado y un volumen vacío, que no guardan ninguna contraseña.
-- **Status:** Open
-- **Answer:**
-- **Decided on:**
+- **Status:** Decided
+- **Answer:** A: Comprobación en Compose (Recomendado)
+- **Decided on:** 2026-11-02
 
 ---
 
@@ -149,6 +149,7 @@ Sigue lo que abrió Q-05: absorber RM-09 obliga a decidir qué comportamiento ti
 | 2026-11-02 | Rama `feature/004-compose-sin-credenciales-bd` y commits convencionales en español. | EP-001 y EP-002 de la constitución. | F004 |
 | 2026-11-02 | Corrige la primera fila: la feature entrega RM-03 ensanchado con RM-09 (H-02), no RM-03 a secas. En `roadmap.md` (versión 6) RM-03 amplía su resultado y RM-09 pasa a Closed como absorbido, sin borrarse. | Decisión del mantenedor en Q-05; un ítem ensanchado cambia el roadmap en la rama. | H-02, RM-03, RM-09 |
 | 2026-11-02 | La feature se reclasifica de «Pequeño» a «Normal». Su tamaño se revisa en Design por si conviene dividirla en dos tareas. | EP-007: dos comportamientos observables dejan de caber en una sola tarea. El mantenedor conocía la consecuencia al decidir Q-05. | H-01, H-02 |
+| 2026-11-02 | Design se detiene en la Fase 2 hasta que Define revise AC-02.1 y AC-02.2 según H-05 (opción A). Notas para esa revisión y para el diseño posterior: (1) la comprobación debe ser un servicio previo con `restart: "no"`; hacerla en el arranque de `postgres` provocaría un bucle de reinicios por su `restart: unless-stopped`; (2) con la opción A, un rechazo por longitud deja creados el contenedor de comprobación (parado con error), el contenedor de PostgreSQL (sin arrancar), el volumen (sin inicializar) y la red; (3) con `up -d` el mensaje queda en los logs del servicio de comprobación y Compose solo informa de que falló. | Evita rediseñar tras la revisión de Define. | H-05, R1-01, AC-02.1, AC-02.2 |
 
 ---
 
