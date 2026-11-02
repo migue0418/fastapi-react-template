@@ -25,6 +25,7 @@ from app.web import spa
 from fastapi.testclient import TestClient
 from sqlalchemy.engine import URL, make_url
 
+
 def _get_test_database_admin_url() -> str:
     admin_url = os.getenv("TEST_DATABASE_ADMIN_URL")
     if not admin_url:
