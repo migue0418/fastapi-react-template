@@ -11,8 +11,11 @@ Cómo arrancar y trabajar en la plantilla, y cómo usar el flujo SDD (sdd-kit).
 
 ### Todo con Docker
 ```powershell
+cp backend/.example.env backend/.env
+cp .example.env .env        # define POSTGRES_PASSWORD en este .env (raíz)
 docker compose up --build
 ```
+- `POSTGRES_PASSWORD` es obligatoria: mínimo 16 caracteres y distinta de `postgres`. Sin ella, o con una que no cumpla, Compose no arranca. Detalle, y qué hacer con un volumen ya inicializado, en el [README](../README.md#inicio-rápido-docker).
 - App en `http://localhost:8000`; PostgreSQL solo en `127.0.0.1:5432`.
 - Sin proxy incluido. Para HTTPS, ver [Despliegue detrás de un proxy](../README.md#despliegue-detrás-de-un-proxy).
 
@@ -43,6 +46,8 @@ No instales dependencias sin confirmación del usuario.
 
 - Backend: copia `backend/.example.env` a `backend/.env`. La configuración se lee vía
   `app.core.settings.get_settings()`. Nunca commitees secretos.
+- Docker Compose: `POSTGRES_PASSWORD` va en el `.env` de la raíz (copia `.example.env`), no en `backend/.env`. Fuera de Compose, añade la contraseña a `DATABASE_URL` en `backend/.env`.
+- Tests: `TEST_DATABASE_ADMIN_URL` es obligatoria y se define en el entorno de la shell (ver [Tests](../README.md#tests)).
 - Alembic por línea de comandos usa la misma URL (`DATABASE_URL` o `backend/.env`); ejecútalo desde `backend/`.
 
 ## Flujo SDD con sdd-kit

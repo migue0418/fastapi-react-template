@@ -9,7 +9,7 @@ Cada cambio se hace en su propia rama, creada desde `main`.
 
 ## 1. Backend: tests
 
-Requiere PostgreSQL disponible (nunca SQLite). Levanta la BD si no está en marcha:
+Requiere PostgreSQL disponible (nunca SQLite). Levanta la BD si no está en marcha (necesita `POSTGRES_PASSWORD` en el `.env` de la raíz):
 
 ```powershell
 docker compose up -d postgres
@@ -27,7 +27,9 @@ docker compose up -d postgres
 4. Verifica el estado de la BD tras los tests y restáuralo si ha cambiado.
 
 Los tests leen la URL de administración de PostgreSQL de la variable de entorno
-`TEST_DATABASE_ADMIN_URL`, no de `backend/.env`. Ver [Tests](../README.md#tests) en el README.
+`TEST_DATABASE_ADMIN_URL`, no de `backend/.env`. Es obligatoria y no tiene valor por defecto: sin ella
+los tests que usan la base fallan con un mensaje que la nombra. Para la base de Compose, apúntala a ella con
+la contraseña de tu `.env`. Ver [Tests](../README.md#tests) en el README.
 
 ## 2. Backend: endpoints con curl
 
@@ -54,6 +56,7 @@ docker compose exec backend id -u        # distinto de 0
 docker compose port postgres 5432        # 127.0.0.1:5432
 ```
 
+- Compose necesita `POSTGRES_PASSWORD` (mínimo 16 caracteres, distinta de `postgres`) en el `.env` de la raíz o en la shell. Si el cambio toca la comprobación de la contraseña, prueba también el rechazo: sin variable, vacía, corta y `postgres`. No uses `docker compose config`: imprime la contraseña interpolada.
 - La imagen no debe contener `/app/backend/.env`.
 - Para parar: `docker compose down`, sin `-v` (borraría el volumen de PostgreSQL).
 

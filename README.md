@@ -19,7 +19,7 @@ Plantilla de proyecto full-stack lista para usar. Incluye autenticación JWT, ge
 
    El primer argumento es el nombre visible. El segundo es el identificador (minúsculas, dígitos y guiones bajos, hasta 25 caracteres): es el nombre de la base de datos y, con guiones, el de los paquetes. El script cambia el nombre de la plantilla en los archivos versionados, salvo en el propio script y en los archivos que no son UTF-8, lista los archivos modificados y avisa de las variantes que no reconoce. Revisa el resultado con `git diff` y confírmalo.
 2. Si tienes configuración local de Claude Code (`CLAUDE.md` y `.claude/`), cópiala al proyecto: no se versiona.
-3. Crea `backend/.env` desde `backend/.example.env`, con un `SECRET_KEY` y un `ADMIN_PASSWORD` nuevos (con `ENVIRONMENT=production`, `ADMIN_PASSWORD` no puede ser `ChangeMe123!`). Para generar la clave: `python -c "import secrets; print(secrets.token_hex(32))"`.
+3. Crea `backend/.env` desde `backend/.example.env`, con un `SECRET_KEY` y un `ADMIN_PASSWORD` nuevos (con `ENVIRONMENT=production`, `ADMIN_PASSWORD` no puede ser `ChangeMe123!`). Para generar la clave: `python -c "import secrets; print(secrets.token_hex(32))"`. Para Docker, crea también el `.env` de la raíz con `POSTGRES_PASSWORD` (ver [Inicio rápido](#inicio-rápido-docker)).
 4. Instala sdd-kit si aún no lo tienes y lanza `/sdd-kit:sdd-onboarding` (ver [Spec-Driven Development](#spec-driven-development-sdd-kit)). `docs/behaviour/` describe el comportamiento que hereda el proyecto (auth, users, roles, health, despliegue y renombrado): úsalo como entrada del onboarding.
 
 ## Inicio rápido (Docker)

@@ -124,6 +124,18 @@ feature: F004
 - **Answer:** A: verificar en Linux después (Recomendado)
 - **Decided on:** 2026-11-03
 
+### H-10: NC-007 de la constitución sigue citando `postgres:postgres` como valor por defecto versionado
+
+- **Raised in:** Document
+- **Concerns:** `.sdd/constitution.md` (NC-007, Rule y Rationale)
+- **Blocks:** Nada. No impide pasar a Release; el texto queda desactualizado hasta que el mantenedor decida.
+- **Context:** La sección 4 de este registro preveía actualizar NC-007. Tras F004 `postgres:postgres` ya no está versionado en Compose, y el Rationale dice que impedir las credenciales de Compose «es la transición de RM-03, y hasta entonces es responsabilidad de quien despliega». La constitución solo cambia de forma deliberada y con el mantenedor, así que Document no la edita. Cambio propuesto: quitar `postgres:postgres` de la lista de valores por defecto de la Rule y sustituir la frase del Rationale por que Compose exige `POSTGRES_PASSWORD` y producción rechaza los tres secretos por defecto (F002, F004).
+- **Options:** (A) Aprobar el cambio propuesto en esta rama antes del PR. (B) Dejar NC-007 como está y hacer el cambio más adelante o en otra feature.
+- **Recommendation (not binding):** A. Es un cambio de texto sin cambio de regla, y evita que la constitución contradiga el código.
+- **Status:** Open
+- **Answer:**
+- **Decided on:**
+
 ---
 
 ## 2. Discover Questions
@@ -205,6 +217,9 @@ Sigue lo que abrió Q-05: absorber RM-09 obliga a decidir qué comportamiento ti
 | 2026-11-02 | T-01: el mensaje de `:?` no lleva comillas dobles, `}` ni `: ` (rompen el YAML o la interpolación) y es idéntico en los tres usos, así que un rechazo por variable ausente o vacía imprime el mensaje tres veces (R1-01, aceptado en design.md@2, 9.1). El generador de contraseñas va en el mensaje de `postgres-check` y en `.example.env`, no en el de `:?`. Compose exige `backend/.env` (`env_file`, ya existía), así que `docker compose config` falla sin él, algo que T-03 debe tener presente en las comprobaciones. Queda para Verify repetir NFR-02 desde PowerShell y, si hay entorno, en Linux (R1-02). | Informes de implementación y revisión de T-01. | T-01, R1-01, R1-02, NFR-02 |
 | 2026-11-02 | T-03: el README pide `\password postgres` dentro de `psql` (con la misma contraseña que `POSTGRES_PASSWORD`) y `docker compose restart backend` tras cambiarla. El `\password` interactivo no se ejecutó (sin terminal): se verificó su efecto con un `ALTER ROLE` equivalente. La nota de `-d` solo vale para contraseña corta o `postgres` (R1-01, corregido); con la variable ausente o vacía el mensaje sale en pantalla. R1-02 (paso 3 de «Empezar un proyecto nuevo» sin el `.env` de la raíz) rechazado por alcance; posible seguimiento. Los AC de Compose y README se comprueban con ejecuciones reales y no con pytest, como fijó el diseño, así que solo AC-06.1 y AC-06.2 tienen un test que nombra su ID; Verify recoge el resto como evidencia. | Informes de T-03 y de su revisión. | T-03, R1-01, R1-02, AC-07.1 a AC-07.3 |
 | 2026-11-02 | La revisión independiente del diseño (ronda 1, design.md@1) aprobó con 6 hallazgos menores; los 6 se corrigieron en design.md@2 (`reviews/design-r1-answers.md`). El R1-02 se resolvió midiendo en caracteres, sin rebajar REQ-02. | Phase 5 del diseño. | R1-01 a R1-06 |
+| 2026-11-03 | Document: no hay diferencias entre el código y la especificación. La revisión de la feature (`reviews/feature-r1.md`, sección 3.1) contrastó cada criterio con el código y no halló ninguna; Document releyó `docker-compose.yml`, `.example.env`, `backend/.example.env`, `.gitignore` y el diff de `test_api.py` frente a lo que describen los documentos. Las limitaciones declaradas (RISK-04 caracteres reservados y `$`; RISK-05 contenedor parado y volumen vacío tras un rechazo por contenido) se documentan como límites. | Fase 3 de Document. | G-ninguno, RISK-04, RISK-05 |
+| 2026-11-03 | Document corrige en el README el paso 3 de «Empezar un proyecto nuevo» (T-03 R1-02, rechazado entonces por alcance): ahora remite al `.env` de la raíz. Es documentación, dentro de lo que Document puede tocar, y cierra feature-r1 R1-04. | Evita que quien crea un derivado siga un paso sin `POSTGRES_PASSWORD`. | T-03 R1-02, feature-r1 R1-04 |
+| 2026-11-03 | Roadmap (versión 7): RM-03 cerrado como entregado por F004 y movido a Closed; RM-09 pasa de «se da por entregado cuando F004 lo esté» a entregado; RM-12 añadido al inbox (automatizar los casos de Compose y verificar NFR-02 en Linux, H-08 y H-09); notas en RM-10 y RM-11. Sin reordenar la secuencia ni retirar ítems. El Focus pasa a RM-04. | Fase 3 de Document. | RM-03, RM-09, RM-12, H-08, H-09 |
 
 ---
 
@@ -217,6 +232,7 @@ Sigue lo que abrió Q-05: absorber RM-09 obliga a decidir qué comportamiento ti
 | 2026-11-02 | `.sdd/architecture.md` (9.2), `.sdd/product.md` (CAP-06), `.sdd/constitution.md` (NC-007) | El gap de `postgres:postgres` pasa a cerrado; NC-007 ya no cita `postgres:postgres` como valor por defecto versionado de Compose. | RM-03 |
 | 2026-11-02 | `.sdd/architecture.md` (9.2), `README.md`, `docs/development_guide.md`, `docs/verification-guide.md` | El gap de los tests contra `127.0.0.1:5432` pasa a cerrado (RM-09). El README y las guías sustituyen el valor por defecto de `TEST_DATABASE_ADMIN_URL` por la obligación de definirla. | RM-09, H-02 || 2026-11-02 | `README.md` (T-02) | La línea 65 y siguientes y la fila de la tabla de variables aún dicen que hay un valor por defecto `postgres:postgres`; las cubre T-03. Indicar el esquema `postgresql+asyncpg://` de `TEST_DATABASE_ADMIN_URL`. | T-02, AC-07.3 || 2026-11-02 | `README.md`, `backend/.example.env` (T-01) | El inicio rápido necesita el paso del `.env` de la raíz; la nota de que con `-d` el mensaje de rechazo está en `docker compose logs postgres-check`; el volumen vacío que deja un rechazo y el que conserva la contraseña antigua (ASM-03); `DATABASE_URL` de `backend/.example.env` ya no trae contraseña. | T-01, AC-07.1, AC-07.2 |
 | 2026-11-02 | `CLAUDE.md` (sección Comandos), `docs/development_guide.md` | `docker compose up --build` ya no basta: falla sin el `.env` de la raíz con `POSTGRES_PASSWORD`. Añadir ese paso. Y, si el mantenedor lo quiere, la frase en el paso 3 de «Empezar un proyecto nuevo» del README (rechazada en T-03 R1-02 por alcance; queda como seguimiento). | RM-03; reviews/feature-r1.md R1-04 |
+| 2026-11-03 | **Actualizados en Document:** `README.md` (paso 3 de «Empezar un proyecto nuevo»; el resto lo hizo T-03), `CLAUDE.md` (Comandos, Docker), `docs/development_guide.md` (arranque, variables de entorno), `docs/verification-guide.md` (secciones 1 y 3), `docs/behaviour/deployment.md` (dos requisitos nuevos y el escenario de la aplicación accesible), `.sdd/architecture.md@5` (9.2, dos gaps cerrados), `.sdd/product.md@5` (CAP-06 y 9.2), `.sdd/roadmap.md@7`. **No actualizado:** `.sdd/constitution.md` NC-007, a la espera del mantenedor (H-10). **Catálogo sin disparar:** `docs/base-standards.md`, `backend-standards.md`, `frontend-standards.md`, `data-model.md` y `documentation-standards.md`: la feature no cambia principios, convenciones, entidades ni la estructura de `docs/`. | Fase 3 de Document. | H-10, RM-03, RM-09 |
 
 ---
 

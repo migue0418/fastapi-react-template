@@ -3,7 +3,7 @@
 ## Purpose
 
 Cómo se construye y se sirve la aplicación: contenido de la imagen Docker, puertos que publica Docker
-Compose, origen de la URL de la base de datos para las migraciones y build del frontend sin artefactos
+Compose, contraseña de PostgreSQL de Compose y conexión de los tests, origen de la URL de la base de datos para las migraciones y build del frontend sin artefactos
 compilados.
 
 ## Requirements
@@ -40,7 +40,7 @@ Docker Compose MUST publicar el backend en el puerto 8000 del host y MUST public
 `127.0.0.1`, sin reverse proxy incluido en la plantilla.
 
 #### Scenario: Aplicación accesible desde el host
-- **GIVEN** el stack arrancado con `docker compose up --build` y `backend/.env` creado desde `.example.env`
+- **GIVEN** el stack arrancado con `docker compose up --build`, `backend/.env` creado desde `backend/.example.env` y `POSTGRES_PASSWORD` válida en el `.env` de la raíz
 - **WHEN** se llama a `GET http://localhost:8000/health`
 - **THEN** responde 200 con `{ "status": "ok" }`
 - **AND** `GET http://localhost:8000/` sirve el `index.html` del frontend
@@ -48,6 +48,51 @@ Docker Compose MUST publicar el backend en el puerto 8000 del host y MUST public
 #### Scenario: Base de datos no expuesta a la red
 - **WHEN** se inspeccionan los puertos del servicio `postgres`
 - **THEN** el 5432 solo está enlazado a `127.0.0.1`
+
+### Requirement: Compose exige una contraseña de PostgreSQL elegida
+Docker Compose MUST NOT contener ninguna contraseña de PostgreSQL con valor en los archivos versionados
+(`docker-compose.yml`, `.example.env`, `backend/.example.env`). `POSTGRES_PASSWORD`, definida en el `.env`
+de la raíz o en el entorno de la shell, MUST ser obligatoria y MUST tener al menos 16 caracteres (contados
+como caracteres, no bytes) y ser distinta de `postgres`. Un servicio previo `postgres-check` MUST comprobar
+la longitud y el valor antes de que arranque PostgreSQL. Los mensajes de rechazo MUST estar en español,
+nombrar `POSTGRES_PASSWORD` y MUST NOT imprimir el valor recibido. La misma contraseña MUST usarse para
+PostgreSQL y para el `DATABASE_URL` del backend.
+
+#### Scenario: Variable sin definir o vacía
+- **GIVEN** `POSTGRES_PASSWORD` sin definir o vacía
+- **WHEN** se ejecuta `docker compose up`
+- **THEN** Compose rechaza la configuración antes de crear contenedores ni volumen
+- **AND** el mensaje nombra `POSTGRES_PASSWORD` y el `.env` de la raíz
+
+#### Scenario: Contraseña corta o `postgres`
+- **GIVEN** `POSTGRES_PASSWORD` con menos de 16 caracteres, o igual a `postgres`
+- **WHEN** se ejecuta `docker compose up`
+- **THEN** `postgres-check` termina con error y no arranca ningún servicio ni se inicializa la base
+- **AND** con `docker compose up -d` el mensaje está en `docker compose logs postgres-check`
+- **AND** tras corregir la contraseña, `docker compose up` arranca sin borrar nada a mano
+
+#### Scenario: Contraseña válida
+- **GIVEN** `POSTGRES_PASSWORD` de 16 caracteres o más y distinta de `postgres`, y un volumen nuevo
+- **WHEN** se ejecuta `docker compose up --build`
+- **THEN** `GET /health` responde 200 y la contraseña entra desde `127.0.0.1:5432`, y `postgres` es rechazada
+
+#### Scenario: Volumen ya inicializado
+- **GIVEN** un volumen `postgres_data` creado con otra contraseña
+- **WHEN** se cambia `POSTGRES_PASSWORD` y se arranca
+- **THEN** el backend no conecta, porque PostgreSQL solo aplica la contraseña al crear el volumen
+- **AND** el README documenta las dos salidas (borrar el volumen o cambiar la contraseña dentro de la base)
+
+### Requirement: Los tests exigen la URL de administración de PostgreSQL
+Los tests que usan la base de datos MUST leer la URL de administración de la variable de entorno
+`TEST_DATABASE_ADMIN_URL`, sin valor por defecto. Si falta o está vacía, esos tests MUST fallar con un
+mensaje en español que la nombre, antes de abrir ninguna conexión. Los tests que no usan la base de datos
+MUST seguir ejecutándose.
+
+#### Scenario: Variable sin definir
+- **GIVEN** `TEST_DATABASE_ADMIN_URL` sin definir o vacía
+- **WHEN** se ejecuta la suite del backend
+- **THEN** los tests que usan la base fallan con un mensaje que nombra la variable, sin conectarse a ningún servidor
+- **AND** `test_settings.py` y `test_rename_project.py` pasan
 
 ### Requirement: Producción rechaza la contraseña de administrador por defecto
 Con `ENVIRONMENT=production`, la aplicación MUST negarse a arrancar si `ADMIN_PASSWORD` es el valor por
