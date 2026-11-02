@@ -5,12 +5,12 @@ feature: F003
 title: "El límite de login se aplica por cliente real tras un proxy"
 roadmap-item: RM-02
 phase: verify
-step: "Run 1 hecha: evidencia en fail por siete criterios sin test que nombre su ID; revisión de feature approve; esperando H-06"
-status: waiting-for-human
-next: "Responder H-06. Si A (aceptar el procedimiento): ejecutar /sdd-kit:sdd-verify de nuevo (run 2) para registrar la decisión y los comandos del segundo contenedor, y pasar a Document. Si B: /sdd-kit:sdd-design añade la tarea de automatización. Ejecuta /clear antes."
+step: "Verify run 2: evidencia pass, revisión de feature r2 approve; H-06 decidido (A)"
+status: in-progress
+next: "Ejecutar /sdd-kit:sdd-document. Corregir el README (R1-01, R1-04) y citar 14b4cc5 para /16 y valor mal escrito; ver decisions.md sección 4."
 
-waiting-for-human: [H-06]
-blocked-by: ["AC-01.1 a AC-03.2 sin test que nombre su ID (evidence/README.md, Failure 1)"]
+waiting-for-human: []
+blocked-by: []
 
 tasks:
   T-01: merged
@@ -42,3 +42,4 @@ history:
   - "2026-11-02 build/T-03: aprobada en r1 (3 menores corregidos) e integrada"
   - "2026-11-02 build/close: las tres tareas integradas; la feature pasa a Verify"
   - "2026-11-02 verify/run-1: checks y S1 a S5 repetidos, evidencia en fail por siete criterios sin test con su ID; revisión de feature r1 approve (4 menores); H-06 puesto al mantenedor"
+  - "2026-11-02 verify/run-2: H-06 decidido (A); checks y S1 a S5 repetidos, evidencia pass; revisión de feature r2 approve (2 menores respondidos); la feature pasa a Document"

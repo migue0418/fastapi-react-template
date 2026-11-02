@@ -81,9 +81,9 @@ feature: F003
 - **Context:** Ningún test del repo nombra esos siete criterios. El diseño aprobado eligió un procedimiento con Compose y registro en lugar de un test (PR-004). Verify lo repitió entero el 2026-11-02 y todos los escenarios dieron lo esperado; la regla de la evidencia pide un test que nombre cada ID, así que la run 1 queda en `fail` por este punto. La revisión de la feature aprobó (0 bloqueantes).
 - **Options:** (A) Aceptar el procedimiento ejecutado como prueba, como riesgo registrado: la run 2 se limita a repetir Verify con esta decisión y guardar en la evidencia los comandos exactos del segundo contenedor; pasa a Document. (B) Abrir una tarea de corrección que automatice la comprobación (necesita Docker; alcance nuevo, RM-05 podría entregarla con CI).
 - **Recommendation (not binding):** A: el diseño ya lo decidió con razones de proporcionalidad, la ejecución es repetible y B añade dependencia de Docker en los tests.
-- **Status:** Open
-- **Answer:**
-- **Decided on:**
+- **Status:** Decided
+- **Answer:** "A"
+- **Decided on:** 2026-11-02
 
 ---
 
@@ -126,6 +126,7 @@ Evidencia previa, leída antes de preguntar: `backend/app/core/limiter.py` usa `
 | 2026-11-02 | Build T-01 r1: R1-01 corregido (el test lee todo el bloque de comentario y carga la variable con `dotenv_values`); R1-02 rechazado (el test debe existir para AC-04.1; añadir `backend/tests/test_settings.py` a la lista Files de T-01 sería un cambio del plan) | Un cambio del plan va a Design; la desviación queda registrada aquí | reviews/task-T-01-r1-answers.md |
 | 2026-11-02 | Build T-02 r1: R1-01 y R1-03 corregidos en la redacción; R1-02 rechazado (el bucle de `X-Forwarded-For` y el script del segundo contenedor no constan, reconstruirlos sería inventar lo ejecutado). Verify debe repetir la segunda fila de S1 recreando el servicio y puede completar los scripts | No se inventa lo no registrado | reviews/task-T-02-r1-answers.md |
 | 2026-11-02 | Verify run 1 (commit 14b4cc5): repetidos S1 a S5 en Compose (proyecto `f003verify`, eliminado) con los mismos resultados que T-02, y ejecutados dos casos que T-02 declaró no verificados: red `/16` (el segundo contenedor falsifica su IP) y valor mal escrito (cupo compartido, falla cerrado). Revisión de feature r1: approve, 4 menores. Evidencia en `fail` solo por los siete criterios sin test que nombre su ID (H-06) | NFR-01; la regla de la evidencia | evidence/README.md, reviews/feature-r1.md, H-06 |
+| 2026-11-02 | Verify run 2 (commit 4ff5b88, código idéntico al de la run 1): H-06 decidido "A"; repetidos los checks y S1 a S5 con los mismos resultados; la evidencia incluye los comandos exactos y el script del segundo contenedor. Evidencia `pass`. Revisión de feature r2: approve, 0 bloqueantes y 2 menores (R2-01, R2-02) respondidos. La feature pasa a Document | H-06 | evidence/README.md, reviews/feature-r2.md |
 | 2026-11-02 | Build T-03: el README separa lo observado en T-02 (S1 a S5) de lo que afirma el diseño (primera IP no confiada desde la derecha, valor por defecto de uvicorn fuera de Compose) y marca como no ejecutados las redes amplias y el valor mal escrito. Que `*` permite falsificar la IP «aunque el puerto 8000 esté cerrado» viene del diseño (IF-01): T-02 no lo probó con el puerto cerrado | AC-04.2: sin afirmaciones que el registro no respalde | F003 T-03, evidence/t02-comprobacion-proxy.md |
 ---
 
@@ -140,7 +141,7 @@ Evidencia previa, leída antes de preguntar: `backend/app/core/limiter.py` usa `
 | 2026-11-02 | README, sección "Despliegue detrás de un proxy" | Alinear con lo observado y documentar el valor por defecto de uvicorn fuera de Compose (T-03) | AC-04.2, OQ-02 |
 | 2026-11-02 | T-03 (README) | Su texto debe coincidir con la nota nueva de `backend/.example.env` (T-01) | AC-04.2 |
 | 2026-11-02 | `.sdd/` (architecture, stack) y ADR-0001 | Los resultados de T-02 confirman el diseño; Document los resume | F003 T-02 |
-| 2026-11-02 | README, sección "Despliegue detrás de un proxy" | Document: marcar como observados la red amplia (`/16`) y el valor mal escrito (Verify run 1), y añadir "según el diseño; no se ha ejecutado con el 8000 cerrado" a la frase del puerto 8000 | R1-01, R1-04 de feature-r1 |
+| 2026-11-02 | README, sección "Despliegue detrás de un proxy" | Document: marcar como observados la red amplia (`/16`) y el valor mal escrito (Verify run 1), y añadir "según el diseño; no se ha ejecutado con el 8000 cerrado" a la frase del puerto 8000 | R1-01, R1-04 de feature-r1. Los resultados de `/16` y `no-es-una-ip` solo constan en la evidencia de la run 1 (commit `14b4cc5`, R2-02): citarlo o repetir los dos casos |
 | 2026-11-02 | README, tabla «Variables de entorno relevantes» | Falta una fila para `FORWARDED_ALLOW_IPS`; T-03 no la añadió por limitarse a la sección del proxy. Candidata para Document o un seguimiento | AC-04.2 |
 ---
 
