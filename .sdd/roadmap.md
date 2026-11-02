@@ -1,6 +1,6 @@
 ---
 artifact: roadmap
-version: 5
+version: 7
 status: active
 owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 ---
@@ -15,22 +15,11 @@ owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 
 ## 1. Focus
 
-La única fuente del flujo de trabajo (RM-08, F001), el rechazo de la contraseña de administrador por defecto (RM-01, F002) y el límite de login por cliente real tras un proxy (RM-02, F003) ya están entregados. Ahora, que un derivado no llegue a producción expuesto por los demás valores por defecto (`CAP-06`). Después, comprobar cada cambio automáticamente (`CAP-07`) y poder diagnosticar en operación (`CAP-08`). El mantenedor eligió el 2026-11-01 poner la seguridad primero, por delante de la recomendación de empezar por CI.
+La única fuente del flujo de trabajo (RM-08, F001), el rechazo de la contraseña de administrador por defecto (RM-01, F002), el límite de login por cliente real tras un proxy (RM-02, F003) y Compose sin credenciales fijas, con tests sin PostgreSQL ajeno por defecto (RM-03 con RM-09, F004), ya están entregados. Ahora, la superficie HTTP en producción (`CAP-06`). Después, comprobar cada cambio automáticamente (`CAP-07`) y poder diagnosticar en operación (`CAP-08`). El mantenedor eligió el 2026-11-01 poner la seguridad primero, por delante de la recomendación de empezar por CI.
 
 ---
 
 ## 2. Sequence
-
-### RM-03: Compose sin credenciales fijas de base de datos
-
-- **Status:** ready
-- **Outcome:** El mantenedor despliega con Compose usando una contraseña de PostgreSQL elegida por él, sin ninguna fija en el archivo versionado.
-- **Capability:** CAP-06
-- **Why:** Completa el rechazo de valores por defecto en el despliegue.
-- **Depends on:** none
-- **Boundaries:** In: `docker-compose.yml` y su configuración / Not in: gestión de secretos externa
-- **Origin:** onboarding
-- **Notes:** Puede afectar a un volumen de datos ya inicializado, y a los valores que los tests usan por defecto.
 
 ### RM-04: Superficie HTTP reducida en producción
 
@@ -80,17 +69,6 @@ La única fuente del flujo de trabajo (RM-08, F001), el rechazo de la contraseñ
 
 ## 3. Inbox
 
-### RM-09: Los tests no usan por defecto un PostgreSQL ajeno
-
-- **Status:** candidate
-- **Outcome:** Al lanzar los tests sin configurar nada, el mantenedor no crea ni borra bases en el servidor de otro proyecto.
-- **Capability:** enabler; protege a los demás proyectos locales.
-- **Why:** Se detectó en el onboarding: el puerto 5432 lo ocupaba `gestorbibliografico`.
-- **Depends on:** none
-- **Boundaries:** TBD
-- **Origin:** onboarding
-- **Notes:** Relacionado con RM-03.
-
 ### RM-10: El test de arranque sin base de datos no depende de `backend/.env`
 
 - **Status:** candidate
@@ -100,7 +78,7 @@ La única fuente del flujo de trabajo (RM-08, F001), el rechazo de la contraseñ
 - **Depends on:** none
 - **Boundaries:** TBD
 - **Origin:** F002 (`reviews/feature-r1.md`, R1-01)
-- **Notes:** Muy pequeño; puede ser una chore. Relacionado con RM-09.
+- **Notes:** Muy pequeño; puede ser una chore. Relacionado con RM-09 (entregado por F004). F004 no lo cambia: los tests de configuración siguen leyendo `backend/.env`.
 
 ### RM-11: La comprobación del límite de login tras un proxy se ejecuta sola
 
@@ -111,11 +89,44 @@ La única fuente del flujo de trabajo (RM-08, F001), el rechazo de la contraseñ
 - **Depends on:** RM-05
 - **Boundaries:** TBD
 - **Origin:** F003 (`decisions.md`, H-06; `evidence/README.md`, sección 3)
-- **Notes:** Necesita Docker en el entorno de ejecución. Los comandos exactos y el script del segundo contenedor constan en la evidencia de F003. Puede quedar absorbida por RM-05 si el mantenedor lo decide.
+- **Notes:** Necesita Docker en el entorno de ejecución. Los comandos exactos y el script del segundo contenedor constan en la evidencia de F003. Puede quedar absorbida por RM-05 si el mantenedor lo decide. RM-12 tiene el mismo patrón para Compose.
+
+### RM-12: Las comprobaciones de la contraseña de Compose se ejecutan solas y se verifican en Linux
+
+- **Status:** candidate
+- **Outcome:** El mantenedor ve pasar o fallar, sin ejecutar nada a mano, el rechazo de `POSTGRES_PASSWORD` (sin definir, vacía, corta, `postgres`), el arranque con una válida y la recuperación tras un rechazo, en Windows y en Linux.
+- **Capability:** CAP-06
+- **Why:** F004 verificó esos casos con ejecuciones reales de Compose, y 15 de sus criterios no tienen un test que nombre su ID (H-08, aceptado como riesgo registrado). NFR-02 solo se verificó en Windows (H-09).
+- **Depends on:** RM-05
+- **Boundaries:** TBD
+- **Origin:** F004 (`decisions.md`, H-08 y H-09; `evidence/README.md`, secciones 2 y 3.1)
+- **Notes:** Necesita Docker en el entorno de ejecución. Los casos y comandos constan en la evidencia de F004. Puede quedar absorbida por RM-05 junto con RM-11.
 
 ---
 
 ## 4. Closed
+
+### RM-03: Compose sin credenciales fijas de base de datos y tests sin PostgreSQL ajeno por defecto
+
+- **Delivered:** F004, verificada el 2026-11-03 (absorbe RM-09). La fecha del merge la fija su pull request.
+- **Outcome:** El mantenedor despliega con Compose usando una contraseña de PostgreSQL elegida por él, sin ninguna fija en el archivo versionado, y lanza los tests sin crear ni borrar bases en el servidor de otro proyecto.
+- **Capability:** CAP-06
+- **Why:** Completa el rechazo de valores por defecto en el despliegue.
+- **Depends on:** none
+- **Boundaries:** In: `docker-compose.yml` y su configuración, y el valor por defecto de la conexión de los tests / Not in: gestión de secretos externa
+- **Origin:** onboarding
+- **Notes:** Ensanchado el 2026-11-02 por el mantenedor (F004, H-02) para absorber RM-09. `POSTGRES_PASSWORD` es obligatoria (16+ caracteres, distinta de `postgres`) y la comprueba el servicio `postgres-check`; un rechazo por contenido deja un contenedor parado y un volumen vacío (H-05, opción A). `TEST_DATABASE_ADMIN_URL` es obligatoria. Quedan sin automatizar los casos de Compose (15 criterios sin test que nombre su ID, H-08) y sin verificar NFR-02 en Linux (H-09); ver RM-12.
+
+### RM-09: Los tests no usan por defecto un PostgreSQL ajeno
+
+- **Absorbed into:** RM-03, por decisión del mantenedor el 2026-11-02 (F004, H-02). Entregado por F004, verificada el 2026-11-03.
+- **Outcome:** Al lanzar los tests sin configurar nada, el mantenedor no crea ni borra bases en el servidor de otro proyecto.
+- **Capability:** enabler; protege a los demás proyectos locales.
+- **Why:** Se detectó en el onboarding: el puerto 5432 lo ocupaba `gestorbibliografico`.
+- **Depends on:** none
+- **Boundaries:** TBD
+- **Origin:** onboarding
+- **Notes:** Relacionado con RM-03.
 
 ### RM-02: El límite de login se aplica por cliente real tras un proxy
 

@@ -1,0 +1,47 @@
+# Where the feature stands: the first file read when the feature is resumed.
+# Overwritten at every checkpoint.
+
+feature: F004
+title: "Compose sin credenciales fijas de base de datos"
+roadmap-item: RM-03
+phase: release
+step: "release: PR #15 en borrador abierto, a la espera del merge del mantenedor"
+status: waiting-for-human
+next: "El mantenedor revisa el PR #15, lo marca como listo y lo fusiona (H-11). Después, ejecutar /sdd-kit:sdd-release para cerrar la feature. Ejecuta /clear antes."
+
+waiting-for-human: [H-11]
+pull-request: https://github.com/migue0418/fastapi-react-template/pull/15
+blocked-by: []
+
+tasks:
+  T-01: {status: merged, depends-on: []}
+  T-02: {status: merged, depends-on: []}
+  T-03: {status: merged, depends-on: [T-01, T-02]}
+
+known-failures: []
+
+stale: []
+
+history:
+  - "2026-11-02 define/open: feature abierta en feature/004-compose-sin-credenciales-bd para RM-03; camino pequeño confirmado por el mantenedor (H-01)"
+  - "2026-11-02 define/discover: ronda 1 puesta al mantenedor (Q-01 a Q-04)"
+  - "2026-11-02 define/discover: ronda 1 respondida; Q-03 («Dentro») ensancha el alcance y Q-04 pide mínimos; ronda 2 puesta al mantenedor (Q-05, Q-06)"
+  - "2026-11-02 define/discover: ronda 2 respondida; H-02 decide absorber RM-09 y reclasificar a Normal; roadmap.md@6 ensancha RM-03 y cierra RM-09 como absorbido; ronda 3 puesta al mantenedor (Q-07)"
+  - "2026-11-02 define/brief: ronda 3 respondida (Q-07); brief.md@1 escrito y puesto a aprobación (H-03)"
+  - "2026-11-02 define/brief: brief.md@1 aprobado por el mantenedor (H-03)"
+  - "2026-11-02 define/requirements: requirements.md@1 escrito desde brief.md@1 y puesto a aprobación (H-04)"
+  - "2026-11-02 define/close: requirements.md@1 aprobado (H-04); la feature pasa a Design"
+  - "2026-11-02 design/fase 2: probado en Compose v5.4.0 que la longitud no se valida sin crear contenedores; hallazgo R1-01 en reviews/findings-1.md y decisión H-05 puesta al mantenedor"
+  - "2026-11-02 design/fase 2: H-05 decidida (A: comprobación en Compose); Design se detiene y devuelve la revisión de AC-02.1 y AC-02.2 a Define"
+  - "2026-11-02 define/requirements: requirements.md@2 escrito (REQ-02, AC-02.1, AC-02.2 reformulados; AC-02.4 nuevo) y puesto a aprobación (H-06)"
+  - "2026-11-02 define/close: requirements.md@2 aprobado (H-06); la feature vuelve a Design"
+  - "2026-11-02 design/fase 3-5: design.md@1 escrito; revisión independiente ronda 1 aprobó con 6 menores; corregidos en design.md@2; H-07 puesta al mantenedor"
+  - "2026-11-02 design/close: design.md@2 aprobado (H-07); plan.md@1 escrito y checked (3 tareas); la feature pasa a Build"
+  - "2026-11-02 build/baseline: suite de backend en la rama de la feature, 101 passed, sin fallos previos; T-01 y T-02 pasan a in-progress"
+  - "2026-11-02 build/T-02: implementada; revisión ronda 1 aprobada (2 menores: R1-01 corregido, R1-02 rechazado con motivo); mergeada en la rama de la feature; suite completa 103 passed y sin bases fastapi_template_test_* sobrantes"
+  - "2026-11-02 build/T-01: implementada; revisión ronda 1 aprobada (2 menores, ambos rechazados con motivo); mergeada; suite completa 103 passed; T-03 pasa a in-progress"
+  - "2026-11-02 build/T-03: implementada; revisión ronda 1 aprobada (R1-01 corregido, R1-02 rechazado con motivo); mergeada; suite completa 103 passed. Build cerrado, la feature pasa a Verify"
+  - "2026-11-02 verify/run 1: checks ejecutados en commit 0158d38 (backend 103 passed con la variable, 52 rechazos sin ella; frontend lint, test y build correctos; casos de Compose y README correctos); evidence/README.md en fail por la trazabilidad; revisión de la feature ronda 1 aprobada (reviews/feature-r1.md) y respondida; H-08 y H-09 puestas al mantenedor"
+  - "2026-11-03 verify/run 2: H-08 (A) y H-09 (A) decididas; sin cambios de código desde 0158d38, checks no repetidos; evidence/README.md en pass con H-08 y H-09 como riesgos registrados; la feature pasa a Document"
+  - "2026-11-03 document: README, CLAUDE.md, development_guide, verification-guide, behaviour/deployment, architecture@5, product@5 y roadmap@7 alineados; RM-03 cerrado, RM-09 entregado, RM-12 añadido; NC-007 de la constitución pendiente del mantenedor (H-10, no bloquea); la feature pasa a Release"
+  - "2026-11-03 release: H-10 decidida (A), NC-007 y constitución@1.1.2 actualizadas; rama al día con main; backend 103 passed y frontend lint, test y build correctos; sin tareas de release; PR #15 en borrador abierto y H-11 (merge) puesta al mantenedor"

@@ -1,6 +1,6 @@
 ---
 artifact: architecture
-version: 4
+version: 5
 status: active
 owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 ---
@@ -282,9 +282,9 @@ Basada en el código y la documentación revisados el 2026-11-01, no en un siste
 - **Status:** Closed: `FORWARDED_ALLOW_IPS` hace que cada cliente tenga el suyo, sin cambiar código (F003, ADR-0001). Límites documentados en el README: valor mal escrito sin aviso, `*` y redes amplias, y `127.0.0.1` de confianza por defecto fuera de Compose
 - **Reference:** RM-02, ADR-0001
 
-- **Gap:** `docker-compose.yml` fija `postgres:postgres`.
+- **Gap:** `docker-compose.yml` fijaba `postgres:postgres`.
 - **Impact:** Credenciales conocidas en un despliegue real.
-- **Status:** Known
+- **Status:** Closed: `POSTGRES_PASSWORD` es obligatoria (`.env` de la raíz), con mínimo de 16 caracteres y distinta de `postgres`, comprobada por el servicio `postgres-check` (F004). Límites: la contraseña no puede llevar caracteres reservados de URL ni `$`, y un rechazo por contenido deja un contenedor parado y un volumen vacío. NFR-02 sin verificar en Linux
 - **Reference:** RM-03
 
 - **Gap:** `/api/documentation` sigue expuesta en producción y no hay CSP.
@@ -307,9 +307,9 @@ Basada en el código y la documentación revisados el 2026-11-01, no en un siste
 - **Status:** Known
 - **Reference:** RM-07
 
-- **Gap:** Por defecto, los tests se conectan a lo que haya en `127.0.0.1:5432`, aunque sea de otro proyecto.
-- **Impact:** Crean y borran bases temporales en un servidor ajeno.
-- **Status:** Known
+- **Gap:** Por defecto, los tests se conectaban a lo que hubiera en `127.0.0.1:5432`, aunque fuera de otro proyecto.
+- **Impact:** Creaban y borraban bases temporales en un servidor ajeno.
+- **Status:** Closed: `TEST_DATABASE_ADMIN_URL` es obligatoria y sin valor por defecto; sin ella los tests que usan la base fallan con un mensaje, antes de conectar (F004)
 - **Reference:** RM-09
 
 ### 9.3 Intended Architecture and Evolution

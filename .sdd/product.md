@@ -1,6 +1,6 @@
 ---
 artifact: product
-version: 4
+version: 5
 status: active
 owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 ---
@@ -107,7 +107,7 @@ No hay otros interesados identificados.
 - **Purpose:** Que un derivado no llegue a producción expuesto por valores por defecto de la plantilla.
 - **Primary users:** Mantenedor
 - **Scope:** Rechazo de secretos por defecto, rate limiting correcto tras un proxy, credenciales de Compose, y superficie HTTP en producción.
-- **Status:** Partial: producción ya rechaza `SECRET_KEY` y `ADMIN_PASSWORD` por defecto (F002) y el límite de login se aplica por cliente real tras un proxy con `FORWARDED_ALLOW_IPS` (F003); el resto está planificado
+- **Status:** Partial: producción ya rechaza `SECRET_KEY` y `ADMIN_PASSWORD` por defecto (F002) el límite de login se aplica por cliente real tras un proxy con `FORWARDED_ALLOW_IPS` (F003) y Compose exige una contraseña de PostgreSQL elegida, sin ninguna fija en el repositorio (F004); falta la superficie HTTP en producción
 
 ### CAP-07: Integración continua
 
@@ -231,7 +231,7 @@ La plantilla funciona y ya se ha usado para al menos un derivado. El 2026-11-01 
 
 ### 9.2 Known Gaps and Limitations
 
-- Producción rechaza la `SECRET_KEY` por defecto y la contraseña de administrador por defecto, pero no las credenciales de Compose.
+- Producción sigue exponiendo la documentación de la API y no envía cabeceras de seguridad (RM-04). Los secretos por defecto y las credenciales de Compose ya se rechazan.
 - No hay comprobaciones automáticas en los pull requests.
 - No hay logging para diagnosticar en operación.
 

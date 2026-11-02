@@ -1,10 +1,28 @@
 services:
+  # Comprobación previa de la contraseña: PostgreSQL solo arranca si termina bien.
+  # No imprime la contraseña. Todo $ del shell va escrito $$ porque Compose interpola ${...}.
+  postgres-check:
+    image: postgres:15
+    entrypoint: ["sh", "-c"]
+    command:
+      - |
+        n=$$(printf %s "$$POSTGRES_PASSWORD" | wc -m)
+        if [ "$$n" -lt 16 ] || [ "$$POSTGRES_PASSWORD" = "postgres" ]; then
+          echo "Error: POSTGRES_PASSWORD debe tener al menos 16 caracteres y no puede ser 'postgres'." >&2
+          echo "Cámbiala en el archivo .env de la raíz del repositorio." >&2
+          echo "Genera una con: python -c \"import secrets; print(secrets.token_hex(24))\"" >&2
+          exit 1
+        fi
+    environment:
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?Falta POSTGRES_PASSWORD. Defínela en el archivo .env de la raíz del repositorio (cópialo de .example.env). Mínimo 16 caracteres.}"
+    restart: "no"
+
   postgres:
     image: postgres:15
     environment:
       POSTGRES_DB: fastapi_template
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?Falta POSTGRES_PASSWORD. Defínela en el archivo .env de la raíz del repositorio (cópialo de .example.env). Mínimo 16 caracteres.}"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d fastapi_template"]
       interval: 5s
@@ -16,6 +34,9 @@ services:
       - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    depends_on:
+      postgres-check:
+        condition: service_completed_successfully
     restart: unless-stopped
 
   backend:
@@ -28,7 +49,7 @@ services:
     env_file:
       - ./backend/.env
     environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/fastapi_template
+      DATABASE_URL: "postgresql+asyncpg://postgres:${POSTGRES_PASSWORD:?Falta POSTGRES_PASSWORD. Defínela en el archivo .env de la raíz del repositorio (cópialo de .example.env). Mínimo 16 caracteres.}@postgres:5432/fastapi_template"
     ports:
       - "8000:8000"
     healthcheck:

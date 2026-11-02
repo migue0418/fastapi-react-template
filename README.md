@@ -19,7 +19,7 @@ Plantilla de proyecto full-stack lista para usar. Incluye autenticación JWT, ge
 
    El primer argumento es el nombre visible. El segundo es el identificador (minúsculas, dígitos y guiones bajos, hasta 25 caracteres): es el nombre de la base de datos y, con guiones, el de los paquetes. El script cambia el nombre de la plantilla en los archivos versionados, salvo en el propio script y en los archivos que no son UTF-8, lista los archivos modificados y avisa de las variantes que no reconoce. Revisa el resultado con `git diff` y confírmalo.
 2. Si tienes configuración local de Claude Code (`CLAUDE.md` y `.claude/`), cópiala al proyecto: no se versiona.
-3. Crea `backend/.env` desde `backend/.example.env`, con un `SECRET_KEY` y un `ADMIN_PASSWORD` nuevos (con `ENVIRONMENT=production`, `ADMIN_PASSWORD` no puede ser `ChangeMe123!`). Para generar la clave: `python -c "import secrets; print(secrets.token_hex(32))"`.
+3. Crea `backend/.env` desde `backend/.example.env`, con un `SECRET_KEY` y un `ADMIN_PASSWORD` nuevos (con `ENVIRONMENT=production`, `ADMIN_PASSWORD` no puede ser `ChangeMe123!`). Para generar la clave: `python -c "import secrets; print(secrets.token_hex(32))"`. Para Docker, crea también el `.env` de la raíz con `POSTGRES_PASSWORD` (ver [Inicio rápido](#inicio-rápido-docker)).
 4. Instala sdd-kit si aún no lo tienes y lanza `/sdd-kit:sdd-onboarding` (ver [Spec-Driven Development](#spec-driven-development-sdd-kit)). `docs/behaviour/` describe el comportamiento que hereda el proyecto (auth, users, roles, health, despliegue y renombrado): úsalo como entrada del onboarding.
 
 ## Inicio rápido (Docker)
@@ -27,9 +27,17 @@ Plantilla de proyecto full-stack lista para usar. Incluye autenticación JWT, ge
 ```powershell
 # Copiar y rellenar variables de entorno
 cp backend/.example.env backend/.env
+cp .example.env .env
 
+# Edita .env (en la raíz) y define POSTGRES_PASSWORD
 docker compose up --build
 ```
+
+`POSTGRES_PASSWORD` es la contraseña de PostgreSQL y no tiene valor por defecto. Defínela en el `.env` de la raíz (no versionado), con al menos 16 caracteres, distinta de `postgres`, y mejor alfanumérica y ASCII (los caracteres `@ / : # % $` rompen la URL de conexión). Para generar una: `python -c "import secrets; print(secrets.token_hex(24))"`.
+
+Si la contraseña es demasiado corta o igual a `postgres`, `docker compose up` termina con un mensaje en español y no arranca PostgreSQL ni el backend. Con `docker compose up -d` ese mensaje no sale por pantalla: léelo con `docker compose logs postgres-check`. Si la variable falta o está vacía, Compose rechaza la configuración antes de crear nada y muestra el mensaje en pantalla incluso con `-d`.
+
+Compose construye `DATABASE_URL` del backend con esa contraseña y sobrescribe la de `backend/.env`.
 
 App disponible en `http://localhost:8000`  
 Credenciales por defecto: `admin` / `ChangeMe123!`
@@ -55,6 +63,23 @@ npm run dev
 - Backend en `http://127.0.0.1:8000`
 - Frontend Vite en `http://127.0.0.1:5173`
 
+El `DATABASE_URL` de `backend/.example.env` no lleva contraseña: al ejecutar el backend fuera de Compose, añádela en `backend/.env` (`postgresql+asyncpg://postgres:<contraseña>@127.0.0.1:5432/fastapi_template`).
+
+## Volumen de PostgreSQL ya inicializado con otra contraseña
+
+La imagen de PostgreSQL aplica `POSTGRES_PASSWORD` solo al crear el volumen. Si el volumen `postgres_data` ya existe (por ejemplo, creado con una contraseña anterior), cambiar `POSTGRES_PASSWORD` en el `.env` no cambia la contraseña de la base y el backend no podrá conectarse. Hay dos salidas:
+
+- Empezar de cero: `docker compose down -v` borra el volumen y **destruye los datos de la aplicación**. Después, `docker compose up --build` crea la base con la contraseña actual del `.env`.
+- Conservar los datos: cambia la contraseña dentro de la base, con el stack en marcha, usando `\password` interactivo para no escribirla en la línea de comandos:
+
+  ```powershell
+  docker compose exec postgres psql -U postgres
+  # dentro de psql:
+  \password postgres
+  ```
+
+  Introduce la misma contraseña que has puesto en `POSTGRES_PASSWORD` y reinicia el backend si no se reconecta: `docker compose restart backend`.
+
 ## Tests
 
 ```powershell
@@ -62,14 +87,29 @@ cd backend
 uv run pytest -q
 ```
 
-Requiere PostgreSQL accesible. Los tests de la API crean una base de datos temporal por test y la borran al terminar. Para crearlas se conectan con la URL de `TEST_DATABASE_ADMIN_URL`, que por defecto es `postgresql+asyncpg://postgres:postgres@127.0.0.1:5432/postgres`.
+Requiere PostgreSQL accesible. Los tests de la API crean una base de datos temporal por test y la borran al terminar. Para crearlas se conectan con la URL de `TEST_DATABASE_ADMIN_URL`, que es obligatoria y no tiene valor por defecto: sin ella, esos tests fallan con un mensaje que la nombra y no abren ninguna conexión.
 
-`TEST_DATABASE_ADMIN_URL` es una variable de entorno de la shell que lanza `pytest`: los tests no la leen de `backend/.env`. Para cambiarla en PowerShell:
+`TEST_DATABASE_ADMIN_URL` es una variable de entorno de la shell que lanza `pytest`: los tests no la leen de `backend/.env` ni del `.env` de la raíz. Debe llevar el esquema `postgresql+asyncpg://` y apuntar a un PostgreSQL con permiso para crear y borrar bases de datos.
+
+Para usar la base de Compose, levántala y apunta la variable a ella con la contraseña de tu `.env` (sustituye `<contraseña>` por el valor de `POSTGRES_PASSWORD`):
 
 ```powershell
-$env:TEST_DATABASE_ADMIN_URL = "postgresql+asyncpg://usuario:clave@127.0.0.1:5432/postgres"
+docker compose up -d postgres
+cd backend
+$env:TEST_DATABASE_ADMIN_URL = "postgresql+asyncpg://postgres:<contraseña>@127.0.0.1:5432/postgres"
 uv run pytest -q
 ```
+
+En una shell de Linux o macOS:
+
+```bash
+docker compose up -d postgres
+cd backend
+export TEST_DATABASE_ADMIN_URL="postgresql+asyncpg://postgres:<contraseña>@127.0.0.1:5432/postgres"
+uv run pytest -q
+```
+
+Si la contraseña tiene caracteres especiales, codifícalos en la URL (por eso se recomienda alfanumérica).
 
 ## Dependencias
 
@@ -158,8 +198,9 @@ La plantilla no incluye proxy: Compose publica el backend en el puerto 8000 del 
 | `APP_NAME` | Nombre de la aplicación |
 | `ENVIRONMENT` | `development` / `production` / `test` |
 | `SECRET_KEY` | Clave para firmar JWT (cambiar en producción) |
-| `DATABASE_URL` | URL de conexión a PostgreSQL |
+| `POSTGRES_PASSWORD` | Solo Docker Compose, en el `.env` de la raíz. Contraseña de PostgreSQL: obligatoria, mínimo 16 caracteres y distinta de `postgres`. Compose la usa para PostgreSQL y para el `DATABASE_URL` del backend |
+| `DATABASE_URL` | URL de conexión a PostgreSQL. En Compose se construye con `POSTGRES_PASSWORD`; fuera de Compose, añade la contraseña en `backend/.env` |
 | `ADMIN_USERNAME` | Usuario administrador inicial |
 | `ADMIN_PASSWORD` | Contraseña del administrador inicial. Con `ENVIRONMENT=production` no puede ser `ChangeMe123!` |
 | `FORWARDED_ALLOW_IPS` | Opcional, solo tras un proxy. IP, red CIDR o lista separada por comas desde las que uvicorn acepta `X-Forwarded-For`; sin ella no se confía en ningún proxy. La lee uvicorn, no `Settings`. Ver [Despliegue detrás de un proxy](#despliegue-detrás-de-un-proxy) |
-| `TEST_DATABASE_ADMIN_URL` | Solo tests. URL de PostgreSQL con permiso para crear y borrar bases de datos. Se lee del entorno de la shell, no de `backend/.env`. Por defecto, `postgresql+asyncpg://postgres:postgres@127.0.0.1:5432/postgres` |
+| `TEST_DATABASE_ADMIN_URL` | Solo tests. URL de PostgreSQL con permiso para crear y borrar bases de datos. Obligatoria, sin valor por defecto. Con esquema `postgresql+asyncpg://`. Se lee del entorno de la shell, no de `backend/.env` |

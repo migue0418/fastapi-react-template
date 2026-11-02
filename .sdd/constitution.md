@@ -1,6 +1,6 @@
 ---
 artifact: constitution
-version: 1.1.1
+version: 1.1.2
 status: active
 owner: Mantenedor de la plantilla (Miguel Ángel Benítez)
 ---
@@ -124,10 +124,10 @@ Es la condición para confiar en el trabajo del agente sin repetirlo a mano.
 ### NC-007 — Secretos
 
 **Rule**
-Los secretos reales MUST NOT commitearse ni imprimirse. Los valores por defecto versionados (`ChangeMe123!`, `change-this-secret-key`, `postgres:postgres`) son solo para desarrollo y MUST NOT usarse en producción.
+Los secretos reales MUST NOT commitearse ni imprimirse. Los valores por defecto versionados (`ChangeMe123!`, `change-this-secret-key`) son solo para desarrollo y MUST NOT usarse en producción.
 
 **Rationale**
-El repositorio es público. Hoy producción rechaza la `SECRET_KEY` por defecto, por su longitud, y la `ADMIN_PASSWORD` por defecto (F002). Impedir las credenciales de Compose es la transición de RM-03, y hasta entonces es responsabilidad de quien despliega.
+El repositorio es público. Hoy producción rechaza la `SECRET_KEY` por defecto, por su longitud, y la `ADMIN_PASSWORD` por defecto (F002). Compose exige `POSTGRES_PASSWORD` y no versiona ninguna contraseña de base de datos, y producción rechaza los tres secretos por defecto (F002, F004).
 
 ### NC-008 — Dependencias
 
