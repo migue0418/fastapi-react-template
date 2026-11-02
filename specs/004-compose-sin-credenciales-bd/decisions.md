@@ -108,9 +108,9 @@ feature: F004
 - **Context:** Solo AC-06.1 y AC-06.2 tienen un test que nombra su ID. Los otros 15 se comprobaron con ejecuciones reales de Compose, inspección o la suite completa, como fijaron el diseño y el plan, y todos dieron el resultado esperado (evidence/README.md, sección 2). La regla de Verify exige un test que nombre cada criterio, así que la run 1 queda en `fail` por esto y solo por esto. La revisión de la feature (ronda 1) aprobó sin hallazgos bloqueantes y señala que la decisión es del mantenedor. En F003 se resolvió igual en H-06.
 - **Options:** (A) Aceptar las ejecuciones registradas como prueba de esos 15 criterios, como riesgo registrado: no cambia el código, se repite Verify (run 2) con la misma evidencia y el resultado pasa a `pass`. (B) Exigir tests con ID: Design añade tareas de arreglo (por ejemplo, tests que inspeccionen `docker-compose.yml` y los ejemplos, y que nombren los criterios que pytest sí puede comprobar) y la feature vuelve a Build. Los criterios que exigen arrancar Compose no se pueden cubrir con pytest sin Docker.
 - **Recommendation (not binding):** A. Un test de pytest no puede arrancar Compose, y las ejecuciones están registradas con su resultado y su límite.
-- **Status:** Open
-- **Answer:**
-- **Decided on:**
+- **Status:** Decided
+- **Answer:** A: aceptar ejecuciones (Recomendado)
+- **Decided on:** 2026-11-03
 
 ### H-09: NFR-02 sin verificar en Linux
 
@@ -120,9 +120,9 @@ feature: F004
 - **Context:** El rechazo y el arranque de REQ-01 a REQ-04 dan el resultado esperado desde PowerShell en Windows, incluido un caso con contraseña no ASCII. No hay entorno Linux disponible. NFR-02 es `Should` y su campo Verify prevé declararlo no verificado si no hay entorno (PR-002). El guion de `postgres-check` corre en la imagen `postgres:15`, igual en ambos entornos; lo que podría variar es el shell del mantenedor al exportar la variable, que el README cubre con la sintaxis de PowerShell y de bash.
 - **Options:** (A) Aceptar como riesgo registrado que NFR-02 se verifique en Linux más adelante (por ejemplo, en el primer despliegue de un derivado). (B) Proporcionar un entorno Linux (WSL, una máquina o CI) y repetir los casos de SC-02 antes de seguir.
 - **Recommendation (not binding):** A.
-- **Status:** Open
-- **Answer:**
-- **Decided on:**
+- **Status:** Decided
+- **Answer:** A: verificar en Linux después (Recomendado)
+- **Decided on:** 2026-11-03
 
 ---
 

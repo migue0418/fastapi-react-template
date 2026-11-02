@@ -4,12 +4,12 @@
 feature: F004
 title: "Compose sin credenciales fijas de base de datos"
 roadmap-item: RM-03
-phase: verify
-step: "verify run 1: evidence/README.md en fail solo por trazabilidad (15 de 17 AC sin test que nombre su ID); todo lo ejecutado pasa; revisión de la feature ronda 1 aprobada (0 bloqueantes, 4 menores, respondidos)"
-status: waiting-for-human
-next: "El mantenedor responde H-08 y H-09 en decisions.md. Con H-08 = A y H-09 = A: ejecutar /sdd-kit:sdd-verify (run 2, misma evidencia, resultado pass) y después /sdd-kit:sdd-document. Con H-08 = B: /sdd-kit:sdd-design añade las tareas de arreglo. Ejecuta /clear antes de la siguiente fase."
+phase: document
+step: "verify run 2: evidence/README.md en pass (H-08 A y H-09 A decididas por el mantenedor); revisión de la feature ronda 1 aprobada sin bloqueantes; Verify cerrado"
+status: done
+next: "Ejecutar /sdd-kit:sdd-document. Ejecuta /clear antes: el estado vive en los archivos de la feature."
 
-waiting-for-human: [H-08, H-09]
+waiting-for-human: []
 blocked-by: []
 
 tasks:
@@ -41,3 +41,4 @@ history:
   - "2026-11-02 build/T-01: implementada; revisión ronda 1 aprobada (2 menores, ambos rechazados con motivo); mergeada; suite completa 103 passed; T-03 pasa a in-progress"
   - "2026-11-02 build/T-03: implementada; revisión ronda 1 aprobada (R1-01 corregido, R1-02 rechazado con motivo); mergeada; suite completa 103 passed. Build cerrado, la feature pasa a Verify"
   - "2026-11-02 verify/run 1: checks ejecutados en commit 0158d38 (backend 103 passed con la variable, 52 rechazos sin ella; frontend lint, test y build correctos; casos de Compose y README correctos); evidence/README.md en fail por la trazabilidad; revisión de la feature ronda 1 aprobada (reviews/feature-r1.md) y respondida; H-08 y H-09 puestas al mantenedor"
+  - "2026-11-03 verify/run 2: H-08 (A) y H-09 (A) decididas; sin cambios de código desde 0158d38, checks no repetidos; evidence/README.md en pass con H-08 y H-09 como riesgos registrados; la feature pasa a Document"

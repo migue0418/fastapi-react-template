@@ -1,16 +1,16 @@
 ---
 artifact: evidence
 feature: F004
-run: 1
+run: 2
 commit: 0158d381bba20bb857d72675d2b3f9575d08aa8a
-date: 2026-11-02
-result: fail
+date: 2026-11-03
+result: pass
 upstream: [requirements.md@2, design.md@2, plan.md@1]
 ---
 
 # Evidence: Compose sin credenciales fijas de base de datos
 
-> Registro de la run 1 de Verify sobre `feature/004-compose-sin-credenciales-bd` en el commit `0158d38`. Dice lo observado, no lo esperado. Todo lo ejecutado pasa; el resultado es `fail` solo por la regla de trazabilidad (sección 4, fallo 1), que el mantenedor debe resolver.
+> Registro de la run 2 de Verify sobre `feature/004-compose-sin-credenciales-bd`. Dice lo observado, no lo esperado. La run 1 (2026-11-02) dio `fail` solo por la regla de trazabilidad. El mantenedor decidió H-08 (A) y H-09 (A) el 2026-11-03, y no hubo tareas de arreglo ni cambios de código, así que los checks **no se volvieron a ejecutar**: los resultados de las secciones 1 a 3 son los observados en la run 1, en el commit `0158d38`. Desde ese commit hasta HEAD (`a9b9a6e`) `git diff --stat` solo toca archivos de `specs/004-compose-sin-credenciales-bd/`, ninguno de código, tests, Compose ni documentación. El resultado es `pass` por las decisiones H-08 y H-09, que aceptan como riesgo registrado lo que la run 1 dejó como fallo y como no verificado (secciones 3.1 y 4).
 
 ---
 
@@ -39,7 +39,7 @@ Ninguno: `known-failures: []` en el registro de estado. Línea base de Build: 10
 
 ## 2. Traceability
 
-Solo AC-06.1 y AC-06.2 tienen un test automático que nombra su ID (`backend/tests/test_api.py::test_temporary_database_exige_admin_url`, docstring `F004:AC-06.1 F004:AC-06.2`, dos casos, ambos pasan). Los otros 15 criterios no tienen un test que los nombre: el diseño y el plan fijaron como prueba la ejecución real de Compose o la inspección, y esto se verificó así. Por la regla de esta fase, esos 15 son un fallo (sección 4, fallo 1). Como en F003 (run 1, H-06), se pone al mantenedor en H-08.
+Solo AC-06.1 y AC-06.2 tienen un test automático que nombra su ID (`backend/tests/test_api.py::test_temporary_database_exige_admin_url`, docstring `F004:AC-06.1 F004:AC-06.2`, dos casos, ambos pasan). Los otros 15 criterios no tienen un test que los nombre: el diseño y el plan fijaron como prueba la ejecución real de Compose o la inspección, y esto se verificó así. Por la regla de esta fase, esos 15 eran un fallo en la run 1. El mantenedor decidió en H-08 (A, 2026-11-03) aceptar las ejecuciones registradas como prueba de esos 15 criterios, como riesgo registrado (sección 4), igual que F003 en H-06. La columna Result sigue diciendo «No test» para que el hueco no quede oculto.
 
 | Requirement | Acceptance criterion | Components and interfaces | Tasks | Tests | Result |
 |---|---|---|---|---|---|
@@ -72,13 +72,15 @@ Solo AC-06.1 y AC-06.2 tienen un test automático que nombra su ID (`backend/tes
 
 ### 3.1 Unverified Qualities
 
-- NFR-02: sin un entorno Linux, solo se verificó en Windows. Decision: H-09
+- NFR-02: sin un entorno Linux, solo se verificó en Windows. Decision: H-09, decidida el 2026-11-03 (A): el mantenedor acepta como riesgo registrado que se verifique en Linux más adelante (por ejemplo, en el primer despliegue de un derivado).
 
 ---
 
 ## 4. What Failed
 
-### Failure 1: 15 criterios de aceptación no tienen un test que nombre su ID
+Run 2: ningún check ni criterio falla. El único fallo de la run 1 queda aceptado por el mantenedor en H-08 (A) como riesgo registrado: esos 15 criterios solo tienen como prueba ejecuciones y no un test que nombre su ID. Se conserva su descripción.
+
+### Failure 1 (run 1, aceptado en H-08): 15 criterios de aceptación no tienen un test que nombre su ID
 
 - **Concerns:** AC-01.1, AC-01.2, AC-02.1, AC-02.2, AC-02.3, AC-02.4, AC-03.1, AC-04.1, AC-05.1, AC-05.2, AC-06.3, AC-06.4, AC-07.1, AC-07.2, AC-07.3
 - **Observed:** `grep` de `AC-0x.y` en `backend/tests` solo encuentra `F004:AC-06.1` y `F004:AC-06.2`. Los otros 15 se comprobaron con ejecuciones reales de Compose, inspección o la suite completa, todas con resultado correcto (sección 2), pero ningún test automático nombra su ID.
