@@ -45,9 +45,9 @@ feature: F003
 - **Context:** Cuatro requisitos y dos cualidades construidos desde brief.md@1.
 - **Options:** Aprobar, aprobar con cambios, o replantear.
 - **Recommendation (not binding):** Aprobar tras confirmar que el rechazo por exceso es el `429` actual de los tres endpoints limitados.
-- **Status:** Open
-- **Answer:** (pendiente)
-- **Decided on:** (pendiente)
+- **Status:** Decided
+- **Answer:** "Aprobar (Recomendado)" (requirements.md@1)
+- **Decided on:** 2026-11-02
 
 ---
 
