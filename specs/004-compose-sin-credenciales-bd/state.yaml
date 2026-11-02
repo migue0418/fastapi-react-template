@@ -5,16 +5,16 @@ feature: F004
 title: "Compose sin credenciales fijas de base de datos"
 roadmap-item: RM-03
 phase: build
-step: "design cerrado: design.md@2 aprobado (H-07), plan.md@1 checked; Build por empezar"
+step: "build/task-loop: línea base sin fallos (101 tests); T-01 y T-02 en implementación"
 status: in-progress
-next: "Ejecutar /sdd-kit:sdd-build: T-01 y T-02 en paralelo (grupo 1), después T-03. Ejecuta /clear antes. Antes de las comprobaciones de Compose, el puerto 127.0.0.1:5432 debe estar libre."
+next: "Reanudar /sdd-kit:sdd-build: T-01 y T-02 (grupo 1) están en curso; al mergearse ambas, T-03. Antes de las comprobaciones de Compose, el puerto 127.0.0.1:5432 debe estar libre."
 
 waiting-for-human: []
 blocked-by: []
 
 tasks:
-  T-01: {status: pending, depends-on: []}
-  T-02: {status: pending, depends-on: []}
+  T-01: {status: in-progress, depends-on: []}
+  T-02: {status: in-progress, depends-on: []}
   T-03: {status: pending, depends-on: [T-01, T-02]}
 
 known-failures: []
@@ -36,3 +36,4 @@ history:
   - "2026-11-02 define/close: requirements.md@2 aprobado (H-06); la feature vuelve a Design"
   - "2026-11-02 design/fase 3-5: design.md@1 escrito; revisión independiente ronda 1 aprobó con 6 menores; corregidos en design.md@2; H-07 puesta al mantenedor"
   - "2026-11-02 design/close: design.md@2 aprobado (H-07); plan.md@1 escrito y checked (3 tareas); la feature pasa a Build"
+  - "2026-11-02 build/baseline: suite de backend en la rama de la feature, 101 passed, sin fallos previos; T-01 y T-02 pasan a in-progress"
