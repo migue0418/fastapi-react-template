@@ -4,15 +4,18 @@
 feature: F003
 title: "El límite de login se aplica por cliente real tras un proxy"
 roadmap-item: RM-02
-phase: design
-step: "design.md@3 aprobado por la revisión (ronda 2); aprobación del mantenedor pedida (H-05)"
-status: waiting-for-human
-next: "Recoger la respuesta a H-05; si aprueba, aceptar ADR-0001, escribir plan.md y comprobar su consistencia."
+phase: build
+step: "Design cerrado: design.md@3 aprobado (H-05), ADR-0001 accepted, plan.md@1 checked"
+status: in-progress
+next: "Ejecutar /sdd-kit:sdd-build: grupo 1 (T-01 y T-02 en paralelo), después T-03."
 
-waiting-for-human: [H-05]
+waiting-for-human: []
 blocked-by: []
 
-tasks: {}
+tasks:
+  T-01: pending
+  T-02: pending
+  T-03: pending
 
 known-failures: []
 
@@ -29,3 +32,5 @@ history:
   - "2026-11-02 design/design: design.md@1 (sin código de aplicación, 3 tareas) y ADR-0001 proposed escritos tras un experimento aislado con uvicorn y slowapi"
   - "2026-11-02 design/review: ronda 1 changes-required (R1-01 bloqueante, R1-02 a R1-05 menores), respondida con design.md@2; H-04 decidido por el mantenedor (documentar el límite)"
   - "2026-11-02 design/review: ronda 2 approve (R2-01 menor corregido en design.md@3); design.md@3 puesto a aprobación (H-05)"
+  - "2026-11-02 design/approval: design.md@3 aprobado (H-05); ADR-0001 accepted; plan.md@1 escrito y comprobado (consistencia limpia)"
+  - "2026-11-02 design/close: la feature pasa a Build con T-01 a T-03 pendientes"

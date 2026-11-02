@@ -69,9 +69,9 @@ feature: F003
 - **Context:** Sin código de aplicación nuevo: la confianza en `X-Forwarded-For` la decide uvicorn con `FORWARDED_ALLOW_IPS` (ADR-0001). Tres tareas: variable en `.example.env`, comprobación ejecutada con Compose aislado y README alineado. La revisión aprobó en la ronda 2; la ronda 1 encontró que `*` permite falsificar la IP incluso con el 8000 cerrado, y se corrigió.
 - **Options:** Aprobar, aprobar con cambios, o replantear.
 - **Recommendation (not binding):** Aprobar tras revisar ASM-05 y ASM-06, sin ejecutar hasta T-02, y RISK-03 y RISK-04.
-- **Status:** Open
-- **Answer:**
-- **Decided on:**
+- **Status:** Decided
+- **Answer:** "Aprobar (Recomendado)" (design.md@3)
+- **Decided on:** 2026-11-02
 
 ---
 

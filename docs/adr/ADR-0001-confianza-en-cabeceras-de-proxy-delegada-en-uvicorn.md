@@ -2,7 +2,7 @@
 artifact: adr
 id: ADR-0001
 title: La confianza en las cabeceras de un proxy se delega en uvicorn
-status: proposed
+status: accepted
 decided-by: design
 decision: null
 date: 2026-11-02
