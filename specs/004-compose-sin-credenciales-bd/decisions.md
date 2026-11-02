@@ -45,6 +45,18 @@ feature: F004
 - **Context:** El brief recoge las respuestas Q-01 a Q-07 y las decisiones H-01 y H-02. Supuestos a revisar: ASM-01 (contraseña escrita una sola vez en un archivo local), ASM-02 (el ejemplo no trae contraseña por defecto), ASM-03 (el volumen conserva la contraseña antigua), ASM-04 (comparación exacta con `postgres`). Pregunta abierta con valor por defecto: OQ-01 (no rechazar la URL por defecto de la aplicación).
 - **Options:** Aprobar / aprobar con cambios / replantear
 - **Recommendation (not binding):** Aprobar, tras revisar ASM-02 y OQ-01, que son las dos que más pueden cambiar el alcance.
+- **Status:** Decided
+- **Answer:** Aprobar (Recomendado). Aprueba brief.md@1 con ASM-01 a ASM-04 y OQ-01 con su valor por defecto.
+- **Decided on:** 2026-11-02
+
+### H-04: Aprobación de requirements.md@1
+
+- **Raised in:** Define / requirements approval
+- **Concerns:** requirements.md@1 (built from brief.md@1), ASM-05
+- **Blocks:** Cerrar Define y pasar a Design
+- **Context:** Siete requisitos funcionales y dos cualidades. Decisiones de interpretación que el mantenedor debe confirmar: (1) con el mínimo de 16 caracteres, «distinta de `postgres`» queda cubierta por la longitud y se conserva solo como criterio de aceptación explícito (AC-02.2); (2) ASM-05: si falta `TEST_DATABASE_ADMIN_URL`, fallan con el mensaje los tests que usan la base de datos, y los que no la usan siguen ejecutándose, en lugar de abortar toda la ejecución; (3) el ejemplo versionado deja de traer una URL con contraseña (AC-05.1), lo que cambia el flujo de desarrollo local sin Docker.
+- **Options:** Aprobar / aprobar con cambios / replantear
+- **Recommendation (not binding):** Aprobar tras revisar ASM-05 y el punto (3).
 - **Status:** Open
 - **Answer:** _(pendiente)_
 - **Decided on:** _(pendiente)_
