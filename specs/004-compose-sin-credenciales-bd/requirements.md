@@ -2,7 +2,7 @@
 artifact: requirements
 feature: F004
 status: approved
-version: 1
+version: 2
 upstream: [brief.md@1]
 ---
 
@@ -54,7 +54,7 @@ Si la contraseña de Compose no está definida o está vacía, Docker Compose no
 
 ### REQ-02: Compose se niega a arrancar con una contraseña que no cumple los mínimos
 
-Si la contraseña de Compose tiene menos de 16 caracteres, Docker Compose no debe arrancar ningún servicio y debe mostrar un mensaje en español que nombra la variable de la contraseña e indica la longitud mínima.
+Si la contraseña de Compose tiene menos de 16 caracteres, ni PostgreSQL ni el backend deben llegar a arrancar, la base de datos debe quedar sin inicializar y Docker Compose debe mostrar un mensaje en español que nombra la variable de la contraseña e indica la longitud mínima.
 
 - **Priority:** Must
 - **Source:** brief.md@1, 5.1 (segundo punto); Q-04, Q-06
@@ -62,15 +62,21 @@ Si la contraseña de Compose tiene menos de 16 caracteres, Docker Compose no deb
 
 #### AC-02.1: Por debajo del mínimo
 
-- **Given** una contraseña de 15 caracteres
+- **Given** una contraseña de 15 caracteres y que no existe el volumen `postgres_data`
 - **When** el mantenedor ejecuta `docker compose up`
-- **Then** el comando termina con código distinto de 0, no se crea ningún contenedor ni el volumen, y el mensaje, en español, nombra la variable e indica el mínimo de 16 caracteres
+- **Then** el comando termina con código distinto de 0; ni PostgreSQL ni el backend llegan a arrancar; el volumen `postgres_data`, si Compose lo ha creado, queda vacío, sin inicializar; y el mensaje, en español, nombra la variable e indica el mínimo de 16 caracteres
 
 #### AC-02.2: El valor `postgres`
 
-- **Given** que la contraseña es exactamente `postgres`
+- **Given** que la contraseña es exactamente `postgres` y que no existe el volumen `postgres_data`
 - **When** el mantenedor ejecuta `docker compose up`
 - **Then** el resultado es el mismo que en AC-02.1
+
+#### AC-02.4: Corregir la contraseña tras un rechazo
+
+- **Given** que un rechazo de AC-02.1 o AC-02.2 ya ha ocurrido y la contraseña se cambia por una de 16 o más caracteres
+- **When** el mantenedor ejecuta `docker compose up --build` sin borrar nada a mano
+- **Then** el stack arranca como en AC-03.1, con la contraseña corregida
 
 #### AC-02.3: En el mínimo exacto
 
@@ -256,6 +262,8 @@ Cobertura del alcance de `brief.md@1`, 5.1:
 - README para el volumen ya inicializado y para los tests: REQ-07.
 
 Nota: con un mínimo de 16 caracteres, el rechazo de `postgres` ya queda implícito en REQ-02. Se conserva AC-02.2 como criterio explícito por pedirlo el mantenedor (Q-04), y ASM-04 queda sin efecto práctico mientras el mínimo sea de 16.
+
+Cambios de la versión 2 (H-05, opción A; R1-01): REQ-02, AC-02.1 y AC-02.2 dejan de exigir que no se cree ningún contenedor ni el volumen, porque Compose solo puede medir la longitud tras crearlos; exigen que nada arranque y que la base quede sin inicializar. Se añade AC-02.4 (corregir la contraseña tras un rechazo, que un volumen vacío no conserva la contraseña mala). REQ-01 (sin definir o vacía) no cambia: la interpolación nativa sí rechaza sin crear nada. En AC-05.2 la referencia a AC-02.1 sigue válida con el resultado nuevo.
 
 - **Coverage gaps:** None
 - **Unresolved dependencies:** OQ-01 (abierta con valor por defecto, fuera de alcance) y ASM-05 (confirmado en H-04).

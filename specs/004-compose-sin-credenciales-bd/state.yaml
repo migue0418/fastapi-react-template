@@ -5,12 +5,12 @@ feature: F004
 title: "Compose sin credenciales fijas de base de datos"
 roadmap-item: RM-03
 phase: design
-step: "design/fase 2 detenida: H-05 decidida (opción A); los requisitos deben revisarse en Define (R1-01)"
-status: blocked
-next: "Ejecutar /sdd-kit:sdd-define para revisar requirements.md@1 -> @2: reformular AC-02.1 y AC-02.2 según H-05 (opción A) y la nota de decisions.md (sección 3, última fila); el mantenedor aprueba @2. Después ejecutar /sdd-kit:sdd-design, que retoma desde la Fase 2 (la incógnita de la longitud ya está resuelta y probada). Ejecuta /clear antes de cada uno."
+step: "define cerrado: requirements.md@2 aprobado (H-06); Design retoma desde la Fase 2"
+status: in-progress
+next: "Ejecutar /sdd-kit:sdd-design, que retoma desde la Fase 2 (la longitud ya está resuelta y probada; el diseño debe ajustarse a requirements.md@2). Ejecuta /clear antes."
 
 waiting-for-human: []
-blocked-by: ["requirements.md@1: AC-02.1 y AC-02.2 pendientes de revisión en Define (R1-01, H-05)"]
+blocked-by: []
 
 tasks: {}
 
@@ -29,3 +29,5 @@ history:
   - "2026-11-02 define/close: requirements.md@1 aprobado (H-04); la feature pasa a Design"
   - "2026-11-02 design/fase 2: probado en Compose v5.4.0 que la longitud no se valida sin crear contenedores; hallazgo R1-01 en reviews/findings-1.md y decisión H-05 puesta al mantenedor"
   - "2026-11-02 design/fase 2: H-05 decidida (A: comprobación en Compose); Design se detiene y devuelve la revisión de AC-02.1 y AC-02.2 a Define"
+  - "2026-11-02 define/requirements: requirements.md@2 escrito (REQ-02, AC-02.1, AC-02.2 reformulados; AC-02.4 nuevo) y puesto a aprobación (H-06)"
+  - "2026-11-02 define/close: requirements.md@2 aprobado (H-06); la feature vuelve a Design"

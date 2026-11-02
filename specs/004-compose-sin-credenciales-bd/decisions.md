@@ -76,6 +76,18 @@ feature: F004
 - **Answer:** A: Comprobación en Compose (Recomendado)
 - **Decided on:** 2026-11-02
 
+### H-06: Aprobación de requirements.md@2
+
+- **Raised in:** Define / revisión de requisitos aprobados (R1-01, H-05)
+- **Concerns:** requirements.md@2 (built from brief.md@1), REQ-02, AC-02.1, AC-02.2, AC-02.4
+- **Blocks:** Reanudar Design desde la Fase 2
+- **Context:** La opción A de H-05 no puede garantizar que no se cree ningún contenedor ni el volumen. @2 exige que nada arranque y que la base quede sin inicializar, y añade AC-02.4 (corregir la contraseña y volver a ejecutar sin borrar nada a mano). Es un cambio del comportamiento aprobado, por eso vuelve al mantenedor. El resto de los requisitos no cambia.
+- **Options:** Aprobar / aprobar con cambios / replantear
+- **Recommendation (not binding):** Aprobar.
+- **Status:** Decided
+- **Answer:** Aprobar (Recomendado). Aprueba requirements.md@2.
+- **Decided on:** 2026-11-02
+
 ---
 
 ## 2. Discover Questions
@@ -150,6 +162,7 @@ Sigue lo que abrió Q-05: absorber RM-09 obliga a decidir qué comportamiento ti
 | 2026-11-02 | Corrige la primera fila: la feature entrega RM-03 ensanchado con RM-09 (H-02), no RM-03 a secas. En `roadmap.md` (versión 6) RM-03 amplía su resultado y RM-09 pasa a Closed como absorbido, sin borrarse. | Decisión del mantenedor en Q-05; un ítem ensanchado cambia el roadmap en la rama. | H-02, RM-03, RM-09 |
 | 2026-11-02 | La feature se reclasifica de «Pequeño» a «Normal». Su tamaño se revisa en Design por si conviene dividirla en dos tareas. | EP-007: dos comportamientos observables dejan de caber en una sola tarea. El mantenedor conocía la consecuencia al decidir Q-05. | H-01, H-02 |
 | 2026-11-02 | Design se detiene en la Fase 2 hasta que Define revise AC-02.1 y AC-02.2 según H-05 (opción A). Notas para esa revisión y para el diseño posterior: (1) la comprobación debe ser un servicio previo con `restart: "no"`; hacerla en el arranque de `postgres` provocaría un bucle de reinicios por su `restart: unless-stopped`; (2) con la opción A, un rechazo por longitud deja creados el contenedor de comprobación (parado con error), el contenedor de PostgreSQL (sin arrancar), el volumen (sin inicializar) y la red; (3) con `up -d` el mensaje queda en los logs del servicio de comprobación y Compose solo informa de que falló. | Evita rediseñar tras la revisión de Define. | H-05, R1-01, AC-02.1, AC-02.2 |
+| 2026-11-02 | Define revisa requirements.md@1 -> @2 por H-05 (A): reformula REQ-02, AC-02.1 y AC-02.2 (nada arranca, volumen sin inicializar; el contenedor de comprobación y el volumen vacío pueden quedar creados) y añade AC-02.4 (corregir la contraseña tras un rechazo). Supuesto de la redacción: los criterios se comprueban con `docker compose up` sin `-d`, donde el mensaje se ve en la salida. @2 queda en borrador, puesto a aprobación (H-06). | Cierra R1-01; el cambio altera comportamiento aprobado, así que vuelve al mantenedor. | H-05, R1-01, REQ-02 |
 
 ---
 
