@@ -93,9 +93,9 @@ feature: F003
 - **Context:** La rama incluye el último `origin/main` (sin cambios nuevos). Checks repetidos en Release: backend 3 failed y 49 errors por PostgreSQL de tests no disponible (fallos conocidos, 49 pasan); frontend lint, test y build limpios. El proyecto no exige tareas de release (sin changelog ni versión). El PR lista lo que se acepta: siete criterios probados con procedimiento manual (H-06), suite de backend no ejecutada con PostgreSQL, entorno de prueba simulado, valores no verificados.
 - **Options:** (A) Marcar el PR como listo y fusionarlo. (B) Pedir cambios en el PR. (C) Cerrarlo sin fusionar.
 - **Recommendation (not binding):** A.
-- **Status:** Open
-- **Answer:** —
-- **Decided on:** —
+- **Status:** Decided
+- **Answer:** El mantenedor fusionó el PR #13 en main (opción A). Respuesta dada por el propio merge, no por un mensaje.
+- **Decided on:** 2026-11-02
 
 ---
 
