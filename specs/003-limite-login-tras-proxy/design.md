@@ -2,7 +2,7 @@
 artifact: design
 feature: F003
 status: draft
-version: 2
+version: 3
 upstream: [brief.md@1, requirements.md@1]
 ---
 
@@ -131,7 +131,7 @@ La feature no introduce ni cambia datos, ni esquema ni migraciones. Los contador
 
 ## 7. Qualities
 
-- **NFR-01:** C-05 ejecuta AC-01.1, AC-02.1 y AC-02.3 contra la aplicación en marcha con Compose, con dos fuentes de origen (ASM-05): el host, que hace de proxy y envía `X-Forwarded-For` distintos, y un segundo contenedor en la red del proyecto, con otra IP y fuera de la lista de confianza, que hace de conexión no confiada en AC-02.3. Si no se puede montar la segunda fuente, AC-02.3 se declara no verificado. Verified by: el registro de ejecución de T-02, que Verify repite como evidencia.
+- **NFR-01:** C-05 ejecuta AC-01.1, AC-02.1 y AC-02.3 contra la aplicación en marcha con Compose, con dos fuentes de origen (ASM-05): el host, que hace de proxy y envía `X-Forwarded-For` distintos, y un segundo contenedor en la red del proyecto, con otra IP y fuera de la lista de confianza, que hace de conexión no confiada en AC-02.3. La lista de confianza de AC-02.3 es la IP sola de la puerta de enlace, para que el segundo contenedor quede fuera. Si no se puede montar la segunda fuente, AC-02.3 se declara no verificado. Verified by: el registro de ejecución de T-02, que Verify repite como evidencia.
 - **NFR-02:** No se modifica `limiter.py` ni los decoradores. Verified by: `git diff main -- backend/app` vacío para `core/limiter.py` y `features/auth/router.py`, y los 429 observados en T-02 (a partir del undécimo intento de login y del vigésimo primero de refresh, con las ventanas de 1 minuto). La suite de backend existente (`uv run pytest -q`) solo se ejecuta como regresión: no comprueba los valores del límite.
 
 ---
@@ -176,7 +176,7 @@ La feature no introduce ni cambia datos, ni esquema ni migraciones. Los contador
 
 - **Basis:** Lectura de `middleware/proxy_headers.py` (clase `_TrustedHosts`); no ejecutado todavía.
 - **Impact if incorrect:** El ejemplo de C-03 usaría una IP concreta en lugar de una red.
-- **Status:** Unverified. T-02 lo ejecuta con una red en AC-03.1.
+- **Status:** Unverified. T-02 lo ejecuta en AC-03.1 con la red más pequeña que incluye la puerta de enlace y excluye al segundo contenedor de AC-02.3 (por ejemplo, un `/32`, o un `/31` si la puerta de enlace y el contenedor no son contiguos); en el resto de escenarios usa la IP sola. Si ninguna red cumple las dos condiciones, el uso de una red CIDR se declara no verificado.
 
 ### OQ-02: ¿Basta con documentar que, fuera de Docker, `127.0.0.1` se confía por defecto?
 

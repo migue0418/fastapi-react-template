@@ -61,6 +61,18 @@ feature: F003
 - **Answer:** "Documentar el límite (Recomendado)"
 - **Decided on:** 2026-11-02
 
+### H-05: Aprobar design.md@3
+
+- **Raised in:** Design / design approval
+- **Concerns:** design.md@3, ADR-0001, T-01 a T-03
+- **Blocks:** Escribir el plan y pasar a Build
+- **Context:** Sin código de aplicación nuevo: la confianza en `X-Forwarded-For` la decide uvicorn con `FORWARDED_ALLOW_IPS` (ADR-0001). Tres tareas: variable en `.example.env`, comprobación ejecutada con Compose aislado y README alineado. La revisión aprobó en la ronda 2; la ronda 1 encontró que `*` permite falsificar la IP incluso con el 8000 cerrado, y se corrigió.
+- **Options:** Aprobar, aprobar con cambios, o replantear.
+- **Recommendation (not binding):** Aprobar tras revisar ASM-05 y ASM-06, sin ejecutar hasta T-02, y RISK-03 y RISK-04.
+- **Status:** Open
+- **Answer:**
+- **Decided on:**
+
 ---
 
 ## 2. Discover Questions
@@ -93,6 +105,7 @@ Evidencia previa, leída antes de preguntar: `backend/app/core/limiter.py` usa `
 | 2026-11-02 | Design: sin código de aplicación; la confianza en cabeceras la decide uvicorn con `FORWARDED_ALLOW_IPS` (ADR-0001, proposed) | Un experimento aislado con uvicorn 0.47.0 y slowapi confirmó el comportamiento documentado; Q-01 pide una sola variable y el valor por defecto seguro | design.md@1, ASM-01, REQ-01 a REQ-03 |
 | 2026-11-02 | Design: no se fija `FORWARDED_ALLOW_IPS=""` en el Dockerfile | En Compose ninguna conexión externa llega como `127.0.0.1`; cambiaría la imagen sin necesidad (límite en OQ-02 y RISK-04) | design.md@1, REQ-01 |
 | 2026-11-02 | Design: revisión de diseño ronda 1, `changes-required` (1 bloqueante, 4 menores); todos aceptados y corregidos en design.md@2. R1-01 se verificó en `uvicorn/middleware/proxy_headers.py:163-164`: con `*` la IP es la primera entrada de la cabecera y la fija el cliente | La entrada anterior sobre el Dockerfile queda confirmada por H-04 | design.md@2, reviews/design-r1.md, H-04 |
+| 2026-11-02 | Design: revisión de diseño ronda 2, `approve` (0 bloqueantes, 1 menor R2-01), corregido en design.md@3 sin cambiar el enfoque | Una red CIDR en AC-03.1 podía incluir al contenedor no confiado de AC-02.3 | design.md@3, reviews/design-r2.md |
 | 2026-11-02 | Design: la comprobación es un procedimiento del plan con registro en `evidence/t02-comprobacion-proxy.md`, no un script ni un test versionado | PR-004; un test automático necesitaría Docker. Se puede automatizar con RM-05 | design.md@1, NFR-01 |
 | 2026-11-02 | Design: tres tareas; T-03 (README) depende de T-02 para describir solo lo observado | AC-04.2 compara el README con los resultados | design.md@1, T-01 a T-03 |
 
