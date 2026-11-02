@@ -13,8 +13,8 @@ waiting-for-human: []
 blocked-by: []
 
 tasks:
-  T-01: approved
-  T-02: in-review
+  T-01: merged
+  T-02: approved
   T-03: pending
 
 known-failures:
@@ -36,3 +36,5 @@ history:
   - "2026-11-02 design/approval: design.md@3 aprobado (H-05); ADR-0001 accepted; plan.md@1 escrito y comprobado (consistencia limpia)"
   - "2026-11-02 design/close: la feature pasa a Build con T-01 a T-03 pendientes"
   - "2026-11-02 build/baseline: fallos conocidos registrados (backend sin PostgreSQL de tests)"
+  - "2026-11-02 build/T-01: aprobada en r1 (2 menores) e integrada; suite sin fallos nuevos"
+  - "2026-11-02 build/T-02: aprobada en r1 (3 menores)"
