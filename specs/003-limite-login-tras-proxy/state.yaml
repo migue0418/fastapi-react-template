@@ -4,8 +4,8 @@
 feature: F003
 title: "El límite de login se aplica por cliente real tras un proxy"
 roadmap-item: RM-02
-phase: verify
-step: "Verify run 2: evidencia pass, revisión de feature r2 approve; H-06 decidido (A)"
+phase: document
+step: "Verify cerrado (run 2 pass); Document pendiente"
 status: in-progress
 next: "Ejecutar /sdd-kit:sdd-document. Corregir el README (R1-01, R1-04) y citar 14b4cc5 para /16 y valor mal escrito; ver decisions.md sección 4."
 
